@@ -1,14 +1,13 @@
-
-:-use_module(library(lists)).
-:-use_module(library(system)).
-:-use_module(library(file_systems)).
-:-op(900,fy,not).
-:-dynamic fapt/3.
-:-dynamic interogat/1.
-:-dynamic scop/1.
-:-dynamic interogabil/3.
-:-dynamic regula/3.
-:-dynamic intrebare_curenta/3.
+:- use_module(library(lists)).
+:- use_module(library(system)).
+:- use_module(library(file_systems)).
+:- op(900,fy,not).
+:- dynamic fapt/3.
+:- dynamic interogat/1.
+:- dynamic scop/1.
+:- dynamic interogabil/3.
+:- dynamic regula/3.
+:- dynamic intrebare_curenta/3.
 
 not(P) :- P, !, fail.
 not(_).
@@ -451,68 +450,72 @@ incarca_reguli :-
 proceseaza([end_of_file]) :-
 	!.
 proceseaza(L) :-
-	trad(R, L, []),
+	parseTokens(R, L, []),
 	assertz(R),
 	!.
-trad(scop(X)) -->
-	[scopul, este, X].
-trad(scop(X)) -->
-	[scopul, X].
-trad(interogabil(Atr, M, P)) --> 
-	[intreaba, Atr],
-	lista_optiuni(M),
+parseTokens(scop(AtributScop)) -->
+	[scop, '-', '>', '(', AtributScop, ')'].
+parseTokens(interogabil(Atr, M, P)) --> 
+	[q, '-', '>', Atr],
+	parseOptions(M),
 	afiseaza(Atr, P).
-trad(regula(N, premise(Daca), concluzie(Atunci, F))) -->
-	identificator(N),
-	daca(Daca),
-	atunci(Atunci, F).
-trad('Eroare la parsare' -L, L, _).
+parseTokens(regula(RuleID, premise(Premises), concluzie(Conclusion, CertaintyFactor))) -->
+	parseRuleID(RuleID),
+	parseRulePremises(Premises),
+	parseRuleConclusion(Conclusion, CertaintyFactor).
+parseTokens('Eroare la parsare' -L, L, _).
 
-lista_optiuni(M) -->
-	[optiuni, '('],
-	lista_de_optiuni(M).
-lista_de_optiuni([Element]) -->
+parseOptions(M) -->
+	[variante, '('],
+	parseOptionList(M).
+parseOptionList([Element]) -->
 	[Element, ')'].
-lista_de_optiuni([Element | T]) -->
-	[Element],
-	lista_de_optiuni(T).
+parseOptionList([Element | T]) -->
+	[Element, '(', '&', ')'],
+	parseOptionList(T).
 
 afiseaza(_, P) -->
-	[afiseaza, P].
+	[text, '-', '>', '(', P, ')'].
 afiseaza(P, P) -->
 	[].
-identificator(N) -->
-	[regula, N].
+	
+parseRuleID(RuleID) -->
+	[rg, '-', '>', RuleID].
 
-daca(Daca) -->
-	[daca],
-	lista_premise(Daca).
+parseRulePremises(Premises) -->
+	[if,'('],
+	parsePremiseList(Premises).
 
-lista_premise([Daca]) -->
-	propoz(Daca),
-	[atunci].
-lista_premise([Prima | Celalalte]) -->
-	propoz(Prima),
-	[si],
-	lista_premise(Celalalte).
-lista_premise([Prima | Celalalte]) -->
-	propoz(Prima),
+parsePremiseList([Premise]) -->
+	premisa(Premise),
+	[')', then].
+parsePremiseList([Premise | NextPremises]) -->
+	premisa(Premise),
+	['&', '&'],
+	parsePremiseList(NextPremises).
+parsePremiseList([Premise | NextPremises]) -->
+	premisa(Premise),
 	[','],
-	lista_premise(Celalalte).
+	parsePremiseList(NextPremises).
 
-atunci(Atunci, FC) -->
-	propoz(Atunci),
-	[fc],
-	[FC].
-atunci(Atunci, 100) -->
-	propoz(Atunci).
+parseRuleConclusion(Conclusion, FC) -->
+	['('],
+	premisa(Conclusion),
+	[:],
+	[fc, '-', '>'],
+	[FC],
+	[')'].
+parseRuleConclusion(Conclusion, 100) -->
+	['('],
+	premisa(Conclusion),
+	[')'].
 
-propoz(not av(Atr, da)) -->
-	[not, Atr].
-propoz(av(Atr,Val)) -->
-	[Atr, este, Val].
-propoz(av(Atr, da)) -->
-	[Atr].
+premisa(av(Atr, 0)) -->
+	[Atr, '-', '>', '(', '0', ')'].
+premisa(av(Atr, 1)) -->
+	[Atr, '-', '>', '(', '1', ')'].
+premisa(av(Atr, Val)) -->
+	[Atr, '-', '>', '(', Val,')'].
 
 citeste_linie([Cuv | Lista_cuv]) :-
 	get_code(Car),
@@ -653,15 +656,14 @@ citeste_cuvant(_, Cuvant, Caracter1) :-
 	citeste_cuvant(Caracter, Cuvant, Caracter1).
 
 caracter_cuvant(C) :-
-	member(C, [44, 59, 58, 63, 33, 46, 41, 40]).
+	member(C, [33, 38, 40, 41, 44, 45, 46, 58, 59, 62, 63]).
 
-% am specificat codurile ASCII pentru , ; : ? ! . ) (
+% am specificat codurile ASCII pentru , ; : ? ! . ) ( - > &
 
 caractere_in_interiorul_unui_cuvant(C) :-
 	C>64,
 	C<91;
 	C>47, C<58;
-	C==45;
 	C==95;
 	C>96, C<123.
 caracter_numar(C) :-
