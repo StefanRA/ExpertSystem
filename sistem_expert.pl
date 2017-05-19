@@ -1,8 +1,10 @@
 :- use_module(library(lists)).
 :- use_module(library(system)).
 :- use_module(library(file_systems)).
+
 :- op(900,fy,not).
 :- dynamic fapt/3.
+
 :- dynamic interogat/1.
 :- dynamic scop/1.
 :- dynamic interogabil/3.
@@ -421,26 +423,75 @@ combina(FC1, FC2, FC) :-
 	FC is round(X).
 
 incarca :-
-	write('Introduceti numele fisierului care doriti sa fie incarcat: '), nl,
-	write('|:'),
-	read(F),
-	file_exists(F),!,incarca(F).
+	write('Enter the name of the file that contains the goal, rules and questions: '), nl,
+	write('|: '),
+	read(RulesFileName),
+	file_exists(RulesFileName),
+	!,
+	write('Enter the name of the file that contains the information about the solutions: '), nl,
+	read(SolutionInfoFileName),
+	file_exists(SolutionInfoFileName),
+	!,
+	incarca(RulesFileName, SolutionInfoFileName).
 incarca :-
 	write('Nume incorect de fisier! '), nl,
 	fail.
 
-incarca(F) :-
+incarca(RulesFileName, SolutionInfoFileName) :-
 	retractall(interogat(_)),
 	retractall(fapt(_, _, _)),
 	retractall(scop(_)),
 	retractall(interogabil(_, _, _)),
 	retractall(regula(_, _, _)),
-	see(F),
-	incarca_reguli,
+	retractall(solution_info(_, _, _, _)),
+	close_all_streams,
+	see(RulesFileName),
+	loadRules,
+	seen,
+	close_all_streams,
+	see(SolutionInfoFileName),
+	loadSolutionsInformation,
 	seen,
 	!.
 
-incarca_reguli :-
+loadSolutionsInformation :-
+	repeat,
+		readSolutionInfo(TokenList),
+		(
+			append(SolutionInfo, [end_of_file], TokenList),
+			Last = [end_of_file]
+			;
+			SolutionInfo = TokenList
+		),
+		processSolutionInformation(SolutionInfo),
+		Last == [end_of_file],
+	nl.
+
+processSolutionInformation([end_of_file]) :-
+	!.
+processSolutionInformation(TokenList) :-
+	parseSolutionInformation(Result, TokenList, []),
+	assertz(Result).
+	
+parseSolutionInformation(solution_info(Name, Description, Domain, Date)) -->
+	parseSolutionName(Name),
+	parseSolutionDescription(Description),
+	parseSolutionDomain(Domain),
+	parseSolutionDate(Date).
+
+parseSolutionName(Name) -->
+	['{', Name, '}'].
+	
+parseSolutionDescription(Description) -->
+	['{', Description, '}'].
+
+parseSolutionDomain(Domain) -->
+	['{', domeniu, ':', Domain, '}'].
+
+parseSolutionDate(Date) -->
+	['{', data, ':', Date, '}'].
+	
+loadRules :-
 	repeat,
 	citeste_propozitie(L),
 	proceseaza(L),
@@ -656,7 +707,7 @@ citeste_cuvant(_, Cuvant, Caracter1) :-
 	citeste_cuvant(Caracter, Cuvant, Caracter1).
 
 caracter_cuvant(C) :-
-	member(C, [33, 38, 40, 41, 44, 45, 46, 58, 59, 62, 63]).
+	member(C, [33, 38, 40, 41, 44, 45, 46, 58, 59, 62, 63, 123, 125]).
 
 % am specificat codurile ASCII pentru , ; : ? ! . ) ( - > &
 
@@ -669,3 +720,19 @@ caractere_in_interiorul_unui_cuvant(C) :-
 caracter_numar(C) :-
 	C < 58,
 	C >= 48.
+
+readSolutionInfo(L) :-
+	citeste_linie(Line),
+	(
+		Line == [end_of_file],
+		L = [end_of_file],
+		!
+		;
+		Line = [FirstToken | _],
+		FirstToken == '-',
+		L = [],
+		!
+		;
+		readSolutionInfo(OtherLines),
+		append(Line, OtherLines, L)
+	).
