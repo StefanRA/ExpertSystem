@@ -11,6 +11,44 @@
 :- dynamic regula/3.
 :- dynamic intrebare_curenta/3.
 
+:- dynamic used_language/1.
+
+%---------------------------------------------------------------------------------------------------
+/* This dynamic predicate designates the language that is currently in use. Its default value is
+defined here. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% used_language(+LanguageID)
+%---------------------------------------------------------------------------------------------------
+used_language(ro).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate designates the languages that are known by the expert system. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% known_language(?LanguageID).
+%---------------------------------------------------------------------------------------------------
+known_language(en).
+known_language(ro).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to obtain the text for a certain action in the language that is currently
+in use. */
+%---------------------------------------------------------------------------------------------------
+% prompter(?LanguageID, ?ActionID, ?Text)
+%---------------------------------------------------------------------------------------------------
+prompter(en, ask_for_rules_file_name, 'Enter the name of the file that contains the goal, rules and questions: ').
+prompter(ro, ask_for_rules_file_name, 'Introduceti numele fisierului care contine scopul, regulile si intrebarile: ').
+
+prompter(en, ask_for_solution_info_file_name, 'Enter the name of the file that contains the information for the solutions: ').
+prompter(ro, ask_for_solution_info_file_name, 'Introduceti numele fisierului care contine informatiile despre solutii: ').
+
+prompter(en, file_does_not_exist, 'Could not open the specified file. Please check if you entered the correct name!').
+prompter(ro, file_does_not_exist, 'Fisierul specificat nu a putut fi deschis. Verificati daca ati introdus numele corect!').
+%---------------------------------------------------------------------------------------------------
+
 not(P) :- P, !, fail.
 not(_).
 
@@ -430,18 +468,22 @@ combina(FC1, FC2, FC) :-
 	FC is round(X).
 
 incarca :-
-	write('Enter the name of the file that contains the goal, rules and questions: '), nl,
+	used_language(Lang),
+	prompter(Lang, ask_for_rules_file_name, RulesPrompt),
+	write(RulesPrompt), nl,
 	write('|: '),
 	read(RulesFileName),
 	file_exists(RulesFileName),
-	!,
-	write('Enter the name of the file that contains the information about the solutions: '), nl,
+	prompter(Lang, ask_for_solution_info_file_name, SolutionInfoPrompt),
+	write(SolutionInfoPrompt), nl,
 	read(SolutionInfoFileName),
 	file_exists(SolutionInfoFileName),
 	!,
 	incarca(RulesFileName, SolutionInfoFileName).
 incarca :-
-	write('Nume incorect de fisier! '), nl,
+	used_language(Lang),
+	prompter(Lang, file_does_not_exist, Prompt),
+	write(Prompt), nl,
 	fail.
 
 %---------------------------------------------------------------------------------------------------
