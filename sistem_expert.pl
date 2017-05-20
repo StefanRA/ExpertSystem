@@ -43,7 +43,14 @@ lista_float_int([Regula|Reguli],[Regula1|Reguli1]) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+% This predicate retracts all dynamic predicates used to store the knowledge base for the expert system.
+resetKnowledgeBase :-
+	retractall(interogat(_)),
+	retractall(fapt(_, _, _)),
+	retractall(scop(_)),
+	retractall(interogabil(_, _, _)),
+	retractall(regula(_, _, _)),
+	retractall(solution_info(_, _, _, _)).
 
 un_pas(Rasp,OptiuniUrm,MesajUrm) :-
 	scop(Atr),
@@ -437,23 +444,29 @@ incarca :-
 	write('Nume incorect de fisier! '), nl,
 	fail.
 
+%---------------------------------------------------------------------------------------------------
+/* This predicate loads the goal, rules and questions from the first file and the information about
+the solutions from the second file into the knowledge base. */
+%---------------------------------------------------------------------------------------------------
+% incarca(+RulesFileName, +SolutionInfoFileName)
+%---------------------------------------------------------------------------------------------------
 incarca(RulesFileName, SolutionInfoFileName) :-
-	retractall(interogat(_)),
-	retractall(fapt(_, _, _)),
-	retractall(scop(_)),
-	retractall(interogabil(_, _, _)),
-	retractall(regula(_, _, _)),
-	retractall(solution_info(_, _, _, _)),
-	close_all_streams,
+	resetKnowledgeBase,
 	see(RulesFileName),
 	loadRules,
 	seen,
-	close_all_streams,
 	see(SolutionInfoFileName),
 	loadSolutionsInformation,
 	seen,
 	!.
+%---------------------------------------------------------------------------------------------------
 
+%---------------------------------------------------------------------------------------------------
+/* This predicate loads the information about the expert system's solutions and adds them in the
+knowledge base. */
+%---------------------------------------------------------------------------------------------------
+% loadSolutionInformation
+%---------------------------------------------------------------------------------------------------
 loadSolutionsInformation :-
 	repeat,
 		readSolutionInfo(TokenList),
@@ -466,31 +479,69 @@ loadSolutionsInformation :-
 		processSolutionInformation(SolutionInfo),
 		Last == [end_of_file],
 	nl.
+%---------------------------------------------------------------------------------------------------
 
+%---------------------------------------------------------------------------------------------------
+/* This predicate extracts the information about the solution from the given list of tokens and adds
+that information in the knowledge base. */
+%---------------------------------------------------------------------------------------------------
+% processSolutionInformation(+TokenList)
+%---------------------------------------------------------------------------------------------------
 processSolutionInformation([end_of_file]) :-
 	!.
 processSolutionInformation(TokenList) :-
 	parseSolutionInformation(Result, TokenList, []),
 	assertz(Result).
-	
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This DCG rule extracts the information about the solution from the given list of tokens. */
+%---------------------------------------------------------------------------------------------------
+% parseSolutionInformation(-SolutionInfo, +TokenList, [])
+%---------------------------------------------------------------------------------------------------
 parseSolutionInformation(solution_info(Name, Description, Domain, Date)) -->
 	parseSolutionName(Name),
 	parseSolutionDescription(Description),
 	parseSolutionDomain(Domain),
 	parseSolutionDate(Date).
+%---------------------------------------------------------------------------------------------------
 
+%---------------------------------------------------------------------------------------------------
+/* This DCG rule extracts the name of the solution from given list of tokens. */
+%---------------------------------------------------------------------------------------------------
+% parseSolutionName(-SolutionName, +TokenList, [])
+%---------------------------------------------------------------------------------------------------
 parseSolutionName(Name) -->
 	['{', Name, '}'].
-	
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This DCG rule extracts the description of the solution from the given list of tokens. */
+%---------------------------------------------------------------------------------------------------
+% parseSolutionDescription(-SolutionDescription, +TokenList, [])
+%---------------------------------------------------------------------------------------------------
 parseSolutionDescription(Description) -->
 	['{', Description, '}'].
+%---------------------------------------------------------------------------------------------------
 
+%---------------------------------------------------------------------------------------------------
+/* This DCG rule extracts the domain of the solution from the given list of tokens.  */
+%---------------------------------------------------------------------------------------------------
+% parseSolutionDomain(-SolutionDomain, +TokenList, [])
+%---------------------------------------------------------------------------------------------------
 parseSolutionDomain(Domain) -->
 	['{', domeniu, ':', Domain, '}'].
+%---------------------------------------------------------------------------------------------------
 
+%---------------------------------------------------------------------------------------------------
+/* This DCG rule extracts the starting date of the solution from the given list of tokens.  */
+%---------------------------------------------------------------------------------------------------
+% parseSolutionDate(-SolutionDate, +TokenList, [])
+%---------------------------------------------------------------------------------------------------
 parseSolutionDate(Date) -->
 	['{', data, ':', Date, '}'].
-	
+%---------------------------------------------------------------------------------------------------
+
 loadRules :-
 	repeat,
 	citeste_propozitie(L),
@@ -721,18 +772,25 @@ caracter_numar(C) :-
 	C < 58,
 	C >= 48.
 
-readSolutionInfo(L) :-
+%---------------------------------------------------------------------------------------------------
+/* This predicate reads tokens from the file that contains the information about the solutions until
+it reaches a delimiter or the end of the file. */
+%---------------------------------------------------------------------------------------------------
+% readSolutionInfo(-TokenList)
+%---------------------------------------------------------------------------------------------------
+readSolutionInfo(TokenList) :-
 	citeste_linie(Line),
 	(
 		Line == [end_of_file],
-		L = [end_of_file],
+		TokenList = [end_of_file],
 		!
 		;
 		Line = [FirstToken | _],
 		FirstToken == '-',
-		L = [],
+		TokenList = [],
 		!
 		;
 		readSolutionInfo(OtherLines),
-		append(Line, OtherLines, L)
+		append(Line, OtherLines, TokenList)
 	).
+%---------------------------------------------------------------------------------------------------
