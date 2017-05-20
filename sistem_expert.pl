@@ -37,6 +37,7 @@ known_language(ro).
 /* This predicate is used to obtain the text for a certain action in the language that is currently
 in use. */
 %---------------------------------------------------------------------------------------------------
+% Recommended usage:
 % prompter(?LanguageID, ?ActionID, ?Text)
 %---------------------------------------------------------------------------------------------------
 prompter(en, ask_for_rules_file_name, 'Enter the name of the file that contains the goal, rules and questions: ').
@@ -47,6 +48,15 @@ prompter(ro, ask_for_solution_info_file_name, 'Introduceti numele fisierului car
 
 prompter(en, file_does_not_exist, 'Could not open the specified file. Please check if you entered the correct name!').
 prompter(ro, file_does_not_exist, 'Fisierul specificat nu a putut fi deschis. Verificati daca ati introdus numele corect!').
+
+prompter(en, display_facts, 'The facts that exist in the knowledge base:').
+prompter(ro, display_facts, 'Faptele prezente in baza de cunostinte:').
+
+prompter(en, display_facts_header, '(Attribute, Value) - Certainty factor').
+prompter(ro, display_facts_header, '(Atribut, Valoare) - Factor de certitudine').
+
+prompter(en, display_fact, '(~p, ~p) - Certainty factor = ~p').
+prompter(ro, display_fact, '(~p, ~p) - Factor de certitudine = ~p').
 %---------------------------------------------------------------------------------------------------
 
 not(P) :- P, !, fail.
@@ -56,20 +66,37 @@ scrie_lista([]) :- nl.
 scrie_lista([H|T]) :-
 	write(H), tab(1),
 	scrie_lista(T).
-             
-afiseaza_fapte :-
-	write('Fapte existente în baza de cunostinte:'),
-	nl,nl, write(' (Atribut,valoare) '), nl,nl,
-	listeaza_fapte,nl.
 
-listeaza_fapte:-  
-	fapt(av(Atr,Val),FC,_), 
-	write('('),write(Atr),write(','),
-	write(Val), write(')'),
-	write(','), write(' certitudine '),
-	FC1 is integer(FC),write(FC1),
-	nl,fail.
-listeaza_fapte.
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to display a list of all the facts in the knowledge base. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% displayFactsFromKnowledgeBase
+%---------------------------------------------------------------------------------------------------
+displayFactsFromKnowledgeBase :-
+	used_language(Lang),
+	prompter(Lang, display_facts, FactsPrompt),
+	write(FactsPrompt), nl, nl,
+	prompter(Lang, display_facts_header, FactsHeaderPrompt),
+	write(FactsHeaderPrompt), nl, nl,
+	displayFacts, nl.
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to get and display each fact from the knowledge base. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% displayFacts
+%---------------------------------------------------------------------------------------------------
+displayFacts :-
+	fapt(av(Atr, Val), FC, _),
+	FC1 is integer(FC),
+	used_language(Lang),
+	prompter(Lang, display_fact, FactPrompt),
+	format(FactPrompt, [Atr, Val, FC1]), 	nl,
+	fail.
+displayFacts.
+%---------------------------------------------------------------------------------------------------
 
 % lista_float_int(+ListaFloat, -ListaIn)
 lista_float_int([],[]).
@@ -216,7 +243,7 @@ executa([reinitiaza]) :-
 	retractall(fapt(_, _, _)),
 	!.
 executa([afisare_fapte]) :-
-	afiseaza_fapte,
+	displayFactsFromKnowledgeBase,
 	!.
 executa([cum|L]) :-
 	cum(L),
@@ -622,44 +649,76 @@ afiseaza(_, P) -->
 	[text, '-', '>', '(', P, ')'].
 afiseaza(P, P) -->
 	[].
-	
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to extract the identifier of the rule that is currently parsed. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% parseRuleID(-RuleID, +TokenList, [])
+%---------------------------------------------------------------------------------------------------
 parseRuleID(RuleID) -->
 	[rg, '-', '>', RuleID].
+%---------------------------------------------------------------------------------------------------
 
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to parse past the rule premises header and extract the list of premises. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% parseRulePremises(-RulePremises, +TokenList, [])
+%---------------------------------------------------------------------------------------------------
 parseRulePremises(Premises) -->
 	[if,'('],
 	parsePremiseList(Premises).
+%---------------------------------------------------------------------------------------------------
 
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to extract the list of premises of the current rule from the given list of
+tokens. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% parsePremiseList(-PremiseList, +TokenList, [])
+%---------------------------------------------------------------------------------------------------
 parsePremiseList([Premise]) -->
-	premisa(Premise),
+	parseRulePremise(Premise),
 	[')', then].
 parsePremiseList([Premise | NextPremises]) -->
-	premisa(Premise),
+	parseRulePremise(Premise),
 	['&', '&'],
 	parsePremiseList(NextPremises).
-parsePremiseList([Premise | NextPremises]) -->
-	premisa(Premise),
-	[','],
-	parsePremiseList(NextPremises).
+%---------------------------------------------------------------------------------------------------
 
-parseRuleConclusion(Conclusion, FC) -->
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to extract a premise from the given list of tokens. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% parseRulePremise(-Premise, +TokenList, [])
+%---------------------------------------------------------------------------------------------------
+parseRulePremise(not av(AttributeName, da)) -->
+	[AttributeName, '-', '>', '(', 0.0, ')'].
+parseRulePremise(av(AttributeName, da)) -->
+	[AttributeName, '-', '>', '(', 1.0, ')'].
+parseRulePremise(av(AttributeName, AttributeValue)) -->
+	[AttributeName, '-', '>', '(', AttributeValue,')'].
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to extract the conclusion of the rule from the given list of tokens. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% parseRuleConclusion(-Conclusion, -CertaintyFactor, +TokenList, [])
+%---------------------------------------------------------------------------------------------------
+parseRuleConclusion(Conclusion, CertaintyFactor) -->
 	['('],
-	premisa(Conclusion),
+	parseRulePremise(Conclusion),
 	[:],
 	[fc, '-', '>'],
-	[FC],
+	[CertaintyFactor],
 	[')'].
 parseRuleConclusion(Conclusion, 100) -->
 	['('],
-	premisa(Conclusion),
+	parseRulePremise(Conclusion),
 	[')'].
-
-premisa(av(Atr, 0)) -->
-	[Atr, '-', '>', '(', '0', ')'].
-premisa(av(Atr, 1)) -->
-	[Atr, '-', '>', '(', '1', ')'].
-premisa(av(Atr, Val)) -->
-	[Atr, '-', '>', '(', Val,')'].
+%---------------------------------------------------------------------------------------------------
 
 citeste_linie([Cuv | Lista_cuv]) :-
 	get_code(Car),
