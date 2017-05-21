@@ -1,0 +1,8 @@
+{EuroPython}
+{'EuroPython was the first major Python programming language community conference ever organized by volunteers. It started 2002 in Charleroi, Belgium, which attracted over 200 attendees.
+It now is the largest European Python conference with around 1200+ participants every year, the second largest Python conference world-wide and a meeting reference for all European programmers, students and companies interested in the Python programming language.'}
+{domeniu: 'Programming Languages'} {data: '09/07/2017'}
+-------------------
+{Embedded Linux Conference Europe}
+{ELC is the premier vendor-neutral technical conference for companies and developers using Linux in embedded products. Now in its 12th year, the conference gathers user-space developers, product vendors, kernel and systems developers to collaborate.}
+{domeniu: 'Operating Systems'} {data: '23/10/2017'}
