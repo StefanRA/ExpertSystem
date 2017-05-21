@@ -1,0 +1,98 @@
+scop -> (nume_conferinta).
+
+rg->1
+if(
+	locatia -> (in_strainatate) &&
+	limbaj_preferat -> (python) &&
+	dimensiune_conferinta -> (mare)
+)
+then
+	(nume_conferinta -> (euro_python) : fc -> 90).
+
+rg->2
+if(
+	dispus_sa_calatoreasca -> (1) &&
+	buget_disponibil -> (mare)
+)
+then
+	(locatia -> (in_strainatate) : fc -> 75).
+
+rg->3
+if(
+	buget_disponibil -> (mare) &&
+	networking -> (1)
+)
+then
+ (dimensiune_conferinta -> (mare) : fc -> 80).
+
+rg->4
+if(
+	perioada -> (aprilie) &&
+	locatia -> (in_strainatate) &&
+	domeniu_de_interes -> (grafica_pe_calculator) &&
+	nivel_experienta -> (mare) &&
+	networking -> (1)
+)
+then
+	(nume_conferinta -> (eurographics) : fc -> 80).
+
+q -> networking
+variante(
+	da (&)
+	nu
+)
+text -> ('Doriti sa faceti networking?').
+
+q -> dispus_sa_calatoreasca
+variante(
+	da (&)
+	nu
+)
+text -> ('Sunteti dispus sa calatoriti?').
+
+q -> buget_disponibil
+variante(
+	redus (&)
+	mediu (&)
+	mare
+)
+text -> ('Care bugetul de care dispuneti?').
+
+q -> limbaj_preferat
+variante(
+	java (&)
+	python (&)
+	c
+)
+text -> ('Care este limbajul preferat?').
+
+q -> domeniu_de_interes
+variante(
+	inteligenta_artificiala (&)
+	grafica_pe_calculator
+)
+text -> ('Care este domeniul dumneavoastra de interes?').
+
+q -> perioada
+variante(
+	ianuarie (&)
+	februarie (&)
+	aprilie (&)
+	mai (&)
+	iunie (&)
+	iulie (&)
+	august (&)
+	septembrie (&)
+	octombrie (&)
+	noiembrie (&)
+	decembrie
+)
+text -> ('In ce luna doriti sa participati la conferinta?').
+
+q -> nivel_experienta
+variante(
+	mica (&)
+	medie (&)
+	mare
+)
+text -> ('Care este nivelul dumneavoastra de experienta in domeniul de care sunteti interesat?').
