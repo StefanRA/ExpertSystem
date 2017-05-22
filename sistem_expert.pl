@@ -57,6 +57,15 @@ prompter(ro, display_facts_header, '(Atribut, Valoare) - Factor de certitudine')
 
 prompter(en, display_fact, '(~p, ~p) - Certainty factor = ~p').
 prompter(ro, display_fact, '(~p, ~p) - Factor de certitudine = ~p').
+
+prompter(en, display_goal_result_select, 'Do you wish to display the details for the results? ( yes / no )').
+prompter(ro, display_goal_result_select, 'Doriti o afisare detaliata a rezultatelor? ( da / nu )').
+
+prompter(en, yes_no_question_wrong_answer, 'Please answer yes or no! Any other answer is invalid!').
+prompter(ro, yes_no_question_wrong_answer, 'Raspundeti prin da sau nu! Orice alt raspuns este invalid!').
+
+prompter(en, detail_goal_3, 'You can stil participate at this conference! Date: ~p/~p/~p').
+prompter(ro, detail_goal_3, 'Mai puteti participa la aceasta conferinta! Data: ~p/~p/~p').
 %---------------------------------------------------------------------------------------------------
 
 not(P) :- P, !, fail.
@@ -252,10 +261,50 @@ executa([iesire]) :- !.
 executa([_|_]) :-
 	write('Comanda incorecta! '), nl.
 
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to ask the user which is the preffered display mode for the solutions. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% askWhichDisplayModeShouldBeUsed(-DisplayMode)
+%---------------------------------------------------------------------------------------------------
+askWhichDisplayModeShouldBeUsed(DisplayMode) :-
+	used_language(Lang),
+	prompter(Lang, display_goal_result_select, DetailsPrompt),
+	write(DetailsPrompt), nl,
+	repeat,
+		citeste_linie(TokenList),
+		solutionDisplayMode(DisplayMode, TokenList, []),
+		(
+			DisplayMode \== invalid,
+			!
+			;
+			prompter(Lang, yes_no_question_wrong_answer, WrongAnsPrompt),
+			write(WrongAnsPrompt), nl,
+			fail
+		).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to extract the display mode for the solutions from the given token list. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% solutionDisplayMode(-SolutionDisplayMode, +TokenList, [])
+%---------------------------------------------------------------------------------------------------
+solutionDisplayMode(detail) -->
+	[da],
+	!.
+solutionDisplayMode(summary) -->
+	[nu],
+	!.
+solutionDisplayMode(invalid) -->
+	[_].
+%---------------------------------------------------------------------------------------------------
+
 scopuri_princ :-
 	scop(Atr),
 	determina(Atr),
-	afiseaza_scop(Atr),
+	askWhichDisplayModeShouldBeUsed(DisplayMode),
+	afiseaza_scop(DisplayMode, Atr),
 	fail.
 scopuri_princ.
 
@@ -264,14 +313,34 @@ determina(Atr) :-
 	!.
 determina(_).
 
-afiseaza_scop(Atr) :-
+afiseaza_scop(summary, Atr) :-
 	nl,
 	fapt(av(Atr, Val), FC, _),
 	FC >= 20,
 	scrie_scop(av(Atr, Val), FC),
 	nl,
 	fail.
-afiseaza_scop(_) :-
+afiseaza_scop(summary, _) :-
+	nl, nl.
+
+afiseaza_scop(detail, Atr) :-
+	nl,
+	fapt(av(Atr, Val), FC, _),
+	FC >= 20,
+	scrie_scop(av(Atr, Val), FC),
+	solution_info(Val, Description, _, datime(Year, Month, Day, _, _, _)),
+	nl, nl, write(Description), nl, nl,
+	datime(datime(CurrentYear, CurrentMonth, CurrentDay, _, _, _)),
+	Year =:= CurrentYear,
+	Month >= CurrentMonth,
+	used_language(Lang),
+	prompter(Lang, detail_goal_3, Prompt),
+	Day1 is integer(Day),
+	Month1 is integer(Month),
+	Year1 is integer(Year),
+	format(Prompt, [Day1, Month1, Year1]), nl, nl,
+	fail.
+afiseaza_scop(detail, _) :-
 	nl, nl.
 
 scrie_scop(av(Atr, Val), FC) :-
@@ -607,8 +676,8 @@ parseSolutionDomain(Domain) -->
 %---------------------------------------------------------------------------------------------------
 % parseSolutionDate(-SolutionDate, +TokenList, [])
 %---------------------------------------------------------------------------------------------------
-parseSolutionDate(Date) -->
-	['{', data, ':', Date, '}'].
+parseSolutionDate(datime(Year, Month, Day, 0, 0, 0)) -->
+	['{', data, ':', Day, '/', Month, '/', Year, '}'].
 %---------------------------------------------------------------------------------------------------
 
 loadRules :-
@@ -859,7 +928,7 @@ citeste_cuvant(_, Cuvant, Caracter1) :-
 	citeste_cuvant(Caracter, Cuvant, Caracter1).
 
 caracter_cuvant(C) :-
-	member(C, [33, 38, 40, 41, 44, 45, 46, 58, 59, 62, 63, 123, 125]).
+	member(C, [33, 38, 40, 41, 44, 45, 46, 47, 58, 59, 62, 63, 123, 125]).
 
 % am specificat codurile ASCII pentru , ; : ? ! . ) ( - > &
 
