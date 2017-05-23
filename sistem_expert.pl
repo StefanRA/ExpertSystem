@@ -309,10 +309,59 @@ solutionDisplayMode(invalid) -->
 scopuri_princ :-
 	scop(Atr),
 	determina(Atr),
+	appendSolutionsToFile(Atr),
 	askWhichDisplayModeShouldBeUsed(DisplayMode),
 	afiseaza_scop(DisplayMode, Atr),
 	fail.
 scopuri_princ.
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to log the solutions obtained by the expert system in the logging directory. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% appendSolutionsToFile(+Goal)
+%---------------------------------------------------------------------------------------------------
+appendSolutionsToFile(Goal) :-
+	(
+		directory_exists('./fisiere_conferinte'),
+		!
+		;
+		make_directory('./fisiere_conferinte')
+	),
+	open('./fisiere_conferinte/log_solutii.txt', append, Stream),
+	datime(datime(Year, Month, Day, Hour, Minute, Second)),
+	format(Stream, '(~p/~p/~p, ~p:~p:~p) Solutii sistem expert:\n', [Year, Month, Day, Hour, Minute, Second]),
+	logSolutions(Stream, Goal),
+	close(Stream),
+	!.
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to log all the solutions deducted by the expert system for the given goal
+in the specified file. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% logSolutions(+Stream, +Goal)
+%---------------------------------------------------------------------------------------------------
+logSolutions(Stream, Goal) :-
+	fapt(av(Goal, Val), FC, _),
+	FC >= 20,
+	logSolution(Stream, av(Goal, Val), FC),
+	fail.
+logSolutions(_, _).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to log a solution in the logging file. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% logSolution(+Stream, av(+Goal, +Value), +CertaintyFactor)
+%---------------------------------------------------------------------------------------------------
+logSolution(Stream, av(Goal, Val), FC) :-
+	format(Stream, '~p este ~p\n', [Goal, Val]),
+	FC1 is integer(FC),
+	format(Stream, 'Factorul de certitudine este: ~p\n', [FC1]).
+%---------------------------------------------------------------------------------------------------
 
 determina(Atr) :-
 	realizare_scop(av(Atr, _), _, [scop(Atr)]),
@@ -644,7 +693,7 @@ computeCalendar :-
 /* This predicate is used to compute the entries in the calendar. */
 %---------------------------------------------------------------------------------------------------
 % Recommended usage:
-% computeCalendarEntries(-CalendarEntries)
+% computeCalendarEntries(-CalendarEntries, +Domains)
 %---------------------------------------------------------------------------------------------------
 computeCalendarEntries([Entry | OtherEntries], [Domain | OtherDomains]) :-
 	getDomainMonths(Domain, DomainMonths),
