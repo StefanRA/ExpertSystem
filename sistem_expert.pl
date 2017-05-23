@@ -13,6 +13,8 @@
 
 :- dynamic used_language/1.
 
+:- dynamic calendar/1.
+
 %---------------------------------------------------------------------------------------------------
 /* This dynamic predicate designates the language that is currently in use. Its default value is
 defined here. */
@@ -236,7 +238,7 @@ pornire :-
 	repeat,
 	write('Introduceti una din urmatoarele optiuni: '),
 	nl,nl,
-	write(' (Incarca Consulta Reinitiaza  Afisare_fapte  Cum   Iesire) '),
+	write(' (Incarca Consulta Reinitiaza  Afisare_fapte  Cum Calendar   Iesire) '),
 	nl,nl,write('|: '),
 	citeste_linie([H|T]),
 	executa([H|T]), H == iesire.
@@ -256,6 +258,10 @@ executa([afisare_fapte]) :-
 	!.
 executa([cum|L]) :-
 	cum(L),
+	!.
+	
+executa([calendar]) :-
+	displayCalendar,
 	!.
 executa([iesire]) :- !.
 executa([_|_]) :-
@@ -356,6 +362,9 @@ realizare_scop(not Scop, Not_FC, Istorie) :-
 	realizare_scop(Scop, FC, Istorie),
 	Not_FC is - FC,
 	!.
+realizare_scop(av(Atr, _), FC, _) :-
+	fapt(Scop, FC, _),
+	Scop = av(Atr, nu_conteaza), !.
 realizare_scop(Scop,FC,_) :-
 	fapt(Scop, FC, _),
 	!.
@@ -455,7 +464,8 @@ cum_premise([Scop|X]) :-
 interogheaza(Atr, Mesaj, [da, nu], Istorie) :-
 	!,
 	write(Mesaj), nl,
-	de_la_utiliz(X, Istorie, [da, nu]),
+	scrie_lista(['(', da, nu, nu_stiu, nu_conteaza, ')']),
+	de_la_utiliz(X, Istorie, [da, nu, nu_stiu, nu_conteaza]),
 	det_val_fc(X, Val, FC),
 	asserta( fapt(av(Atr, Val), FC, [utiliz]) ).
 interogheaza(Atr, Mesaj, Optiuni, Istorie) :-
@@ -465,9 +475,11 @@ interogheaza(Atr, Mesaj, Optiuni, Istorie) :-
 
 citeste_opt(X, Optiuni, Istorie) :-
 	append(['('], Optiuni, Opt1),
-	append(Opt1, [')'], Opt),
+	append(Opt1, [nu_stiu, nu_conteaza], Opt2),
+	append(Opt2, [')'], Opt),
+	append(Optiuni, [nu_stiu, nu_conteaza], Optiuni1),
 	scrie_lista(Opt),
-	de_la_utiliz(X, Istorie, Optiuni).
+	de_la_utiliz(X, Istorie, Optiuni1).
 
 de_la_utiliz(X, Istorie, Lista_opt) :-
 	repeat,
@@ -596,7 +608,132 @@ incarca(RulesFileName, SolutionInfoFileName) :-
 	see(SolutionInfoFileName),
 	loadSolutionsInformation,
 	seen,
+	computeCalendar,
 	!.
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to get the list of domains for the solutions. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% getDomainList(-DomainList)
+%---------------------------------------------------------------------------------------------------
+getDomainList(Domains) :-
+	setof(
+		Domain,
+		Name^ Description^ Domain^ Year^ Month^ Day^ Hour^ Minute^ Second^
+			solution_info(Name, Description, Domain, datime(Year, Month, Day, Hour, Minute, Second)),
+		Domains
+		).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to compute and assert the calendar for the domains. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% computeCalendar
+%---------------------------------------------------------------------------------------------------
+computeCalendar :-
+	retractall(calendar(_)),
+	getDomainList(DomainList),
+	CalendarHeader = [' ', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+	computeCalendarEntries(CalendarEntries, DomainList),
+	append([CalendarHeader], CalendarEntries, Calendar),
+	assertz(calendar(Calendar)).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to compute the entries in the calendar. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% computeCalendarEntries(-CalendarEntries)
+%---------------------------------------------------------------------------------------------------
+computeCalendarEntries([Entry | OtherEntries], [Domain | OtherDomains]) :-
+	getDomainMonths(Domain, DomainMonths),
+	Entry = [Domain | DomainMonths],
+	computeCalendarEntries(OtherEntries, OtherDomains).
+computeCalendarEntries([], []) :-
+	!.
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to extract how many conferences per month are. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% getDomainMonths(+Domain, -DomainMonths)
+%---------------------------------------------------------------------------------------------------
+getDomainMonths(Domain, DomainMonths) :-
+	findall(
+		Month,
+		Name^ Description^ Year^ Month^ Day^ Hour^ Minute^ Second^
+		solution_info(Name, Description, Domain, datime(Year, Month, Day, Hour, Minute, Second)),
+		Months
+		),
+	clumped(Months, Months1),
+	sort(Months1, Months2),
+	computeDomainMonths(DomainMonths, 1.0, Months2).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to create a list with the number of conferences per each month based on
+the given input. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% computeDomainMonths(-MonthlyCount, +CurrentMonthIndex, +DomainMonths)
+%---------------------------------------------------------------------------------------------------
+computeDomainMonths([], 13.0, _) :-
+	!.
+computeDomainMonths([MonthCount | Rest], CurrentMonth, Months) :-
+	(
+		Months = [CurrentMonth-MonthCount | RemainingMonths]
+		;
+		RemainingMonths = Months,
+		MonthCount = 0
+	),
+	NextMonth is CurrentMonth + 1.0,
+	computeDomainMonths(Rest, NextMonth, RemainingMonths).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to get the calendar from the knowledge base and pass it to the display
+predicate. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% displayCalendar
+%---------------------------------------------------------------------------------------------------
+displayCalendar :-
+	calendar(Calendar),
+	displayCalendar(Calendar), nl,
+	!.
+displayCalendar :-
+	write('Nu exista niciun calendar de afisat!'), nl, nl.
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to display the calendar that shows how many conferences from each domain
+are in each month. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% displayCalendar(+Calendar)
+%---------------------------------------------------------------------------------------------------
+displayCalendar([[DomainColumn | MonthColumns] | NextEntries]) :-
+	format('~30s', [DomainColumn]),
+	displayCalendarMonthColumns(MonthColumns),
+	displayCalendar(NextEntries).
+displayCalendar([]).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to display the elements of the calendar that are part of the columns with
+the month count. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% displayCalendarMonthColumns(+MonthColumns)
+%---------------------------------------------------------------------------------------------------
+displayCalendarMonthColumns([]) :- nl.
+displayCalendarMonthColumns([H|T]) :-
+	number_chars(H,NN),
+	atom_chars(H1, NN),
+	format('~2s', [H1]), tab(1),
+	displayCalendarMonthColumns(T).
 %---------------------------------------------------------------------------------------------------
 
 %---------------------------------------------------------------------------------------------------
