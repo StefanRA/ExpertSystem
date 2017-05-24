@@ -235,6 +235,12 @@ pornire :-
 	retractall(interogat(_)),
 	retractall(fapt(_, _, _)),
 	retractall(intrebare_curenta(_, _, _)),
+	(
+		directory_exists('./fisiere_conferinte'),
+		!
+		;
+		make_directory('./fisiere_conferinte')
+	),
 	repeat,
 	write('Introduceti una din urmatoarele optiuni: '),
 	nl,nl,
@@ -322,12 +328,6 @@ scopuri_princ.
 % appendSolutionsToFile(+Goal)
 %---------------------------------------------------------------------------------------------------
 appendSolutionsToFile(Goal) :-
-	(
-		directory_exists('./fisiere_conferinte'),
-		!
-		;
-		make_directory('./fisiere_conferinte')
-	),
 	open('./fisiere_conferinte/log_solutii.txt', append, Stream),
 	datime(datime(Year, Month, Day, Hour, Minute, Second)),
 	format(Stream, '(~p/~p/~p, ~p:~p:~p) Solutii sistem expert:\n', [Year, Month, Day, Hour, Minute, Second]),
@@ -440,12 +440,31 @@ pot_interoga(av(Atr, _), Istorie) :-
 	interogheaza(Atr, Mesaj, Optiuni, Istorie), nl,
 	asserta( interogat(av(Atr, _)) ).
 
+getDemoFileName(DemoFile, Goal, FC) :-
+	 atom_chars('./fisiere_conferinte/demonstratii_[', L1),
+	 atom_chars(Goal, L2),
+	 atom_chars('(fc(',L3),
+	 number_chars(FC, L4),
+	 atom_chars('))].txt', L5),
+	 append(L1,L2,R1),
+	 append(R1,L3,R2),
+	 append(R2,L4,R3),
+	 append(R3,L5,R4),
+	 atom_chars(DemoFile,R4).
+	
 cum([]) :-
 	write('Scop? '), nl,
 	write('|:'),
 	citeste_linie(Linie), nl,
 	transformare(Scop, Linie),
-	cum(Scop).
+	Scop = av(_, Value),
+	fapt(av(_, Value), FC, _),
+	getDemoFileName(Demo, Value, FC),
+	open(Demo, write, Stream),
+	close(Stream),
+	tell(Demo),
+	cum(Scop),
+	told.
 cum(L) :-
 	transformare(Scop, L), nl,
 	cum(Scop).
@@ -471,7 +490,7 @@ cum(_).
 
 afis_reguli([]).
 afis_reguli([N|X]) :-
-	afis_regula(N),
+	printRule(N),
 	premisele(N),
 	afis_reguli(X).
 afis_regula(N) :-
@@ -488,6 +507,23 @@ afis_regula(N) :-
 	append(L1, [FC1], LL),
 	scrie_lista(LL), nl.
 
+printRule(RuleID) :-
+	regula(RuleID, premise(PremiseList), concluzie(av(Goal, Value), FC)),
+	RuleID1 is integer(RuleID),
+	format('rg->~d\n', [RuleID1]),
+	write('if(\n'),
+	printRulePremises(PremiseList),
+	write(')\n'),
+	write('then\n'),
+	FC1 is integer(FC),
+	format('\t(~p->~p:fc->~p).\n\n', [Goal, Value, FC]),!.
+printRulePremises([]).
+printRulePremises([av(Atr, Val)|[]]) :-
+	format('\t~p->(~p)\n', [Atr, Val]).
+printRulePremises([av(Atr, Val)|T]) :-
+	format('\t~p->(~p) &&\n', [Atr, Val]),
+	printRulePremises(T).
+	
 scrie_lista_premise([]).
 scrie_lista_premise([H|T]) :-
 	transformare(H,H_tr),
