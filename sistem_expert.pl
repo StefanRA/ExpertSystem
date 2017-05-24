@@ -460,8 +460,6 @@ cum([]) :-
 	Scop = av(_, Value),
 	fapt(av(_, Value), FC, _),
 	getDemoFileName(Demo, Value, FC),
-	open(Demo, write, Stream),
-	close(Stream),
 	tell(Demo),
 	cum(Scop),
 	told.

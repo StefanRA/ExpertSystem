@@ -1,0 +1,39 @@
+nume_conferinta este euro_python a fost derivat cu ajutorul regulilor:  1 
+
+rg->1
+if(
+	locatia->(in_strainatate) &&
+	limbaj_preferat->(python) &&
+	dimensiune_conferinta->(mare)
+)
+then
+	(nume_conferinta->euro_python:fc->90.0).
+
+locatia este in_strainatate a fost derivat cu ajutorul regulilor:  2 
+
+rg->2
+if(
+	dispus_sa_calatoreasca->(da) &&
+	buget_disponibil->(mare)
+)
+then
+	(locatia->in_strainatate:fc->75.0).
+
+dispus_sa_calatoreasca a fost derivat cu ajutorul regulilor:  utiliz 
+
+buget_disponibil este mare a fost derivat cu ajutorul regulilor:  utiliz 
+
+limbaj_preferat este python a fost derivat cu ajutorul regulilor:  utiliz 
+
+dimensiune_conferinta este mare a fost derivat cu ajutorul regulilor:  3 
+
+rg->3
+if(
+	buget_disponibil->(mare) &&
+	networking->(da)
+)
+then
+	(dimensiune_conferinta->mare:fc->80.0).
+
+buget_disponibil este mare a fost derivat cu ajutorul regulilor:  utiliz 
+
