@@ -316,11 +316,40 @@ scopuri_princ :-
 	scop(Atr),
 	determina(Atr),
 	appendSolutionsToFile(Atr),
+	logDemo,
 	askWhichDisplayModeShouldBeUsed(DisplayMode),
 	afiseaza_scop(DisplayMode, Atr),
 	fail.
 scopuri_princ.
 
+logDemo :-
+	file_members_of_directory('./fisiere_conferinte', Files),
+	removeOldDemoFiles(Files),
+	scop(Goal),
+	logSolutionDemos(Goal).
+
+removeOldDemoFiles([]) :-
+	!.
+removeOldDemoFiles([FileName-AbsolutePath | OtherFiles]) :-
+	atom_chars(FileName, R),
+	atom_chars(demo,I),
+	(
+		append(I,_,R),
+		delete_file(AbsolutePath),
+		!
+		;
+		true
+	),
+	removeOldDemoFiles(OtherFiles).
+
+logSolutionDemos(Goal) :-
+	fapt(av(Goal, Value), FC, _),
+	getDemoFileName(Demo, Value, FC),
+	tell(Demo),
+	cum(av(Goal, Value)),
+	told,
+	fail.
+logSolutionDemos(_).
 %---------------------------------------------------------------------------------------------------
 /* This predicate is used to log the solutions obtained by the expert system in the logging directory. */
 %---------------------------------------------------------------------------------------------------
@@ -329,9 +358,11 @@ scopuri_princ.
 %---------------------------------------------------------------------------------------------------
 appendSolutionsToFile(Goal) :-
 	open('./fisiere_conferinte/log_solutii.txt', append, Stream),
+	write(Stream, '#inceput_log\n'),
 	datime(datime(Year, Month, Day, Hour, Minute, Second)),
-	format(Stream, '(~p/~p/~p, ~p:~p:~p) Solutii sistem expert:\n', [Year, Month, Day, Hour, Minute, Second]),
+	format(Stream, '\t(~p/~p/~p, ~p:~p:~p) Solutii sistem expert:\n', [Year, Month, Day, Hour, Minute, Second]),
 	logSolutions(Stream, Goal),
+	write(Stream, '#sfarsit_log\n\n'),
 	close(Stream),
 	!.
 %---------------------------------------------------------------------------------------------------
@@ -358,9 +389,9 @@ logSolutions(_, _).
 % logSolution(+Stream, av(+Goal, +Value), +CertaintyFactor)
 %---------------------------------------------------------------------------------------------------
 logSolution(Stream, av(Goal, Val), FC) :-
-	format(Stream, '~p este ~p\n', [Goal, Val]),
+	format(Stream, '\t~p este ~p\n', [Goal, Val]),
 	FC1 is integer(FC),
-	format(Stream, 'Factorul de certitudine este: ~p\n', [FC1]).
+	format(Stream, '\tFactorul de certitudine este: ~p\n', [FC1]).
 %---------------------------------------------------------------------------------------------------
 
 determina(Atr) :-
@@ -457,12 +488,7 @@ cum([]) :-
 	write('|:'),
 	citeste_linie(Linie), nl,
 	transformare(Scop, Linie),
-	Scop = av(_, Value),
-	fapt(av(_, Value), FC, _),
-	getDemoFileName(Demo, Value, FC),
-	tell(Demo),
-	cum(Scop),
-	told.
+	cum(Scop).
 cum(L) :-
 	transformare(Scop, L), nl,
 	cum(Scop).
