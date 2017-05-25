@@ -126,7 +126,7 @@ resetKnowledgeBase :-
 	retractall(scop(_)),
 	retractall(interogabil(_, _, _)),
 	retractall(regula(_, _, _)),
-	retractall(solution_info(_, _, _, _)).
+	retractall(solution_info(_, _, _, _, _, _)).
 
 un_pas(Rasp,OptiuniUrm,MesajUrm) :-
 	scop(Atr),
@@ -414,7 +414,7 @@ afiseaza_scop(detail, Atr) :-
 	fapt(av(Atr, Val), FC, _),
 	FC >= 20,
 	scrie_scop(av(Atr, Val), FC),
-	solution_info(Val, Description, _, datime(Year, Month, Day, _, _, _)),
+	solution_info(_, Val, Description, _, _, datime(Year, Month, Day, _, _, _)),
 	nl, nl, write(Description), nl, nl,
 	datime(datime(CurrentYear, CurrentMonth, CurrentDay, _, _, _)),
 	Year =:= CurrentYear,
@@ -728,8 +728,8 @@ incarca(RulesFileName, SolutionInfoFileName) :-
 getDomainList(Domains) :-
 	setof(
 		Domain,
-		Name^ Description^ Domain^ Year^ Month^ Day^ Hour^ Minute^ Second^
-			solution_info(Name, Description, Domain, datime(Year, Month, Day, Hour, Minute, Second)),
+		Id^ Name^ Description^ Domain^ Image^ Year^ Month^ Day^ Hour^ Minute^ Second^
+			solution_info(Id, Name, Description, Domain, Image, datime(Year, Month, Day, Hour, Minute, Second)),
 		Domains
 		).
 %---------------------------------------------------------------------------------------------------
@@ -772,8 +772,8 @@ computeCalendarEntries([], []) :-
 getDomainMonths(Domain, DomainMonths) :-
 	findall(
 		Month,
-		Name^ Description^ Year^ Month^ Day^ Hour^ Minute^ Second^
-		solution_info(Name, Description, Domain, datime(Year, Month, Day, Hour, Minute, Second)),
+		Id^ Name^ Description^ Image^ Year^ Month^ Day^ Hour^ Minute^ Second^
+		solution_info(Id, Name, Description, Domain, Image, datime(Year, Month, Day, Hour, Minute, Second)),
 		Months
 		),
 	clumped(Months, Months1),
@@ -883,12 +883,22 @@ processSolutionInformation(TokenList) :-
 %---------------------------------------------------------------------------------------------------
 % parseSolutionInformation(-SolutionInfo, +TokenList, [])
 %---------------------------------------------------------------------------------------------------
-parseSolutionInformation(solution_info(Name, Description, Domain, Date)) -->
+parseSolutionInformation(solution_info(Id, Name, Description, Domain, Image, Date)) -->
+	parseSolutionId(Id),
 	parseSolutionName(Name),
 	parseSolutionDescription(Description),
 	parseSolutionDomain(Domain),
+	parseSolutionImage(Image),
 	parseSolutionDate(Date).
 %---------------------------------------------------------------------------------------------------
+
+/* This DCG rule extracts the id of the solution from given list of tokens. */
+ %---------------------------------------------------------------------------------------------------
+ % parseSolutionId(-SolutionId, +TokenList, [])
+ %---------------------------------------------------------------------------------------------------
+ parseSolutionId(Id) -->
+  	['{', Id, '}'].
+ %---------------------------------------------------------------------------------------------------
 
 %---------------------------------------------------------------------------------------------------
 /* This DCG rule extracts the name of the solution from given list of tokens. */
@@ -916,6 +926,14 @@ parseSolutionDescription(Description) -->
 parseSolutionDomain(Domain) -->
 	['{', domeniu, ':', Domain, '}'].
 %---------------------------------------------------------------------------------------------------
+
+/* This DCG rule extracts the image path of the solution from given list of tokens. */
+ %---------------------------------------------------------------------------------------------------
+ % parseSolutionImage(-SolutionImage, +TokenList, [])
+ %---------------------------------------------------------------------------------------------------
+ parseSolutionImage(Image) -->
+ 	['{', imagine, ':', Image, '}'].
+ %---------------------------------------------------------------------------------------------------
 
 %---------------------------------------------------------------------------------------------------
 /* This DCG rule extracts the starting date of the solution from the given list of tokens.  */
