@@ -84,6 +84,41 @@ scrie_lista(Stream,[]):-nl(Stream),flush_output(Stream).
 scrie_lista(Stream,[H|T]) :-
 	write(Stream,H), tab(Stream,1),
 	scrie_lista(Stream,T).
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate transforms a list of atoms or numbers into a single atom with char as separator between initial elements. */
+%---------------------------------------------------------------------------------------------------
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% %list_to_atom(+L,-Atom, +Char)
+% Example: list_to_atom([a,b,c],Atom,$)  instantiates Atom to 'a$b$c'
+%---------------------------------------------------------------------------------------------------
+list_to_atom(L,Atom,Char):-
+	list_to_atom_aux(L,Atom,'',Char).
+
+list_to_atom_aux([H|T], Atom, AtomAux,Char):-
+	number(H),
+	!,
+	number_chars(H,Y),
+	atom_chars(X,Y),
+	atom_concat(AtomAux,X,AtomAux1),
+	atom_concat(AtomAux1,Char,AtomAux2),
+	list_to_atom_aux(T,Atom,AtomAux2,Char).
+list_to_atom_aux([H|T], Atom, AtomAux,Char):-
+	atom_concat(AtomAux,H,AtomAux1),
+	atom_concat(AtomAux1,Char,AtomAux2),
+	list_to_atom_aux(T,Atom,AtomAux2,Char).
+list_to_atom_aux([H],Atom,AtomAux,Char) :-
+	number(H),
+	!,
+	number_chars(H,Y),
+	atom_chars(X,Y),
+	atom_concat(AtomAux,X,Atom).
+list_to_atom_aux([H],Atom,AtomAux,Char) :-
+	atom_concat(AtomAux,H,Atom).
+%---------------------------------------------------------------------------------------------------
+
+
 	
 %---------------------------------------------------------------------------------------------------
 /* This predicate is used to display a list of all the facts in the knowledge base. */
@@ -138,7 +173,7 @@ resetKnowledgeBase :-
 	retractall(scop(_)),
 	retractall(interogabil(_, _, _)),
 	retractall(regula(_, _, _)),
-	retractall(solution_info(_, _, _, _)).
+	retractall(solution_info(_, _, _, _, _, _)).
 %---------------------------------------------------------------------------------------------------
 
 un_pas(Rasp,OptiuniUrm,MesajUrm) :-
@@ -434,14 +469,14 @@ afiseaza_scop(summary, Atr) :-
 	nl,
 	fail.
 afiseaza_scop(summary, _) :-
-	nl, nl.
+	nl, nl, !.
 
 afiseaza_scop(detail, Atr) :-
 	nl,
 	fapt(av(Atr, Val), FC, _),
 	FC >= 20,
 	scrie_scop(av(Atr, Val), FC),
-	solution_info(Val, Description, _, datime(Year, Month, Day, _, _, _)),
+	solution_info(_, Val, Description, _, _, datime(Year, Month, Day, _, _, _)),
 	nl, nl, write(Description), nl, nl,
 	datime(datime(CurrentYear, CurrentMonth, CurrentDay, _, _, _)),
 	Year =:= CurrentYear,
@@ -454,15 +489,20 @@ afiseaza_scop(detail, Atr) :-
 	format(Prompt, [Day1, Month1, Year1]), nl, nl,
 	fail.
 afiseaza_scop(detail, _) :-
-	nl, nl.
+	nl, nl, !.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 afiseaza_scop(Stream, Atr) :-
-nl,fapt(av(Atr,Val),FC,_),
-FC >= 20,format(Stream,"s(~p este ~p cu fc ~p)",[Atr,Val, FC]),
-nl(Stream),flush_output(Stream),fail.
+	nl,fapt(av(Atr,Val),FC,_),
+	FC >= 20,format(Stream,"s(~p este ~p cu fc ~p)",[Atr,Val, FC]),
+	nl(Stream),flush_output(Stream),fail.
 
-afiseaza_scop(_,_):-write('a terminat'),nl.
+afiseaza_scop(Stream, _) :-
+	write(Stream,'s(done)'),
+	nl(Stream),
+	flush_output(Stream),
+	write('a terminat'),
+	nl.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -589,8 +629,28 @@ cum(Scop) :-
 	afis_reguli(Reguli),
 	fail.
 cum(_).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+cum(Stream,L) :- 
+transformare(Scop,L), cum(Stream, Scop).
 
-% modify buffer size in 20000
+cum(Stream, not Scop) :- 
+fapt(Scop,FC,Reguli),
+lista_float_int(Reguli,Reguli1),
+FC < -20,transformare(not Scop,PG),
+append(PG,[a,fost,derivat,cu, ajutorul, 'regulilor: '|Reguli1],LL),
+write(Stream, 'dem('), scrie_lista(Stream, LL),afis_reguli(Stream,Reguli),fail.
+
+cum(Stream, Scop) :-
+	fapt(Scop,FC,Reguli),
+	lista_float_int(Reguli,Reguli1),
+	FC > 20,transformare(Scop,PG),
+	append(PG,[a,fost,derivat,cu, ajutorul, 'regulilor: '|Reguli1],LL),
+	write(Stream, 'dem('), scrie_lista(Stream, LL),afis_reguli(Stream, Reguli),
+	fail.
+
+cum(_,_).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 afis_reguli([]).
 afis_reguli([N|X]) :-
@@ -610,6 +670,28 @@ afis_regula(N) :-
 	FC1 is integer(FC),
 	append(L1, [FC1], LL),
 	scrie_lista(LL), nl.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+afis_reguli(Stream, []).
+
+afis_reguli(Stream, [N|X]) :-
+	afis_regula(Stream, N),
+	premisele(Stream, N),
+	afis_reguli(Stream, X).
+
+afis_regula(Stream, N) :-
+	regula(N, premise(Lista_premise),
+	concluzie(Scop,FC)),NN is integer(N),
+	write(Stream, 'dem('), scrie_lista(Stream, ['regula  ',NN]),
+	write(Stream, 'dem('), scrie_lista(Stream, ['  Daca']),
+	scrie_lista_premise(Stream, Lista_premise),
+	write(Stream, 'dem('), scrie_lista(Stream, ['  Atunci']),
+	transformare(Scop,Scop_tr),
+	append(['   '],Scop_tr,L1),
+	FC1 is integer(FC),append(L1,[FC1],LL),
+	write(Stream, 'dem('), scrie_lista(Stream, LL).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 printRule(RuleID) :-
 	regula(RuleID, premise(PremiseList), concluzie(av(Goal, Value), FC)),
@@ -634,6 +716,16 @@ scrie_lista_premise([H|T]) :-
 	tab(5),
 	scrie_lista(H_tr),
 	scrie_lista_premise(T).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+scrie_lista_premise(_,[]).
+
+scrie_lista_premise(Stream,[H|T]) :-
+	transformare(H,H_tr),
+	write(Stream, 'dem('),
+	tab(Stream,5),
+	scrie_lista(Stream,H_tr),
+	scrie_lista_premise(Stream,T).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 transformare(av(A, da), [A]) :- !.
 transformare(not av(A, da), [not, A]) :- !.
@@ -644,12 +736,25 @@ premisele(N) :-
 	regula(N, premise(Lista_premise), _),
 	!,
 	cum_premise(Lista_premise).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+premisele(Stream, N) :-
+	regula(N, premise(Lista_premise), _),
+	!, cum_premise(Stream, Lista_premise).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 cum_premise([]).
 cum_premise([Scop|X]) :-
 	cum(Scop),
 	cum_premise(X).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+cum_premise(_, []).
+
+cum_premise(Stream, [Scop|X]) :-
+	cum(Stream, Scop),
+	cum_premise(Stream, X).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
+
 interogheaza(Atr, Mesaj, [da, nu], Istorie) :-
 	!,
 	write(Mesaj), nl,
@@ -662,12 +767,22 @@ interogheaza(Atr, Mesaj, Optiuni, Istorie) :-
 	citeste_opt(VLista, Optiuni, Istorie),
 	assert_fapt(Atr, VLista).
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 interogheaza(Stream,Atr,Mesaj,Optiuni,Istorie) :-
 	write('\n Intrebare atr val multiple\n'),
-	write(Stream,i(Mesaj)),nl(Stream),flush_output(Stream),
+	atom_concat(Atr,'~',Temp),
+	atom_concat(Temp,Mesaj,Mesaj1),
+	atom_concat(Mesaj1,'~',Mesaj2),
+	append(Optiuni, [nu_stiu, nu_conteaza], Optiuni1),
+    list_to_atom(Optiuni1,Optiuni2,' '),
+    atom_concat(Mesaj2,Optiuni2,MesajFinal),
+	write(Stream,i(MesajFinal)),nl(Stream),flush_output(Stream),
 	citeste_opt(Stream,VLista,Optiuni,Istorie),
 	assert_fapt(Atr,VLista).
-	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 citeste_opt(X, Optiuni, Istorie) :-
 	append(['('], Optiuni, Opt1),
 	append(Opt1, [nu_stiu, nu_conteaza], Opt2),
@@ -677,14 +792,10 @@ citeste_opt(X, Optiuni, Istorie) :-
 	de_la_utiliz(X, Istorie, Optiuni1).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 citeste_opt(Stream,X,Optiuni,Istorie) :-
-	%trace,
-	append(['('],Optiuni,Opt1),
-	append(Opt1, [nu_stiu, nu_conteaza], Opt2),
-	append(Opt2,[')'],Opt),
-	scrie_lista(Stream,Opt),
 	append(Optiuni, [nu_stiu, nu_conteaza], Optiuni1),
 	de_la_utiliz(Stream,X,Istorie,Optiuni1).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 de_la_utiliz(X, Istorie, Lista_opt) :-
 	repeat,
@@ -846,8 +957,8 @@ loadKnowledgeBase(RulesFileName, SolutionInfoFileName) :-
 getDomainList(Domains) :-
 	setof(
 		Domain,
-		Name^ Description^ Domain^ Year^ Month^ Day^ Hour^ Minute^ Second^
-			solution_info(Name, Description, Domain, datime(Year, Month, Day, Hour, Minute, Second)),
+		Id^ Name^ Description^ Domain^ Image^ Year^ Month^ Day^ Hour^ Minute^ Second^
+			solution_info(Id, Name, Description, Domain, Image, datime(Year, Month, Day, Hour, Minute, Second)),
 		Domains
 		).
 %---------------------------------------------------------------------------------------------------
@@ -890,8 +1001,8 @@ computeCalendarEntries([], []) :-
 getDomainMonths(Domain, DomainMonths) :-
 	findall(
 		Month,
-		Name^ Description^ Year^ Month^ Day^ Hour^ Minute^ Second^
-		solution_info(Name, Description, Domain, datime(Year, Month, Day, Hour, Minute, Second)),
+		Id^ Name^ Description^ Image^ Year^ Month^ Day^ Hour^ Minute^ Second^
+		solution_info(Id, Name, Description, Domain, Image, datime(Year, Month, Day, Hour, Minute, Second)),
 		Months
 		),
 	clumped(Months, Months1),
@@ -1001,12 +1112,22 @@ processSolutionInformation(TokenList) :-
 %---------------------------------------------------------------------------------------------------
 % parseSolutionInformation(-SolutionInfo, +TokenList, [])
 %---------------------------------------------------------------------------------------------------
-parseSolutionInformation(solution_info(Name, Description, Domain, Date)) -->
+parseSolutionInformation(solution_info(Id, Name, Description, Domain, Image, Date)) -->
+	parseSolutionId(Id),
 	parseSolutionName(Name),
 	parseSolutionDescription(Description),
 	parseSolutionDomain(Domain),
+	parseSolutionImage(Image),
 	parseSolutionDate(Date).
 %---------------------------------------------------------------------------------------------------
+
+/* This DCG rule extracts the id of the solution from given list of tokens. */
+ %---------------------------------------------------------------------------------------------------
+ % parseSolutionId(-SolutionId, +TokenList, [])
+ %---------------------------------------------------------------------------------------------------
+ parseSolutionId(Id) -->
+  	['{', Id, '}'].
+ %---------------------------------------------------------------------------------------------------
 
 %---------------------------------------------------------------------------------------------------
 /* This DCG rule extracts the name of the solution from given list of tokens. */
@@ -1034,6 +1155,14 @@ parseSolutionDescription(Description) -->
 parseSolutionDomain(Domain) -->
 	['{', domeniu, ':', Domain, '}'].
 %---------------------------------------------------------------------------------------------------
+
+/* This DCG rule extracts the image path of the solution from given list of tokens. */
+ %---------------------------------------------------------------------------------------------------
+ % parseSolutionImage(-SolutionImage, +TokenList, [])
+ %---------------------------------------------------------------------------------------------------
+ parseSolutionImage(Image) -->
+ 	['{', imagine, ':', Image, '}'].
+ %---------------------------------------------------------------------------------------------------
 
 %---------------------------------------------------------------------------------------------------
 /* This DCG rule extracts the starting date of the solution from the given list of tokens.  */
@@ -1334,84 +1463,6 @@ readSolutionInfo(TokenList) :-
 	).
 %---------------------------------------------------------------------------------------------------
 
-%---------------------------------------------------------------------------------------------------
-/* This predicate is used to establish the connection between the expert system and the graphical
-user interface. */
-%---------------------------------------------------------------------------------------------------
-% Usage:
-% guiEntryPoint
-%---------------------------------------------------------------------------------------------------
-guiEntryPoint :-
-	prolog_flag(argv, [PortSocket | _]),
-	atom_chars(PortSocket, PortDigits),
-	number_chars(Port, PortDigits),
-	socket_client_open(localhost:Port, Stream, [type(text)]),
-	readInputFromGUI(Stream, 0).
-%---------------------------------------------------------------------------------------------------
-
-%---------------------------------------------------------------------------------------------------
-/* This predicate is used to . */
-%---------------------------------------------------------------------------------------------------
-% Usage:
-% readInputFromGUI(+Stream, +CommandCount)
-%---------------------------------------------------------------------------------------------------
-readInputFromGUI(Stream, CommandCount) :-
-	read(Stream, Message),
-	processMessageFromGUI(Stream, Message, CommandCount).
-%---------------------------------------------------------------------------------------------------
-
-%---------------------------------------------------------------------------------------------------
-/* This predicate is used to process the messages received from the graphical user interface. */
-%---------------------------------------------------------------------------------------------------
-% Usage:
-% processMessageFromGUI(+Stream, +Message, +CommandCount)
-%---------------------------------------------------------------------------------------------------
-%---------------------------------------------------------------------------------------------------
-/* This message is used to set the current working directory of the engine to the value given by the
-graphical user interface.  */
-%---------------------------------------------------------------------------------------------------
-processMessageFromGUI(Stream, command(reset), CommandCount) :-
-	write(Stream, 'Se reseteaza sistemul expert.\n'),
-	flush_output(Stream),
-	write('Se reseteaza sistemul expert.\n'),
-	resetKnowledgeBase,
-	CommandCount1 is CommandCount + 1,
-	readInputFromGUI(Stream, CommandCount1).
-	
-processMessageFromGUI(Stream, set_current_directory(Directory), CommandCount) :-
-	format(Stream, 'Directorul curent a fost schimbat in ~p\n', [Directory]),
-	flush_output(Stream),
-	format('Directorul curent a fost schimbat in ~p\n', [Directory]),
-	call(current_directory(_, Directory)),
-	CommandCount1 is CommandCount + 1,
-	readInputFromGUI(Stream, CommandCount1).
-processMessageFromGUI(Stream, load(RulesFileName, SolutionInfoFileName), CommandCount) :-
-	(
-		file_exists(RulesFileName)
-		;
-		write(Stream, rules_file_does_not_exist),
-		fail
-	),
-	(
-		file_exists(SolutionInfoFileName)
-		;
-		write(Stream, solution_info_file_does_not_exist),
-		fail
-	),
-	loadKnowledgeBase(RulesFileName, SolutionInfoFileName),
-	format(Stream, 'Fisierele ~p si ~p au fost incarcate cu succes!\n', [RulesFileName, SolutionInfoFileName]),
-	flush_output(Stream),
-	format('Fisierele ~p si ~p au fost incarcate cu succes!\n', [RulesFileName, SolutionInfoFileName]), nl,
-	CommandCount1 is CommandCount + 1,
-	readInputFromGUI(Stream, CommandCount1).
-	
-processMessageFromGUI(Stream, command(consult), CommandCount) :-
-	write(Stream, 'Se incepe consultarea\n'),
-	flush_output(Stream),
-	scopuri_princ(Stream),
-	CommandCount1 is CommandCount + 1,
-	readInputFromGUI(Stream, CommandCount1).
-%---------------------------------------------------------------------------------------------------
 
 %---------------------------------------------------------------------------------------------------
 /* This predicate is used to read all the characters from the given input stream until new line is
@@ -1630,4 +1681,108 @@ readRemainingTokensFromSentence(_, 46, []) :-
 readRemainingTokensFromSentence(Stream, CurrentCharacterCode, [Token | RemainingTokens]) :-
 	readToken(Stream, CurrentCharacterCode, Token, NextCharacterCode),
 	readRemainingTokensFromSentence(Stream, NextCharacterCode, RemainingTokens).
+%---------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to establish the connection between the expert system and the graphical
+user interface. */
+%---------------------------------------------------------------------------------------------------
+% Usage:
+% guiEntryPoint
+%---------------------------------------------------------------------------------------------------
+guiEntryPoint :-
+	prolog_flag(argv, [PortSocket | _]),
+	atom_chars(PortSocket, PortDigits),
+	number_chars(Port, PortDigits),
+	socket_client_open(localhost:Port, Stream, [type(text)]),
+	(
+		directory_exists('./fisiere_conferinte'),
+		!
+		;
+		make_directory('./fisiere_conferinte')
+	),
+	readInputFromGUI(Stream, 0).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to . */
+%---------------------------------------------------------------------------------------------------
+% Usage:
+% readInputFromGUI(+Stream, +CommandCount)
+%---------------------------------------------------------------------------------------------------
+readInputFromGUI(Stream, CommandCount) :-
+	read(Stream, Message),
+	processMessageFromGUI(Stream, Message, CommandCount).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to process the messages received from the graphical user interface. */
+%---------------------------------------------------------------------------------------------------
+% Usage:
+% processMessageFromGUI(+Stream, +Message, +CommandCount)
+%---------------------------------------------------------------------------------------------------
+%---------------------------------------------------------------------------------------------------
+/* This message is used to set the current working directory of the engine to the value given by the
+graphical user interface.  */
+%---------------------------------------------------------------------------------------------------
+processMessageFromGUI(Stream, set_current_directory(Directory), CommandCount) :-
+	format(Stream, 'Directorul curent a fost schimbat in ~p\n', [Directory]),
+	flush_output(Stream),
+	format('Directorul curent a fost schimbat in ~p\n', [Directory]),
+	call(current_directory(_, Directory)),
+	CommandCount1 is CommandCount + 1,
+	readInputFromGUI(Stream, CommandCount1).
+
+processMessageFromGUI(Stream, load(RulesFileName, SolutionInfoFileName), CommandCount) :-
+	(
+		file_exists(RulesFileName)
+		;
+		write(Stream, rules_file_does_not_exist),
+		fail
+	),
+	(
+		file_exists(SolutionInfoFileName)
+		;
+		write(Stream, solution_info_file_does_not_exist),
+		fail
+	),
+	loadKnowledgeBase(RulesFileName, SolutionInfoFileName),
+	format(Stream, 'Fisierele ~p si ~p au fost incarcate cu succes!\n', [RulesFileName, SolutionInfoFileName]),
+	flush_output(Stream),
+	format('Fisierele ~p si ~p au fost incarcate cu succes!\n', [RulesFileName, SolutionInfoFileName]), nl,
+	CommandCount1 is CommandCount + 1,
+	readInputFromGUI(Stream, CommandCount1).
+	
+processMessageFromGUI(Stream, command(consult), CommandCount) :-
+	write(Stream, 'Se incepe consultarea\n'),
+	flush_output(Stream),
+	scopuri_princ(Stream),
+	CommandCount1 is CommandCount + 1,
+	readInputFromGUI(Stream, CommandCount1).
+
+processMessageFromGUI(Stream, command(reset), CommandCount) :-
+	write(Stream, 'Se reseteaza sistemul expert.\n'),
+	flush_output(Stream),
+	write('Se reseteaza sistemul expert.\n'),
+	executa([reinitiaza]),
+	CommandCount1 is CommandCount + 1,
+	readInputFromGUI(Stream, CommandCount1).
+
+processMessageFromGUI(Stream, how(X), CommandCount) :-
+	write(Stream,X), nl(Stream),
+	flush_output(Stream),
+	cum(Stream, X),
+	CommandCount1 is CommandCount + 1,
+	readInputFromGUI(Stream, CommandCount1).
+
+processMessageFromGUI(Stream, X, CommandCount) :- 
+	write(Stream,'I do not understand: '),write(Stream,X),nl(Stream),
+	flush_output(Stream),
+	CommandCount1 is CommandCount + 1,
+	readInputFromGUI(Stream, CommandCount1).
 %---------------------------------------------------------------------------------------------------
