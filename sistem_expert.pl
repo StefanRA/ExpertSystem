@@ -1,6 +1,7 @@
 :- use_module(library(lists)).
 :- use_module(library(system)).
 :- use_module(library(file_systems)).
+:- use_module(library(sockets)).
 
 :- op(900,fy,not).
 :- dynamic fapt/3.
@@ -78,6 +79,12 @@ scrie_lista([H|T]) :-
 	write(H), tab(1),
 	scrie_lista(T).
 
+scrie_lista(Stream,[]):-nl(Stream),flush_output(Stream).
+
+scrie_lista(Stream,[H|T]) :-
+	write(Stream,H), tab(Stream,1),
+	scrie_lista(Stream,T).
+	
 %---------------------------------------------------------------------------------------------------
 /* This predicate is used to display a list of all the facts in the knowledge base. */
 %---------------------------------------------------------------------------------------------------
@@ -118,15 +125,21 @@ lista_float_int([Regula|Reguli],[Regula1|Reguli1]) :-
 	lista_float_int(Reguli,Reguli1).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% This predicate retracts all dynamic predicates used to store the knowledge base for the expert system.
+%---------------------------------------------------------------------------------------------------
+/* This predicate retracts all dynamic predicates used to store the knowledge base for the expert
+system. */
+%---------------------------------------------------------------------------------------------------
+% Usage:
+% resetKnowledgeBase
+%---------------------------------------------------------------------------------------------------
 resetKnowledgeBase :-
 	retractall(interogat(_)),
 	retractall(fapt(_, _, _)),
 	retractall(scop(_)),
 	retractall(interogabil(_, _, _)),
 	retractall(regula(_, _, _)),
-	retractall(solution_info(_, _, _, _, _, _)).
+	retractall(solution_info(_, _, _, _)).
+%---------------------------------------------------------------------------------------------------
 
 un_pas(Rasp,OptiuniUrm,MesajUrm) :-
 	scop(Atr),
@@ -250,7 +263,7 @@ pornire :-
 	executa([H|T]), H == iesire.
 
 executa([incarca]) :-
-	incarca, !, nl,
+	loadKnowledgeBase, !, nl,
 	write('Fisierul dorit a fost incarcat'), nl.
 executa([consulta]) :-
 	scopuri_princ,
@@ -321,6 +334,15 @@ scopuri_princ :-
 	afiseaza_scop(DisplayMode, Atr),
 	fail.
 scopuri_princ.
+
+scopuri_princ(Stream) :-
+	scop(Atr),
+	determina(Stream,Atr),
+	appendSolutionsToFile(Atr),
+	logDemo,
+	afiseaza_scop(Stream,Atr),
+	fail.
+scopuri_princ(_).
 
 logDemo :-
 	file_members_of_directory('./fisiere_conferinte', Files),
@@ -399,6 +421,11 @@ determina(Atr) :-
 	!.
 determina(_).
 
+determina(Stream,Atr) :-
+	realizare_scop(Stream,av(Atr,_),_,[scop(Atr)]),
+	!.
+determina(_,_).
+
 afiseaza_scop(summary, Atr) :-
 	nl,
 	fapt(av(Atr, Val), FC, _),
@@ -414,7 +441,7 @@ afiseaza_scop(detail, Atr) :-
 	fapt(av(Atr, Val), FC, _),
 	FC >= 20,
 	scrie_scop(av(Atr, Val), FC),
-	solution_info(_, Val, Description, _, _, datime(Year, Month, Day, _, _, _)),
+	solution_info(Val, Description, _, datime(Year, Month, Day, _, _, _)),
 	nl, nl, write(Description), nl, nl,
 	datime(datime(CurrentYear, CurrentMonth, CurrentDay, _, _, _)),
 	Year =:= CurrentYear,
@@ -429,6 +456,17 @@ afiseaza_scop(detail, Atr) :-
 afiseaza_scop(detail, _) :-
 	nl, nl.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+afiseaza_scop(Stream, Atr) :-
+nl,fapt(av(Atr,Val),FC,_),
+FC >= 20,format(Stream,"s(~p este ~p cu fc ~p)",[Atr,Val, FC]),
+nl(Stream),flush_output(Stream),fail.
+
+afiseaza_scop(_,_):-write('a terminat'),nl.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
 scrie_scop(av(Atr, Val), FC) :-
 	transformare(av(Atr, Val), X),
 	scrie_lista(X),
@@ -455,6 +493,26 @@ realizare_scop(Scop, FC, Istorie) :-
 realizare_scop(Scop, FC_curent, Istorie) :-
 	fg(Scop, FC_curent, Istorie).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+realizare_scop(Stream,not Scop,Not_FC,Istorie) :-
+realizare_scop(Stream,Scop,FC,Istorie),
+Not_FC is - FC, !.
+
+realizare_scop(_, av(Atr, _), FC, _) :-
+	fapt(Scop, FC, _),
+	Scop = av(Atr, nu_conteaza), !.
+
+realizare_scop(_,Scop,FC,_) :-
+fapt(Scop,FC,_), !.
+
+realizare_scop(Stream,Scop,FC,Istorie) :-
+pot_interoga(Stream,Scop,Istorie),
+!,realizare_scop(Stream,Scop,FC,Istorie).
+
+realizare_scop(Stream,Scop,FC_curent,Istorie) :-
+fg(Stream,Scop,FC_curent,Istorie).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
 fg(Scop, FC_curent, Istorie) :-
 	regula(N, premise(Lista), concluzie(Scop, FC)),
 	demonstreaza(N, Lista, FC_premise, Istorie),
@@ -465,12 +523,32 @@ fg(Scop, FC_curent, Istorie) :-
 fg(Scop, FC, _) :-
 	fapt(Scop, FC, _).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fg(Stream,Scop,FC_curent,Istorie) :-
+	regula(N, premise(Lista), concluzie(Scop,FC)),
+	demonstreaza(Stream,N,Lista,FC_premise,Istorie),
+	ajusteaza(FC,FC_premise,FC_nou),
+	actualizeaza(Scop,FC_nou,FC_curent,N),
+	FC_curent == 100,
+	!.
+fg(_,Scop,FC,_) :-
+	fapt(Scop,FC,_).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
 pot_interoga(av(Atr, _), Istorie) :-
 	not interogat(av(Atr, _)),
 	interogabil(Atr, Optiuni, Mesaj),
 	interogheaza(Atr, Mesaj, Optiuni, Istorie), nl,
 	asserta( interogat(av(Atr, _)) ).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pot_interoga(Stream,av(Atr,_),Istorie) :-
+	not interogat(av(Atr,_)),
+	interogabil(Atr,Optiuni,Mesaj),
+	interogheaza(Stream,Atr,Mesaj,Optiuni,Istorie),nl,
+	asserta( interogat(av(Atr,_)) ).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
 getDemoFileName(DemoFile, Goal, FC) :-
 	 atom_chars('./fisiere_conferinte/demonstratii_[', L1),
 	 atom_chars(Goal, L2),
@@ -511,6 +589,8 @@ cum(Scop) :-
 	afis_reguli(Reguli),
 	fail.
 cum(_).
+
+% modify buffer size in 20000
 
 afis_reguli([]).
 afis_reguli([N|X]) :-
@@ -582,6 +662,12 @@ interogheaza(Atr, Mesaj, Optiuni, Istorie) :-
 	citeste_opt(VLista, Optiuni, Istorie),
 	assert_fapt(Atr, VLista).
 
+interogheaza(Stream,Atr,Mesaj,Optiuni,Istorie) :-
+	write('\n Intrebare atr val multiple\n'),
+	write(Stream,i(Mesaj)),nl(Stream),flush_output(Stream),
+	citeste_opt(Stream,VLista,Optiuni,Istorie),
+	assert_fapt(Atr,VLista).
+	
 citeste_opt(X, Optiuni, Istorie) :-
 	append(['('], Optiuni, Opt1),
 	append(Opt1, [nu_stiu, nu_conteaza], Opt2),
@@ -589,12 +675,29 @@ citeste_opt(X, Optiuni, Istorie) :-
 	append(Optiuni, [nu_stiu, nu_conteaza], Optiuni1),
 	scrie_lista(Opt),
 	de_la_utiliz(X, Istorie, Optiuni1).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+citeste_opt(Stream,X,Optiuni,Istorie) :-
+	%trace,
+	append(['('],Optiuni,Opt1),
+	append(Opt1, [nu_stiu, nu_conteaza], Opt2),
+	append(Opt2,[')'],Opt),
+	scrie_lista(Stream,Opt),
+	append(Optiuni, [nu_stiu, nu_conteaza], Optiuni1),
+	de_la_utiliz(Stream,X,Istorie,Optiuni1).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 de_la_utiliz(X, Istorie, Lista_opt) :-
 	repeat,
 	write(': '),
 	citeste_linie(X),
 	proceseaza_raspuns(X, Istorie, Lista_opt).
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%aici
+de_la_utiliz(Stream,X,Istorie,Lista_opt) :-
+	repeat,write('astept raspuns\n'),readLine(Stream,X),format('Am citit ~p din optiunile ~p\n',[X,Lista_opt]),
+	proceseaza_raspuns(X,Istorie,Lista_opt), write('gata de la utiliz\n').
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 proceseaza_raspuns([de_ce], Istorie, _) :-
 	nl,
@@ -638,12 +741,27 @@ demonstreaza(N, ListaPremise, Val_finala, Istorie) :-
 	dem(ListaPremise, 100, Val_finala, [N | Istorie]),
 	!.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+demonstreaza(Stream,N,ListaPremise,Val_finala,Istorie) :-
+dem(Stream,ListaPremise,100,Val_finala,[N|Istorie]),!.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
 dem([], Val_finala, Val_finala, _).
 dem([H | T], Val_actuala, Val_finala, Istorie) :-
 	realizare_scop(H, FC, Istorie),
 	Val_interm is min(Val_actuala, FC),
 	Val_interm >= 20,
 	dem(T, Val_interm, Val_finala, Istorie).
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+dem(_,[],Val_finala,Val_finala,_).
+
+dem(Stream,[H|T],Val_actuala,Val_finala,Istorie) :-
+realizare_scop(Stream,H,FC,Istorie),
+Val_interm is min(Val_actuala,FC),
+Val_interm >= 20,
+dem(Stream,T,Val_interm,Val_finala,Istorie).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
 actualizeaza(Scop, FC_nou, FC, RegulaN) :-
 	fapt(Scop, FC_vechi, _),
@@ -684,7 +802,7 @@ combina(FC1, FC2, FC) :-
 	X is 100 * (FC1 + FC2) / (100 - MFC),
 	FC is round(X).
 
-incarca :-
+loadKnowledgeBase :-
 	used_language(Lang),
 	prompter(Lang, ask_for_rules_file_name, RulesPrompt),
 	write(RulesPrompt), nl,
@@ -696,8 +814,8 @@ incarca :-
 	read(SolutionInfoFileName),
 	file_exists(SolutionInfoFileName),
 	!,
-	incarca(RulesFileName, SolutionInfoFileName).
-incarca :-
+	loadKnowledgeBase(RulesFileName, SolutionInfoFileName).
+loadKnowledgeBase :-
 	used_language(Lang),
 	prompter(Lang, file_does_not_exist, Prompt),
 	write(Prompt), nl,
@@ -707,9 +825,9 @@ incarca :-
 /* This predicate loads the goal, rules and questions from the first file and the information about
 the solutions from the second file into the knowledge base. */
 %---------------------------------------------------------------------------------------------------
-% incarca(+RulesFileName, +SolutionInfoFileName)
+% loadKnowledgeBase(+RulesFileName, +SolutionInfoFileName)
 %---------------------------------------------------------------------------------------------------
-incarca(RulesFileName, SolutionInfoFileName) :-
+loadKnowledgeBase(RulesFileName, SolutionInfoFileName) :-
 	resetKnowledgeBase,
 	see(RulesFileName),
 	loadRules,
@@ -728,8 +846,8 @@ incarca(RulesFileName, SolutionInfoFileName) :-
 getDomainList(Domains) :-
 	setof(
 		Domain,
-		Id^ Name^ Description^ Domain^ Image^ Year^ Month^ Day^ Hour^ Minute^ Second^
-			solution_info(Id, Name, Description, Domain, Image, datime(Year, Month, Day, Hour, Minute, Second)),
+		Name^ Description^ Domain^ Year^ Month^ Day^ Hour^ Minute^ Second^
+			solution_info(Name, Description, Domain, datime(Year, Month, Day, Hour, Minute, Second)),
 		Domains
 		).
 %---------------------------------------------------------------------------------------------------
@@ -772,8 +890,8 @@ computeCalendarEntries([], []) :-
 getDomainMonths(Domain, DomainMonths) :-
 	findall(
 		Month,
-		Id^ Name^ Description^ Image^ Year^ Month^ Day^ Hour^ Minute^ Second^
-		solution_info(Id, Name, Description, Domain, Image, datime(Year, Month, Day, Hour, Minute, Second)),
+		Name^ Description^ Year^ Month^ Day^ Hour^ Minute^ Second^
+		solution_info(Name, Description, Domain, datime(Year, Month, Day, Hour, Minute, Second)),
 		Months
 		),
 	clumped(Months, Months1),
@@ -883,22 +1001,12 @@ processSolutionInformation(TokenList) :-
 %---------------------------------------------------------------------------------------------------
 % parseSolutionInformation(-SolutionInfo, +TokenList, [])
 %---------------------------------------------------------------------------------------------------
-parseSolutionInformation(solution_info(Id, Name, Description, Domain, Image, Date)) -->
-	parseSolutionId(Id),
+parseSolutionInformation(solution_info(Name, Description, Domain, Date)) -->
 	parseSolutionName(Name),
 	parseSolutionDescription(Description),
 	parseSolutionDomain(Domain),
-	parseSolutionImage(Image),
 	parseSolutionDate(Date).
 %---------------------------------------------------------------------------------------------------
-
-/* This DCG rule extracts the id of the solution from given list of tokens. */
- %---------------------------------------------------------------------------------------------------
- % parseSolutionId(-SolutionId, +TokenList, [])
- %---------------------------------------------------------------------------------------------------
- parseSolutionId(Id) -->
-  	['{', Id, '}'].
- %---------------------------------------------------------------------------------------------------
 
 %---------------------------------------------------------------------------------------------------
 /* This DCG rule extracts the name of the solution from given list of tokens. */
@@ -926,14 +1034,6 @@ parseSolutionDescription(Description) -->
 parseSolutionDomain(Domain) -->
 	['{', domeniu, ':', Domain, '}'].
 %---------------------------------------------------------------------------------------------------
-
-/* This DCG rule extracts the image path of the solution from given list of tokens. */
- %---------------------------------------------------------------------------------------------------
- % parseSolutionImage(-SolutionImage, +TokenList, [])
- %---------------------------------------------------------------------------------------------------
- parseSolutionImage(Image) -->
- 	['{', imagine, ':', Image, '}'].
- %---------------------------------------------------------------------------------------------------
 
 %---------------------------------------------------------------------------------------------------
 /* This DCG rule extracts the starting date of the solution from the given list of tokens.  */
@@ -1134,6 +1234,11 @@ tab(N) :-
 	tab(N1).
 tab(0).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tab(Stream,N):-N>0,write(Stream,' '),N1 is N-1, tab(Stream,N1).
+tab(_,0).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % 39 este codul ASCII pt '
 
 citeste_cuvant(Caracter, Cuvant, Caracter1) :-
@@ -1227,4 +1332,302 @@ readSolutionInfo(TokenList) :-
 		readSolutionInfo(OtherLines),
 		append(Line, OtherLines, TokenList)
 	).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to establish the connection between the expert system and the graphical
+user interface. */
+%---------------------------------------------------------------------------------------------------
+% Usage:
+% guiEntryPoint
+%---------------------------------------------------------------------------------------------------
+guiEntryPoint :-
+	prolog_flag(argv, [PortSocket | _]),
+	atom_chars(PortSocket, PortDigits),
+	number_chars(Port, PortDigits),
+	socket_client_open(localhost:Port, Stream, [type(text)]),
+	readInputFromGUI(Stream, 0).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to . */
+%---------------------------------------------------------------------------------------------------
+% Usage:
+% readInputFromGUI(+Stream, +CommandCount)
+%---------------------------------------------------------------------------------------------------
+readInputFromGUI(Stream, CommandCount) :-
+	read(Stream, Message),
+	processMessageFromGUI(Stream, Message, CommandCount).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to process the messages received from the graphical user interface. */
+%---------------------------------------------------------------------------------------------------
+% Usage:
+% processMessageFromGUI(+Stream, +Message, +CommandCount)
+%---------------------------------------------------------------------------------------------------
+%---------------------------------------------------------------------------------------------------
+/* This message is used to set the current working directory of the engine to the value given by the
+graphical user interface.  */
+%---------------------------------------------------------------------------------------------------
+processMessageFromGUI(Stream, command(reset), CommandCount) :-
+	write(Stream, 'Se reseteaza sistemul expert.\n'),
+	flush_output(Stream),
+	write('Se reseteaza sistemul expert.\n'),
+	resetKnowledgeBase,
+	CommandCount1 is CommandCount + 1,
+	readInputFromGUI(Stream, CommandCount1).
+	
+processMessageFromGUI(Stream, set_current_directory(Directory), CommandCount) :-
+	format(Stream, 'Directorul curent a fost schimbat in ~p\n', [Directory]),
+	flush_output(Stream),
+	format('Directorul curent a fost schimbat in ~p\n', [Directory]),
+	call(current_directory(_, Directory)),
+	CommandCount1 is CommandCount + 1,
+	readInputFromGUI(Stream, CommandCount1).
+processMessageFromGUI(Stream, load(RulesFileName, SolutionInfoFileName), CommandCount) :-
+	(
+		file_exists(RulesFileName)
+		;
+		write(Stream, rules_file_does_not_exist),
+		fail
+	),
+	(
+		file_exists(SolutionInfoFileName)
+		;
+		write(Stream, solution_info_file_does_not_exist),
+		fail
+	),
+	loadKnowledgeBase(RulesFileName, SolutionInfoFileName),
+	format(Stream, 'Fisierele ~p si ~p au fost incarcate cu succes!\n', [RulesFileName, SolutionInfoFileName]),
+	flush_output(Stream),
+	format('Fisierele ~p si ~p au fost incarcate cu succes!\n', [RulesFileName, SolutionInfoFileName]), nl,
+	CommandCount1 is CommandCount + 1,
+	readInputFromGUI(Stream, CommandCount1).
+	
+processMessageFromGUI(Stream, command(consult), CommandCount) :-
+	write(Stream, 'Se incepe consultarea\n'),
+	flush_output(Stream),
+	scopuri_princ(Stream),
+	CommandCount1 is CommandCount + 1,
+	readInputFromGUI(Stream, CommandCount1).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to read all the characters from the given input stream until new line is
+encountered and parse those characters into a list of tokens. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% readLine(+InputStream, -TokenList)
+%---------------------------------------------------------------------------------------------------
+readLine(Stream, [Token | NextTokens]) :-
+	get_code(Stream, CurrentCharacterCode),
+	readToken(Stream, CurrentCharacterCode, Token, NextCharacterCode), 
+	readRemainingTokens(Stream, NextCharacterCode, NextTokens).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+readToken(_, -1, end_of_file, -1) :-
+	!.
+readToken(Stream, CurrentCharacterCode, Token, NextCharacterCode) :-
+	characterIsToken(CurrentCharacterCode),
+	!,
+	name(Token, [CurrentCharacterCode]),
+	get_code(Stream, NextCharacterCode).
+readToken(Stream, CurrentCharacterCode, Token, NextCharacterCode) :-
+	characterIsDigit(CurrentCharacterCode),
+	!,
+	readNumberToken(Stream, CurrentCharacterCode, Token, NextCharacterCode).
+readToken(Stream, CurrentCharacterCode, Token, NextCharacterCode) :-
+	CurrentCharacterCode == 39,
+	!,
+	readUntilNextApostrophe(Stream, CharacterCodeList),
+	Quote = [CurrentCharacterCode | CharacterCodeList],
+	name(Token, Quote),
+	get_code(Stream, NextCharacterCode).
+readToken(Stream, CurrentCharacterCode, Token, NextCharacterCode) :-
+	characterIsPartOfToken(CurrentCharacterCode),
+	!,
+	(
+		(CurrentCharacterCode > 64, CurrentCharacterCode < 91),
+		!,
+		ModifiedCurrentCharacterCode is CurrentCharacterCode + 32
+		;
+		ModifiedCurrentCharacterCode is CurrentCharacterCode
+	),
+	readUntilEndOfToken(Stream, PartsOfToken, NextCharacterCode),
+	name(Token, [ModifiedCurrentCharacterCode | PartsOfToken]).
+readToken(Stream, _, Token, NextCharacterCode) :-
+	get_code(Stream, CurrentCharacterCode),
+	readToken(Stream, CurrentCharacterCode, Token, NextCharacterCode).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+readRemainingTokens(_, -1, []) :-
+	!.
+readRemainingTokens(_, CurrentCharacterCode, []) :-
+	(
+		CurrentCharacterCode == 13
+		;
+		CurrentCharacterCode == 10
+	),
+	!.
+readRemainingTokens(Stream, CurrentCharacterCode, [Token | RemainingTokens]) :-
+	readToken(Stream, CurrentCharacterCode, Token, NextCharacterCode),      
+	readRemainingTokens(Stream, NextCharacterCode, RemainingTokens).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to read a number from the given stream. */
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------	
+readNumberToken(Stream, FirstDigitCharacterCode, NumberToken, NextCharacterCode) :-
+	readNextDigitCharacterCodes(Stream, NextDigitCharacterCodes, NextCharacterCode),
+	append([FirstDigitCharacterCode], NextDigitCharacterCodes, DigitCharacterCodes),
+	convertDigitListToNumber(DigitCharacterCodes, NumberToken).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+readNextDigitCharacterCodes(Stream, DigitCharacterCodes, NextCharacterCode) :-
+	get_code(Stream, CurrentCharacterCode),
+	(
+		characterIsDigit(CurrentCharacterCode),
+		readNextDigitCharacterCodes(Stream, NextDigitCharacterCodes, NextCharacterCode),
+		append([CurrentCharacterCode], NextDigitCharacterCodes, DigitCharacterCodes)
+		;
+		\+(characterIsDigit(CurrentCharacterCode)),
+		DigitCharacterCodes = [],
+		NextCharacterCode = CurrentCharacterCode
+	).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to convert a list of character codes corresponding to digits into a number. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% convertDigitListToNumber(+DigitCharacterCodeList, -Number)
+%---------------------------------------------------------------------------------------------------
+convertDigitListToNumber([], 0).
+convertDigitListToNumber([Digit | NextDigits], Number) :-
+	convertDigitListToNumber(NextDigits, NNumber),
+	length(NextDigits, Length),
+	Aux is exp(10, Length),
+	HH is Digit - 48,
+	Number is HH * Aux + NNumber.
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to check whether the character whose code is given is a single character
+token. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% characterIsToken(+CharacterCode)
+%---------------------------------------------------------------------------------------------------
+characterIsToken(CharacterCode) :-
+	member(CharacterCode, [33, 38, 40, 41, 44, 45, 46, 47, 58, 59, 62, 63, 123, 125]).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to check whether the character whose code is given is a digit. */
+%---------------------------------------------------------------------------------------------------
+% Recommended usage:
+% characterIsDigit(+CharacterCode)
+%---------------------------------------------------------------------------------------------------
+characterIsDigit(CharacterCode) :-
+	CharacterCode >= 48,
+	CharacterCode < 58.
+%---------------------------------------------------------------------------------------------------
+
+characterIsPartOfToken(CharacterCode) :-
+	CharacterCode > 64,
+	CharacterCode < 91
+	;
+	CharacterCode > 47,
+	CharacterCode < 58
+	;
+	CharacterCode == 95
+	;
+	CharacterCode > 96,
+	CharacterCode < 123.
+
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+readUntilNextApostrophe(Stream, CharacterCodesList) :-
+	get_code(Stream, CurrentCharacterCode),
+	(
+		CurrentCharacterCode == 39,
+		CharacterCodesList = [CurrentCharacterCode]
+		;
+		CurrentCharacterCode \== 39,
+		readUntilNextApostrophe(Stream, NextCharacterCodesList),
+		CharacterCodesList = [CurrentCharacterCode | NextCharacterCodesList]
+	).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+readUntilEndOfToken(Stream, CharacterCodesList, NextCharacterCode) :-
+	get_code(Stream, CurrentCharacterCode),
+	(
+		characterIsPartOfToken(CurrentCharacterCode),
+		(
+			(CurrentCharacterCode > 64, CurrentCharacterCode < 91),
+			!,
+			ModifiedCurrentCharacterCode is CurrentCharacterCode + 32
+			;
+			ModifiedCurrentCharacterCode is CurrentCharacterCode
+		),
+		readUntilEndOfToken(Stream, NextCharacterCodesList, NextCharacterCode),
+		CharacterCodesList = [ModifiedCurrentCharacterCode | NextCharacterCodesList]
+		;
+		\+(characterIsPartOfToken(CurrentCharacterCode)),
+		CharacterCodesList = [],
+		NextCharacterCode = CurrentCharacterCode
+	).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to read all the tokens from the given stream until the dot is encountered. */
+%---------------------------------------------------------------------------------------------------
+% Usage:
+% readSentence(+Stream, -TokenList)
+%---------------------------------------------------------------------------------------------------
+readSentence(Stream, [Token | RemainingTokens]) :-
+	get_code(Stream, CurrentCharacterCode),
+	readToken(Stream, CurrentCharacterCode, Token, NextCharacterCode),
+	readRemainingTokensFromSentence(Stream, NextCharacterCode, RemainingTokens).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This predicate is used to read the remaining tokens from the sentence. */
+%---------------------------------------------------------------------------------------------------
+% Usage:
+% readRemainingTokensFromSentence(+Stream, +CurrentCharacterCode, -RemainingTokens)
+%---------------------------------------------------------------------------------------------------
+readRemainingTokensFromSentence(_, -1, []) :-
+	!.
+readRemainingTokensFromSentence(_, 46, []) :-
+	!.
+readRemainingTokensFromSentence(Stream, CurrentCharacterCode, [Token | RemainingTokens]) :-
+	readToken(Stream, CurrentCharacterCode, Token, NextCharacterCode),
+	readRemainingTokensFromSentence(Stream, NextCharacterCode, RemainingTokens).
 %---------------------------------------------------------------------------------------------------
