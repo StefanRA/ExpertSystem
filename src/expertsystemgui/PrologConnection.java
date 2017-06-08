@@ -22,7 +22,6 @@ public class PrologConnection {
     }
     
     public PrologConnection(int port, Window window) throws IOException, InterruptedException{
-//        InputStream processIs, processStreamErr;
         this.port = port;
         this.window = window;
         ServerSocket serverSocket = new ServerSocket(port);
@@ -37,12 +36,6 @@ public class PrologConnection {
         String command = sicstusPath+" -f -l "+filename+" --goal "+goal+" -a "+port;
         
         sictusProcess = runTime .exec(command);
-        
-//        //InputStream-ul din care citim ce scrie procesul
-//        processIs=sictusProcess.getInputStream();
-//        //stream-ul de eroare
-//        processStreamErr=sictusProcess.getErrorStream();
-
     }
     
     void opresteProlog() throws InterruptedException{

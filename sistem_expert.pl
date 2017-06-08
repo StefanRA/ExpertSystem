@@ -806,8 +806,18 @@ de_la_utiliz(X, Istorie, Lista_opt) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %aici
 de_la_utiliz(Stream,X,Istorie,Lista_opt) :-
-	repeat,write('astept raspuns\n'),readLine(Stream,X),format('Am citit ~p din optiunile ~p\n',[X,Lista_opt]),
-	proceseaza_raspuns(X,Istorie,Lista_opt), write('gata de la utiliz\n').
+	repeat,write('astept raspuns\n'),
+	readLine(Stream,X),
+	(
+		X = [command, '(', reset, ')', '.'],
+		executa([reinitiaza]),
+		readInputFromGUI(Stream, 0)
+		;
+		format('Am citit ~p din optiunile ~p\n',[X,Lista_opt]),
+		proceseaza_raspuns(X,Istorie,Lista_opt),
+		write('gata de la utiliz\n')
+	).
+	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 proceseaza_raspuns([de_ce], Istorie, _) :-

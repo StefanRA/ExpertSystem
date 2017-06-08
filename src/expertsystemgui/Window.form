@@ -11,7 +11,7 @@
       <Dimension value="[800, 600]"/>
     </Property>
     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[1200, 700]"/>
+      <Dimension value="[900, 700]"/>
     </Property>
   </Properties>
   <SyntheticProperties>
@@ -69,8 +69,8 @@
                           <EmptySpace pref="157" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="299" max="-2" attributes="0"/>
-                          <Component id="greetingMessageLabel" min="-2" pref="246" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="151" max="-2" attributes="0"/>
+                          <Component id="greetingMessageLabel" min="-2" pref="394" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -118,7 +118,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="consultButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Let&apos;s find out your holiday destination"/>
+            <Property name="text" type="java.lang.String" value="Consult "/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
@@ -176,9 +176,23 @@
               </Group>
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Component id="optionsPanel" max="32767" attributes="0"/>
-                          <EmptySpace pref="138" max="32767" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="82" max="-2" attributes="0"/>
+                          <Component id="questionLabel" min="-2" pref="293" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="98" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="optionsPanel" max="32767" attributes="0"/>
+                                  <EmptySpace pref="138" max="32767" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
+                                  <Component id="noSolutionsLabel" min="-2" pref="127" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="certaintyFactorLabel" min="-2" max="-2" attributes="0"/>
                               <Component id="backToMenuButton" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -188,11 +202,6 @@
                               </Group>
                           </Group>
                           <EmptySpace min="-2" pref="125" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="82" max="-2" attributes="0"/>
-                          <Component id="questionLabel" min="-2" pref="293" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="98" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Component id="questionsRadioButtonPanel" min="-2" pref="217" max="-2" attributes="0"/>
@@ -218,7 +227,9 @@
                                   <Component id="backToMenuButton" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="noSolutionsLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="questionsRadioButtonPanel" min="-2" pref="163" max="-2" attributes="0"/>
@@ -369,6 +380,14 @@
             </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JLabel" name="noSolutionsLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Nu exista solutii!"/>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="noSolutionsLabel.setVisible(false);"/>
+          </AuxValues>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="outputAreaPanel">

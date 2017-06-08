@@ -17,13 +17,11 @@ public class MessageSender extends Thread{
     OutputStream outputStream;
     volatile boolean done = false;
 
-    //setteri sincronizati
     public final synchronized void setPipedOutputStream(PipedOutputStream pipedOutputStream){
         this.pipedOutputStream = pipedOutputStream;
         notify();
     }
     
-    //getteri sincronizati
     public synchronized PipedOutputStream getPipedOutputStream() throws InterruptedException{
         if(pipedOutputStream==null){
             wait();
@@ -64,9 +62,7 @@ public class MessageSender extends Thread{
             System.out.println("done");
             
         
-        } catch (IOException ex) {
-            Logger.getLogger(MessageSender.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
+        } catch (IOException | InterruptedException ex) {
             Logger.getLogger(MessageSender.class.getName()).log(Level.SEVERE, null, ex);
         }
         

@@ -1,6 +1,8 @@
 package expertsystemgui;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
@@ -25,11 +27,7 @@ import org.joda.time.Minutes;
 import org.joda.time.Seconds;
 
 public class Window extends javax.swing.JFrame {
-
-    /**
-     * Creates new form Window
-     * @param titlu
-     */
+    
     PrologConnection connection;
     LinkedHashMap<String, List<String>> QandA = new LinkedHashMap<>();
     List<String> solutions = new ArrayList<>();
@@ -37,8 +35,28 @@ public class Window extends javax.swing.JFrame {
     public Window(String title) {
         super(title);
         initComponents();
-        setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
+        setFramePosition();
         readLastAccessFile();
+        setSolutionListModel();
+    }
+    
+    private void setFramePosition(){        
+        /*//center
+        //Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        //this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2); 
+        */
+        
+        //top-left
+        this.setLocation(0,0);
+
+        // fullscreen
+        //setExtendedState(java.awt.Frame.MAXIMIZED_BOTH); 
+
+    }
+    
+    private void setSolutionListModel(){
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        solutionsList.setModel(listModel);
     }
     
     private void readLastAccessFile() {
@@ -74,8 +92,8 @@ public class Window extends javax.swing.JFrame {
             DateTime now = DateTime.now();
             writer.println(now.toString());
         }
-        catch(IOException e){
-            e.printStackTrace();
+        catch(IOException ex){
+            Logger.getLogger(MessageSender.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -111,13 +129,14 @@ public class Window extends javax.swing.JFrame {
         solutionsList = new javax.swing.JList<>();
         proofScrollPane = new javax.swing.JScrollPane();
         proofTextPane = new javax.swing.JTextPane();
+        noSolutionsLabel = new javax.swing.JLabel();
         outputAreaPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         outputTextArea = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(800, 600));
-        setPreferredSize(new java.awt.Dimension(1200, 700));
+        setPreferredSize(new java.awt.Dimension(900, 700));
 
         loadRulesButton.setText("Load rules");
         loadRulesButton.addActionListener(new java.awt.event.ActionListener() {
@@ -130,7 +149,7 @@ public class Window extends javax.swing.JFrame {
 
         rulesFilenameLabel.setText("Rules filename:");
 
-        consultButton.setText("Let's find out your holiday destination");
+        consultButton.setText("Consult ");
         consultButton.setEnabled(false);
         consultButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -179,8 +198,8 @@ public class Window extends javax.swing.JFrame {
                         .addComponent(resetSystemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(157, Short.MAX_VALUE))
                     .addGroup(commandPanelLayout.createSequentialGroup()
-                        .addGap(299, 299, 299)
-                        .addComponent(greetingMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(151, 151, 151)
+                        .addComponent(greetingMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         commandPanelLayout.setVerticalGroup(
@@ -250,6 +269,9 @@ public class Window extends javax.swing.JFrame {
 
         proofScrollPane.setViewportView(proofTextPane);
 
+        noSolutionsLabel.setVisible(false);
+        noSolutionsLabel.setText("Nu exista solutii!");
+
         javax.swing.GroupLayout questionsPanelLayout = new javax.swing.GroupLayout(questionsPanel);
         questionsPanel.setLayout(questionsPanelLayout);
         questionsPanelLayout.setHorizontalGroup(
@@ -265,19 +287,25 @@ public class Window extends javax.swing.JFrame {
             .addGroup(questionsPanelLayout.createSequentialGroup()
                 .addGroup(questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(questionsPanelLayout.createSequentialGroup()
-                        .addComponent(optionsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
+                        .addGap(82, 82, 82)
+                        .addComponent(questionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(98, 98, 98))
+                    .addGroup(questionsPanelLayout.createSequentialGroup()
+                        .addGroup(questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(questionsPanelLayout.createSequentialGroup()
+                                .addComponent(optionsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE))
+                            .addGroup(questionsPanelLayout.createSequentialGroup()
+                                .addGap(45, 45, 45)
+                                .addComponent(noSolutionsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGroup(questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(certaintyFactorLabel)
                             .addComponent(backToMenuButton)
                             .addGroup(questionsPanelLayout.createSequentialGroup()
                                 .addGap(21, 21, 21)
                                 .addComponent(certaintyFactorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(125, 125, 125))
-                    .addGroup(questionsPanelLayout.createSequentialGroup()
-                        .addGap(82, 82, 82)
-                        .addComponent(questionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(98, 98, 98)))
+                        .addGap(125, 125, 125)))
                 .addComponent(questionsRadioButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
         );
@@ -297,7 +325,9 @@ public class Window extends javax.swing.JFrame {
                                 .addComponent(certaintyFactorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(backToMenuButton)))
-                        .addGap(56, 56, 56))
+                        .addGap(18, 18, 18)
+                        .addComponent(noSolutionsLabel)
+                        .addGap(24, 24, 24))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsPanelLayout.createSequentialGroup()
                         .addComponent(questionsRadioButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
@@ -338,7 +368,6 @@ public class Window extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loadRulesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadRulesButtonActionPerformed
-        Window.SHOW_SOLUTIONS = false;
         String rulesFilename = rulesFilenameTextField.getText();
         String solutionsFilename = solutionsFilenameTextField.getText();
         consultButton.setEnabled(true);
@@ -356,7 +385,6 @@ public class Window extends javax.swing.JFrame {
     }//GEN-LAST:event_loadRulesButtonActionPerformed
 
     private void consultButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultButtonActionPerformed
-        switchToConsultView();
         try {
             connection.messageSender.sendMessageToExpertSystem("command(consult)");
         
@@ -367,7 +395,6 @@ public class Window extends javax.swing.JFrame {
 
     private void backToMenuButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backToMenuButtonActionPerformed
         // TODO add your handling code here:
-        Window.SHOW_SOLUTIONS = false;
         //switchToMenuView();
     }//GEN-LAST:event_backToMenuButtonActionPerformed
 
@@ -380,10 +407,15 @@ public class Window extends javax.swing.JFrame {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        this.questionLabel.setVisible(false);
+        this.optionsPanel.setVisible(false);
+        this.certaintyFactorLabel.setVisible(false);
+        this.certaintyFactorComboBox.setVisible(false);
         this.consultButton.setEnabled(true);
         this.questionsRadioButtonPanel.removeAll();
         this.answersScrollPane.setVisible(false);
         this.proofTextPane.setText("");
+        this.noSolutionsLabel.setVisible(false);
         
         DefaultListModel listModel = (DefaultListModel) solutionsList.getModel();
         listModel.removeAllElements();
@@ -469,8 +501,8 @@ public class Window extends javax.swing.JFrame {
         String answer = ((JButton)(evt.getSource())).getText() + " fc " + certaintyFactor;
         try {
             connection.messageSender.sendStringToExpertSystem(answer);
-        
-        } catch (InterruptedException ex) {
+        }
+        catch (InterruptedException ex) {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
         }
         
@@ -585,6 +617,7 @@ public class Window extends javax.swing.JFrame {
         }
         this.optionsPanel.repaint();
         this.optionsPanel.revalidate();
+        switchToConsultView();
     } 
 
      /** Returns an ImageIcon, or null if the path was invalid. */
@@ -600,7 +633,11 @@ public class Window extends javax.swing.JFrame {
      
     public void setSolution(String solution){
          if(solution.equals("done")){
-             addSolutionsToJList();
+             if(!solutions.isEmpty())
+                addSolutionsToJList();
+             else
+                noSolutionsLabel.setVisible(true);
+             
              return;
          }
         solutions.add(solution);
@@ -610,9 +647,9 @@ public class Window extends javax.swing.JFrame {
 
     private void addSolutionsToJList() {
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        for(String s : solutions){
+        solutions.stream().forEach((s) -> {
             listModel.addElement(s);
-        }
+        });
         solutionsList.setModel(listModel);
     }
     
@@ -642,6 +679,7 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JLabel greetingMessageLabel;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton loadRulesButton;
+    private javax.swing.JLabel noSolutionsLabel;
     public javax.swing.JPanel optionsPanel;
     private javax.swing.JPanel outputAreaPanel;
     private javax.swing.JTextArea outputTextArea;

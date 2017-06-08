@@ -25,7 +25,7 @@ public class ExpertSystemGUI {
         }
         catch (IOException ex) {
             Logger.getLogger(ExpertSystemGUI.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Eroare clasa initiala");
+            System.out.println("Cannot initialize connection!");
         } 
         catch (InterruptedException ex) {
             Logger.getLogger(ExpertSystemGUI.class.getName()).log(Level.SEVERE, null, ex);
