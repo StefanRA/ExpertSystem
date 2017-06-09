@@ -1,6 +1,7 @@
 package expertsystemgui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -17,10 +18,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
+import javax.swing.border.Border;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import org.joda.time.DateTime;
@@ -36,6 +39,7 @@ public class Window extends javax.swing.JFrame {
     private LinkedHashMap<String, List<String>> QandA = new LinkedHashMap<>();
     private List<String> solutions = new ArrayList<>();
     private SystemStateEnum systemState;
+    private Boolean rulesLoadedSuccessfully;
     
     public Window(String title) {
         super(title);
@@ -110,8 +114,7 @@ public class Window extends javax.swing.JFrame {
         loadInfoLabel.setText("<html>Pentru a consulta sistemul expert, trebuie sa incarcati"
                 + " fisierul cu reguli si fisierul care contine solutiile.</html>");
         
-        systemState = SystemStateEnum.START;
-        switchScreen();
+        switchScreen(SystemStateEnum.START);
         
     }
     
@@ -136,23 +139,6 @@ public class Window extends javax.swing.JFrame {
         outputAreaPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         outputTextArea = new javax.swing.JTextArea();
-        commandPanel = new javax.swing.JPanel();
-        consultButton = new javax.swing.JButton();
-        resetSystemButton = new javax.swing.JButton();
-        questionsPanel = new javax.swing.JPanel();
-        backToMenuButton = new javax.swing.JButton();
-        optionsPanel = new javax.swing.JPanel();
-        questionLabel = new javax.swing.JLabel();
-        certaintyFactorComboBox = new javax.swing.JComboBox<>();
-        certaintyFactorLabel = new javax.swing.JLabel();
-        questionsRadioButtonPanel = new javax.swing.JPanel();
-        answersScrollPane = new javax.swing.JScrollPane();
-        answersTextArea = new javax.swing.JTextArea();
-        solutionsScrollPane = new javax.swing.JScrollPane();
-        solutionsList = new javax.swing.JList<>();
-        proofScrollPane = new javax.swing.JScrollPane();
-        proofTextPane = new javax.swing.JTextPane();
-        noSolutionsLabel = new javax.swing.JLabel();
         startPanel = new javax.swing.JPanel();
         startLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
@@ -167,6 +153,31 @@ public class Window extends javax.swing.JFrame {
         greetingMessageLabel = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         loadRulesButton = new javax.swing.JButton();
+        backToMenuButton = new javax.swing.JButton();
+        solutionsPanel = new javax.swing.JPanel();
+        solutionsScrollPane = new javax.swing.JScrollPane();
+        solutionsList = new javax.swing.JList<>();
+        proofScrollPane = new javax.swing.JScrollPane();
+        proofTextPane = new javax.swing.JTextPane();
+        noSolutionsLabel = new javax.swing.JLabel();
+        commandPanel = new javax.swing.JPanel();
+        consultButton = new javax.swing.JButton();
+        resetSystemButton = new javax.swing.JButton();
+        questionsPanel = new javax.swing.JPanel();
+        optionsPanel = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        questionLabel = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        certaintyFactorLabel = new javax.swing.JLabel();
+        certaintyFactorComboBox = new javax.swing.JComboBox<>();
+        qaPanel = new javax.swing.JPanel();
+        answersPanel = new javax.swing.JPanel();
+        questionsRadioButtonPanel = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
+        answersScrollPane = new javax.swing.JScrollPane();
+        answersTextArea = new javax.swing.JTextArea();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
 
         outputTextArea.setColumns(20);
         outputTextArea.setLineWrap(true);
@@ -188,161 +199,6 @@ public class Window extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(25, Short.MAX_VALUE))
-        );
-
-        consultButton.setText("Consult ");
-        consultButton.setEnabled(false);
-        consultButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                consultButtonActionPerformed(evt);
-            }
-        });
-
-        resetSystemButton.setText("Reset system");
-        resetSystemButton.setEnabled(false);
-        resetSystemButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resetSystemButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout commandPanelLayout = new javax.swing.GroupLayout(commandPanel);
-        commandPanel.setLayout(commandPanelLayout);
-        commandPanelLayout.setHorizontalGroup(
-            commandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, commandPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(consultButton, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(commandPanelLayout.createSequentialGroup()
-                .addGap(315, 315, 315)
-                .addComponent(resetSystemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(236, Short.MAX_VALUE))
-        );
-        commandPanelLayout.setVerticalGroup(
-            commandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(commandPanelLayout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(resetSystemButton)
-                .addGap(47, 47, 47)
-                .addComponent(consultButton))
-        );
-
-        questionsPanel.setVisible(false);
-
-        backToMenuButton.setText("Back to menu");
-        backToMenuButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                backToMenuButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout optionsPanelLayout = new javax.swing.GroupLayout(optionsPanel);
-        optionsPanel.setLayout(optionsPanelLayout);
-        optionsPanelLayout.setHorizontalGroup(
-            optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 289, Short.MAX_VALUE)
-        );
-        optionsPanelLayout.setVerticalGroup(
-            optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-
-        questionLabel.setText("Question");
-
-        certaintyFactorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "100", "95", "90", "85", "80", "75", "70", "65", "60", "55", "50", "45", "40", "35", "30", "25", "20", "10", "5", "0" }));
-
-        certaintyFactorLabel.setText("Factor de certitudine");
-
-        questionsRadioButtonPanel.setLayout(new javax.swing.BoxLayout(questionsRadioButtonPanel, javax.swing.BoxLayout.Y_AXIS));
-
-        answersScrollPane.setVisible(false);
-
-        answersTextArea.setColumns(20);
-        answersTextArea.setLineWrap(true);
-        answersTextArea.setRows(5);
-        answersScrollPane.setViewportView(answersTextArea);
-
-        solutionsScrollPane.setPreferredSize(new java.awt.Dimension(258, 100));
-
-        solutionsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        solutionsList.setVisibleRowCount(-1);
-        solutionsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                solutionsListValueChanged(evt);
-            }
-        });
-        solutionsScrollPane.setViewportView(solutionsList);
-
-        proofScrollPane.setViewportView(proofTextPane);
-
-        noSolutionsLabel.setVisible(false);
-        noSolutionsLabel.setText("Nu exista solutii!");
-
-        javax.swing.GroupLayout questionsPanelLayout = new javax.swing.GroupLayout(questionsPanel);
-        questionsPanel.setLayout(questionsPanelLayout);
-        questionsPanelLayout.setHorizontalGroup(
-            questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(questionsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(solutionsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(proofScrollPane)
-                .addGap(18, 18, 18)
-                .addComponent(answersScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(questionsPanelLayout.createSequentialGroup()
-                .addGroup(questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(questionsPanelLayout.createSequentialGroup()
-                        .addGap(82, 82, 82)
-                        .addComponent(questionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(98, 98, 98))
-                    .addGroup(questionsPanelLayout.createSequentialGroup()
-                        .addGroup(questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(questionsPanelLayout.createSequentialGroup()
-                                .addComponent(optionsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE))
-                            .addGroup(questionsPanelLayout.createSequentialGroup()
-                                .addGap(45, 45, 45)
-                                .addComponent(noSolutionsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGroup(questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(certaintyFactorLabel)
-                            .addComponent(backToMenuButton)
-                            .addGroup(questionsPanelLayout.createSequentialGroup()
-                                .addGap(21, 21, 21)
-                                .addComponent(certaintyFactorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(125, 125, 125)))
-                .addComponent(questionsRadioButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29))
-        );
-        questionsPanelLayout.setVerticalGroup(
-            questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsPanelLayout.createSequentialGroup()
-                .addContainerGap(137, Short.MAX_VALUE)
-                .addGroup(questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsPanelLayout.createSequentialGroup()
-                        .addComponent(questionLabel)
-                        .addGap(11, 11, 11)
-                        .addGroup(questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(optionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(questionsPanelLayout.createSequentialGroup()
-                                .addComponent(certaintyFactorLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(certaintyFactorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(backToMenuButton)))
-                        .addGap(18, 18, 18)
-                        .addComponent(noSolutionsLabel)
-                        .addGap(24, 24, 24))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsPanelLayout.createSequentialGroup()
-                        .addComponent(questionsRadioButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
-                .addGroup(questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(proofScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(answersScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(solutionsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(33, 33, 33))
         );
 
         startLabel.setText("Start label");
@@ -377,11 +233,8 @@ public class Window extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(38, Short.MAX_VALUE)
+                .addContainerGap(30, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(loadInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(rulesFilenameLabel)
@@ -390,7 +243,10 @@ public class Window extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(solutionsFilenameLabel)
                             .addComponent(solutionsFilenameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(63, 63, 63))))
+                        .addGap(63, 63, 63))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(loadInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19))))
         );
 
         filenameWrongLabel.setText("wrong file name");
@@ -441,14 +297,206 @@ public class Window extends javax.swing.JFrame {
                 .addGap(19, 19, 19))
         );
 
+        backToMenuButton.setText("Back to menu");
+        backToMenuButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backToMenuButtonActionPerformed(evt);
+            }
+        });
+
+        solutionsScrollPane.setPreferredSize(new java.awt.Dimension(258, 100));
+
+        solutionsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        solutionsList.setVisibleRowCount(-1);
+        solutionsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                solutionsListValueChanged(evt);
+            }
+        });
+        solutionsScrollPane.setViewportView(solutionsList);
+
+        proofScrollPane.setViewportView(proofTextPane);
+
+        noSolutionsLabel.setVisible(false);
+        noSolutionsLabel.setText("Nu exista solutii!");
+
+        javax.swing.GroupLayout solutionsPanelLayout = new javax.swing.GroupLayout(solutionsPanel);
+        solutionsPanel.setLayout(solutionsPanelLayout);
+        solutionsPanelLayout.setHorizontalGroup(
+            solutionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(solutionsPanelLayout.createSequentialGroup()
+                .addGroup(solutionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(solutionsPanelLayout.createSequentialGroup()
+                        .addGap(42, 42, 42)
+                        .addComponent(solutionsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(47, 47, 47)
+                        .addComponent(proofScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(solutionsPanelLayout.createSequentialGroup()
+                        .addGap(330, 330, 330)
+                        .addComponent(noSolutionsLabel)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        solutionsPanelLayout.setVerticalGroup(
+            solutionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, solutionsPanelLayout.createSequentialGroup()
+                .addGap(62, 62, 62)
+                .addComponent(noSolutionsLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(solutionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(solutionsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(proofScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(300, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(800, 600));
         setPreferredSize(new java.awt.Dimension(900, 650));
+
+        commandPanel.setPreferredSize(new java.awt.Dimension(800, 35));
+
+        consultButton.setText("Consult ");
+        consultButton.setEnabled(false);
+        consultButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        consultButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                consultButtonActionPerformed(evt);
+            }
+        });
+        commandPanel.add(consultButton);
+
+        resetSystemButton.setText("Reset system");
+        resetSystemButton.setEnabled(false);
+        resetSystemButton.setPreferredSize(new java.awt.Dimension(120, 25));
+        resetSystemButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetSystemButtonActionPerformed(evt);
+            }
+        });
+        commandPanel.add(resetSystemButton);
+
+        getContentPane().add(commandPanel, java.awt.BorderLayout.NORTH);
+
+        javax.swing.GroupLayout optionsPanelLayout = new javax.swing.GroupLayout(optionsPanel);
+        optionsPanel.setLayout(optionsPanelLayout);
+        optionsPanelLayout.setHorizontalGroup(
+            optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        optionsPanelLayout.setVerticalGroup(
+            optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        questionLabel.setText("Question");
+        jPanel5.add(questionLabel);
+
+        certaintyFactorLabel.setText("Factor de certitudine");
+        jPanel6.add(certaintyFactorLabel);
+
+        certaintyFactorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "100", "95", "90", "85", "80", "75", "70", "65", "60", "55", "50", "45", "40", "35", "30", "25", "20", "10", "5", "0" }));
+        jPanel6.add(certaintyFactorComboBox);
+
+        javax.swing.GroupLayout questionsPanelLayout = new javax.swing.GroupLayout(questionsPanel);
+        questionsPanel.setLayout(questionsPanelLayout);
+        questionsPanelLayout.setHorizontalGroup(
+            questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(optionsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        questionsPanelLayout.setVerticalGroup(
+            questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsPanelLayout.createSequentialGroup()
+                .addGap(69, 69, 69)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(optionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(54, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(questionsPanel, java.awt.BorderLayout.CENTER);
+
+        answersPanel.setPreferredSize(new java.awt.Dimension(291, 210));
+
+        questionsRadioButtonPanel.setLayout(new javax.swing.BoxLayout(questionsRadioButtonPanel, javax.swing.BoxLayout.Y_AXIS));
+
+        answersScrollPane.setBorder(null);
+
+        answersTextArea.setVisible(false);
+        answersTextArea.setColumns(20);
+        answersTextArea.setLineWrap(true);
+        answersTextArea.setRows(5);
+        answersTextArea.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(133, 134, 136)));
+        answersTextArea.setPreferredSize(new java.awt.Dimension(166, 96));
+        answersScrollPane.setViewportView(answersTextArea);
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(answersScrollPane)
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(answersScrollPane)
+        );
+
+        javax.swing.GroupLayout answersPanelLayout = new javax.swing.GroupLayout(answersPanel);
+        answersPanel.setLayout(answersPanelLayout);
+        answersPanelLayout.setHorizontalGroup(
+            answersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, answersPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(questionsRadioButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        answersPanelLayout.setVerticalGroup(
+            answersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(answersPanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(questionsRadioButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        jLabel1.setText("Aici veți putea vedea atributele pentru care ați răspuns, cu întrebarea și răspunsul corespunzător fiecărui atribut");
+        jPanel7.add(jLabel1);
+
+        javax.swing.GroupLayout qaPanelLayout = new javax.swing.GroupLayout(qaPanel);
+        qaPanel.setLayout(qaPanelLayout);
+        qaPanelLayout.setHorizontalGroup(
+            qaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(qaPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(qaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE)
+                    .addComponent(answersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        qaPanelLayout.setVerticalGroup(
+            qaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(qaPanelLayout.createSequentialGroup()
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                .addComponent(answersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        getContentPane().add(qaPanel, java.awt.BorderLayout.SOUTH);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void consultButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultButtonActionPerformed
+        
+        switchScreen(SystemStateEnum.CONSULTING);
         try {
             connection.messageSender.sendMessageToExpertSystem("command(consult)");
         
@@ -522,32 +570,49 @@ public class Window extends javax.swing.JFrame {
     }//GEN-LAST:event_loadRulesButtonActionPerformed
 
     public void loadingSuccessful(){
+        rulesLoadedSuccessfully = true;
         setFilenameWrongLabelText("");
+        consultButton.setEnabled(rulesLoadedSuccessfully);
+        resetSystemButton.setEnabled(rulesLoadedSuccessfully);
         // move to main menu screen
-        systemState = SystemStateEnum.MAIN_MENU;
-        switchScreen();
+        switchScreen(SystemStateEnum.MAIN_MENU);
     }
     
-    public void switchScreen(){
+    public void switchScreen(SystemStateEnum systemState){
         BorderLayout borderLayout = (BorderLayout) this.getContentPane().getLayout();
         Component centerComponent = borderLayout.getLayoutComponent(BorderLayout.CENTER);
+        Component northComponent = borderLayout.getLayoutComponent(BorderLayout.NORTH);
+        Component southComponent = borderLayout.getLayoutComponent(BorderLayout.SOUTH);
         if(centerComponent != null)
             this.remove(centerComponent);
         
         switch(systemState){
             case START:
-                getContentPane().add(startPanel, java.awt.BorderLayout.CENTER);
+                if(northComponent != null)
+                    this.remove(northComponent);
+                if(southComponent != null)
+                    this.remove(southComponent);
+                getContentPane().add(startPanel, BorderLayout.CENTER);
                 this.revalidate();
                 this.repaint();
                 break;
             case MAIN_MENU:
-                getContentPane().add(outputAreaPanel, java.awt.BorderLayout.CENTER);
+                if(southComponent != null)
+                    this.remove(southComponent);
+                getContentPane().add(commandPanel, BorderLayout.NORTH);
+                this.revalidate();
+                this.repaint();
+                break;
+            case CONSULTING:
+                consultButton.setEnabled(false);
+                getContentPane().add(questionsPanel, BorderLayout.CENTER);
+                getContentPane().add(qaPanel, BorderLayout.SOUTH);
                 this.revalidate();
                 this.repaint();
                 break;
         }
     }
-    
+        
     private void getProofForSolution(String selectedSolution) {
         try {
             selectedSolution = selectedSolution.endsWith("cu fc 100") ?
@@ -568,40 +633,6 @@ public class Window extends javax.swing.JFrame {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    private void switchToConsultView() {
-        //this.commandPanel.setVisible(false);
-        this.questionsPanel.setVisible(true);
-        this.backToMenuButton.setVisible(false);
-        this.consultButton.setEnabled(false);
-        
-        this.optionsPanel.setVisible(true);
-        this.questionLabel.setVisible(true);
-        this.certaintyFactorComboBox.setVisible(true);
-        this.certaintyFactorLabel.setVisible(true);
-        
-        this.revalidate();
-        this.repaint();
-    }                                             
-
-    private void switchToMenuView() {
-        this.optionsPanel.removeAll();
-        this.optionsPanel.repaint();
-        this.optionsPanel.revalidate();
-        
-        this.questionLabel.setText("");
-        
-        this.commandPanel.setVisible(true);
-        this.questionsPanel.setVisible(false);
-    }                                            
-
-    private void switchToSolutionView() {
-        this.optionsPanel.setVisible(false);
-        this.questionLabel.setVisible(false);
-        this.certaintyFactorComboBox.setVisible(false);
-        this.certaintyFactorLabel.setVisible(false);
-    }
-
     
      private void optionButtonActionPerformed(java.awt.event.ActionEvent evt) {
          
@@ -649,7 +680,8 @@ public class Window extends javax.swing.JFrame {
         answer = answer.endsWith("fc 100") ? answer.substring(0,answer.length()-7) : answer;
         
         answersTextArea.setText(question + "\n" + answer);
-        answersScrollPane.setVisible(true);
+        //answersTextArea.setBorder(border);
+        answersTextArea.setVisible(true);
         questionsPanel.revalidate();
         questionsPanel.repaint();
     } 
@@ -700,10 +732,9 @@ public class Window extends javax.swing.JFrame {
     public void setQuestionAndOptions(String question, String optionsString, String attribute){
         
         this.questionLabel.setText("<html><body style='width:100%'>"+question+"</html>");
-        this.questionsPanel.repaint();
         
         this.optionsPanel.removeAll();
-        this.optionsPanel.setLayout(new FlowLayout());
+        this.optionsPanel.setLayout(new WrapLayout());
         
         optionsString = optionsString.trim();
         String[] options = optionsString.split(" ");
@@ -721,11 +752,14 @@ public class Window extends javax.swing.JFrame {
                     optionButtonActionPerformed(evt);
                 }
             });
+            //optionButton.setPreferredSize(new Dimension(200,40));
             this.optionsPanel.add(optionButton);
         }
-        this.optionsPanel.repaint();
+        
+        this.questionLabel.repaint();
         this.optionsPanel.revalidate();
-        switchToConsultView();
+        this.optionsPanel.repaint();
+        
     } 
 
      /** Returns an ImageIcon, or null if the path was invalid. */
@@ -750,7 +784,7 @@ public class Window extends javax.swing.JFrame {
          }
         solutions.add(solution);
         
-        switchToSolutionView();
+        //switchToSolutionView();
     } 
 
     private void addSolutionsToJList() {
@@ -775,6 +809,7 @@ public class Window extends javax.swing.JFrame {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel answersPanel;
     private javax.swing.JScrollPane answersScrollPane;
     private javax.swing.JTextArea answersTextArea;
     private javax.swing.JButton backToMenuButton;
@@ -784,10 +819,15 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JButton consultButton;
     private javax.swing.JLabel filenameWrongLabel;
     private javax.swing.JLabel greetingMessageLabel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel loadInfoLabel;
     private javax.swing.JButton loadRulesButton;
@@ -797,6 +837,7 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JTextArea outputTextArea;
     private javax.swing.JScrollPane proofScrollPane;
     private javax.swing.JTextPane proofTextPane;
+    private javax.swing.JPanel qaPanel;
     public javax.swing.JLabel questionLabel;
     private javax.swing.JPanel questionsPanel;
     private javax.swing.ButtonGroup questionsRadioButtonGroup;
@@ -807,6 +848,7 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JLabel solutionsFilenameLabel;
     private javax.swing.JTextField solutionsFilenameTextField;
     private javax.swing.JList<String> solutionsList;
+    private javax.swing.JPanel solutionsPanel;
     private javax.swing.JScrollPane solutionsScrollPane;
     private javax.swing.JLabel startLabel;
     private javax.swing.JPanel startPanel;
