@@ -1752,17 +1752,24 @@ processMessageFromGUI(Stream, load(RulesFileName, SolutionInfoFileName), Command
 	(
 		file_exists(RulesFileName)
 		;
-		write(Stream, rules_file_does_not_exist),
-		fail
+		format(Stream, 'rules_file_does_not_exist:~p\n', [RulesFileName]),
+		flush_output(Stream),
+		!,
+		CommandCount1 is CommandCount + 1,
+		readInputFromGUI(Stream, CommandCount1)
 	),
 	(
 		file_exists(SolutionInfoFileName)
 		;
-		write(Stream, solution_info_file_does_not_exist),
-		fail
+		format(Stream, 'solution_info_file_does_not_exist:~p\n', [SolutionInfoFileName]),
+		flush_output(Stream),
+		!,
+		CommandCount1 is CommandCount + 1,
+		readInputFromGUI(Stream, CommandCount1)
 	),
 	loadKnowledgeBase(RulesFileName, SolutionInfoFileName),
 	format(Stream, 'Fisierele ~p si ~p au fost incarcate cu succes!\n', [RulesFileName, SolutionInfoFileName]),
+	write(Stream, 'rules_ok\n'),
 	flush_output(Stream),
 	format('Fisierele ~p si ~p au fost incarcate cu succes!\n', [RulesFileName, SolutionInfoFileName]), nl,
 	CommandCount1 is CommandCount + 1,

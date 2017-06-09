@@ -54,10 +54,11 @@ public class MessageReader extends Thread {
                             
                             window.getOutputTextArea().append(finalString); 
                             String text = finalString.trim();
+                            int textLength = text.length();
                             //if message represents a question
-                            if(text.length()>2 && text.charAt(0)=='i'&& text.charAt(1)=='(' && text.charAt(text.length()-1)==')')
+                            if(textLength>2 && text.charAt(0)=='i'&& text.charAt(1)=='(' && text.charAt(textLength-1)==')')
                             {
-                                String attributeAndQuestion = text.substring(2, text.length()-1);
+                                String attributeAndQuestion = text.substring(2, textLength-1);
                                 String[] s = attributeAndQuestion.split("~");
                                 String attribute = s[0];
                                 String question = s[1].substring(1, s[1].length()-1);
@@ -66,16 +67,30 @@ public class MessageReader extends Thread {
                                 window.setQuestionAndOptions(question, options, attribute);
                             }
                             //if message represents a solution
-                            if(text.length()>2 && text.charAt(0)=='s'&& text.charAt(1)=='(' && text.charAt(text.length()-1)==')')
+                            if(textLength>2 && text.charAt(0)=='s'&& text.charAt(1)=='(' && text.charAt(textLength-1)==')')
                             {
-                                String solution=text.substring(2, text.length()-1);
+                                String solution=text.substring(2, textLength-1);
                                 window.setSolution(solution);
                             }
                             //if message is part of a solution proof
-                            if(text.length()>2 && text.substring(0,3).equals("dem")&& text.charAt(3)=='(')
+                            if(textLength>2 && text.substring(0,3).equals("dem")&& text.charAt(3)=='(')
                             {
                                 String proofText = text.substring(4);
                                 window.setProofText(proofText+"\n");
+                            }
+                            //if rules file cannot be found
+                            if(textLength > "rules_file_does_not_exist".length() && text.substring(0,"rules_file_does_not_exist".length()).equals("rules_file_does_not_exist")){
+                                
+                                String[] s = text.split(":");
+                                window.setFilenameWrongLabelText(s[1]);
+                            }
+                            //if solution info file cannot be found
+                            if(textLength > "solution_info_file_does_not_exist".length() && text.substring(0,"solution_info_file_does_not_exist".length()).equals("solution_info_file_does_not_exist")){
+                                String[] s = text.split(":");
+                                window.setFilenameWrongLabelText(s[1]);
+                            }//if rules and solution info file are both ok
+                            if(text.equals("rules_ok")){
+                                window.loadingSuccessful();
                             }
                         }
 

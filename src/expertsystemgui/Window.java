@@ -1,7 +1,10 @@
 package expertsystemgui;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.LayoutManager;
 import java.awt.Toolkit;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,11 +29,13 @@ import org.joda.time.Hours;
 import org.joda.time.Minutes;
 import org.joda.time.Seconds;
 
+
 public class Window extends javax.swing.JFrame {
     
-    PrologConnection connection;
-    LinkedHashMap<String, List<String>> QandA = new LinkedHashMap<>();
-    List<String> solutions = new ArrayList<>();
+    public PrologConnection connection;
+    private LinkedHashMap<String, List<String>> QandA = new LinkedHashMap<>();
+    private List<String> solutions = new ArrayList<>();
+    private SystemStateEnum systemState;
     
     public Window(String title) {
         super(title);
@@ -38,6 +43,7 @@ public class Window extends javax.swing.JFrame {
         setFramePosition();
         readLastAccessFile();
         setSolutionListModel();
+        setStartPanel();
     }
     
     private void setFramePosition(){        
@@ -78,7 +84,7 @@ public class Window extends javax.swing.JFrame {
             updateLastAccessFile();
         } 
         catch (IOException ex) {
-            String message = "Bine ati venit!";
+            String message = "";
             greetingMessageLabel.setText(message);
             updateLastAccessFile();
         }
@@ -97,6 +103,26 @@ public class Window extends javax.swing.JFrame {
         }
     }
 
+    private void setStartPanel(){
+        
+        setFilenameWrongLabelText("");
+        startLabel.setText("<html>Bine ați venit! Vă vom ajuta să găsiți conferința perfectă pentru dvs!");
+        loadInfoLabel.setText("<html>Pentru a consulta sistemul expert, trebuie sa incarcati"
+                + " fisierul cu reguli si fisierul care contine solutiile.</html>");
+        
+        systemState = SystemStateEnum.START;
+        switchScreen();
+        
+    }
+    
+    public void setFilenameWrongLabelText(String wrongFilename){
+        if(wrongFilename.equals(""))
+            filenameWrongLabel.setText("");
+        else
+            filenameWrongLabel.setText("<html><font color=\"red\">Nu am putut găsi fișierul \""+wrongFilename+"\"!</font></html>");
+    }
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -107,15 +133,12 @@ public class Window extends javax.swing.JFrame {
     private void initComponents() {
 
         questionsRadioButtonGroup = new javax.swing.ButtonGroup();
+        outputAreaPanel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        outputTextArea = new javax.swing.JTextArea();
         commandPanel = new javax.swing.JPanel();
-        loadRulesButton = new javax.swing.JButton();
-        rulesFilenameTextField = new javax.swing.JTextField();
-        rulesFilenameLabel = new javax.swing.JLabel();
         consultButton = new javax.swing.JButton();
         resetSystemButton = new javax.swing.JButton();
-        greetingMessageLabel = new javax.swing.JLabel();
-        solutionsFilenameLabel = new javax.swing.JLabel();
-        solutionsFilenameTextField = new javax.swing.JTextField();
         questionsPanel = new javax.swing.JPanel();
         backToMenuButton = new javax.swing.JButton();
         optionsPanel = new javax.swing.JPanel();
@@ -130,24 +153,42 @@ public class Window extends javax.swing.JFrame {
         proofScrollPane = new javax.swing.JScrollPane();
         proofTextPane = new javax.swing.JTextPane();
         noSolutionsLabel = new javax.swing.JLabel();
-        outputAreaPanel = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        outputTextArea = new javax.swing.JTextArea();
+        startPanel = new javax.swing.JPanel();
+        startLabel = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        loadInfoLabel = new javax.swing.JLabel();
+        rulesFilenameLabel = new javax.swing.JLabel();
+        solutionsFilenameLabel = new javax.swing.JLabel();
+        rulesFilenameTextField = new javax.swing.JTextField();
+        solutionsFilenameTextField = new javax.swing.JTextField();
+        jPanel2 = new javax.swing.JPanel();
+        filenameWrongLabel = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        greetingMessageLabel = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        loadRulesButton = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(800, 600));
-        setPreferredSize(new java.awt.Dimension(900, 700));
+        outputTextArea.setColumns(20);
+        outputTextArea.setLineWrap(true);
+        outputTextArea.setRows(5);
+        jScrollPane1.setViewportView(outputTextArea);
 
-        loadRulesButton.setText("Load rules");
-        loadRulesButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadRulesButtonActionPerformed(evt);
-            }
-        });
-
-        rulesFilenameTextField.setText("Rules.txt");
-
-        rulesFilenameLabel.setText("Rules filename:");
+        javax.swing.GroupLayout outputAreaPanelLayout = new javax.swing.GroupLayout(outputAreaPanel);
+        outputAreaPanel.setLayout(outputAreaPanelLayout);
+        outputAreaPanelLayout.setHorizontalGroup(
+            outputAreaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, outputAreaPanelLayout.createSequentialGroup()
+                .addGap(245, 245, 245)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
+                .addGap(246, 246, 246))
+        );
+        outputAreaPanelLayout.setVerticalGroup(
+            outputAreaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(outputAreaPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(25, Short.MAX_VALUE))
+        );
 
         consultButton.setText("Consult ");
         consultButton.setEnabled(false);
@@ -165,12 +206,6 @@ public class Window extends javax.swing.JFrame {
             }
         });
 
-        greetingMessageLabel.setText("Mesaj de bun venit");
-
-        solutionsFilenameLabel.setText("Solutions filename:");
-
-        solutionsFilenameTextField.setText("SolutionInfo.txt");
-
         javax.swing.GroupLayout commandPanelLayout = new javax.swing.GroupLayout(commandPanel);
         commandPanel.setLayout(commandPanelLayout);
         commandPanelLayout.setHorizontalGroup(
@@ -180,46 +215,18 @@ public class Window extends javax.swing.JFrame {
                 .addComponent(consultButton, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(commandPanelLayout.createSequentialGroup()
-                .addGap(40, 40, 40)
-                .addComponent(loadRulesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(commandPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(rulesFilenameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rulesFilenameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(commandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(commandPanelLayout.createSequentialGroup()
-                        .addGap(45, 45, 45)
-                        .addComponent(solutionsFilenameLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(solutionsFilenameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
-                        .addComponent(resetSystemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(157, Short.MAX_VALUE))
-                    .addGroup(commandPanelLayout.createSequentialGroup()
-                        .addGap(151, 151, 151)
-                        .addComponent(greetingMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGap(315, 315, 315)
+                .addComponent(resetSystemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(236, Short.MAX_VALUE))
         );
         commandPanelLayout.setVerticalGroup(
             commandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(commandPanelLayout.createSequentialGroup()
-                .addComponent(greetingMessageLabel)
-                .addGap(10, 10, 10)
-                .addGroup(commandPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rulesFilenameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rulesFilenameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(solutionsFilenameLabel)
-                    .addComponent(solutionsFilenameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(resetSystemButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(loadRulesButton)
-                .addGap(18, 18, 18)
+                .addGap(24, 24, 24)
+                .addComponent(resetSystemButton)
+                .addGap(47, 47, 47)
                 .addComponent(consultButton))
         );
-
-        getContentPane().add(commandPanel, java.awt.BorderLayout.NORTH);
 
         questionsPanel.setVisible(false);
 
@@ -234,7 +241,7 @@ public class Window extends javax.swing.JFrame {
         optionsPanel.setLayout(optionsPanelLayout);
         optionsPanelLayout.setHorizontalGroup(
             optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 133, Short.MAX_VALUE)
+            .addGap(0, 289, Short.MAX_VALUE)
         );
         optionsPanelLayout.setVerticalGroup(
             optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -312,7 +319,7 @@ public class Window extends javax.swing.JFrame {
         questionsPanelLayout.setVerticalGroup(
             questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsPanelLayout.createSequentialGroup()
-                .addContainerGap(14, Short.MAX_VALUE)
+                .addContainerGap(137, Short.MAX_VALUE)
                 .addGroup(questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsPanelLayout.createSequentialGroup()
                         .addComponent(questionLabel)
@@ -338,51 +345,108 @@ public class Window extends javax.swing.JFrame {
                 .addGap(33, 33, 33))
         );
 
-        getContentPane().add(questionsPanel, java.awt.BorderLayout.CENTER);
+        startLabel.setText("Start label");
 
-        outputTextArea.setColumns(20);
-        outputTextArea.setLineWrap(true);
-        outputTextArea.setRows(5);
-        jScrollPane1.setViewportView(outputTextArea);
+        loadInfoLabel.setText("LoadInfo");
 
-        javax.swing.GroupLayout outputAreaPanelLayout = new javax.swing.GroupLayout(outputAreaPanel);
-        outputAreaPanel.setLayout(outputAreaPanelLayout);
-        outputAreaPanelLayout.setHorizontalGroup(
-            outputAreaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, outputAreaPanelLayout.createSequentialGroup()
-                .addGap(245, 245, 245)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
-                .addGap(246, 246, 246))
+        rulesFilenameLabel.setText("Nume fișier reguli:");
+
+        solutionsFilenameLabel.setText("Nume fișier soluții:");
+
+        rulesFilenameTextField.setText("Rules.txt");
+
+        solutionsFilenameTextField.setText("SolutionInfo.txt");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(116, Short.MAX_VALUE)
+                .addComponent(loadInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(116, 116, 116)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(solutionsFilenameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(rulesFilenameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(29, 29, 29)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(solutionsFilenameTextField)
+                    .addComponent(rulesFilenameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(117, Short.MAX_VALUE))
         );
-        outputAreaPanelLayout.setVerticalGroup(
-            outputAreaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(outputAreaPanelLayout.createSequentialGroup()
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(38, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(loadInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(rulesFilenameLabel)
+                            .addComponent(rulesFilenameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(solutionsFilenameLabel)
+                            .addComponent(solutionsFilenameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(63, 63, 63))))
+        );
+
+        filenameWrongLabel.setText("wrong file name");
+        jPanel2.add(filenameWrongLabel);
+
+        greetingMessageLabel.setText("Mesaj de bun venit");
+        jPanel3.add(greetingMessageLabel);
+
+        loadRulesButton.setText("Încarcă");
+        loadRulesButton.setPreferredSize(new java.awt.Dimension(250, 30));
+        loadRulesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadRulesButtonActionPerformed(evt);
+            }
+        });
+        jPanel4.add(loadRulesButton);
+
+        javax.swing.GroupLayout startPanelLayout = new javax.swing.GroupLayout(startPanel);
+        startPanel.setLayout(startPanelLayout);
+        startPanelLayout.setHorizontalGroup(
+            startPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(startPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addGroup(startPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(startPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(startLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        startPanelLayout.setVerticalGroup(
+            startPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(startPanelLayout.createSequentialGroup()
+                .addGap(60, 60, 60)
+                .addComponent(startLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 132, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19))
         );
 
-        getContentPane().add(outputAreaPanel, java.awt.BorderLayout.SOUTH);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(800, 600));
+        setPreferredSize(new java.awt.Dimension(900, 650));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void loadRulesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadRulesButtonActionPerformed
-        String rulesFilename = rulesFilenameTextField.getText();
-        String solutionsFilename = solutionsFilenameTextField.getText();
-        consultButton.setEnabled(true);
-        resetSystemButton.setEnabled(true);
-        String dir = System.getProperty("user.dir");
-        dir=dir.replace("\\", "/");
-        try {
-            connection.messageSender.sendMessageToExpertSystem("set_current_directory('"+dir+"')");
-            connection.messageSender.sendMessageToExpertSystem("load('"+rulesFilename+"','"+solutionsFilename+"')");
-            
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-    }//GEN-LAST:event_loadRulesButtonActionPerformed
 
     private void consultButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultButtonActionPerformed
         try {
@@ -440,6 +504,50 @@ public class Window extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_solutionsListValueChanged
 
+    private void loadRulesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadRulesButtonActionPerformed
+        String rulesFilename = rulesFilenameTextField.getText();
+        String solutionsFilename = solutionsFilenameTextField.getText();
+        consultButton.setEnabled(true);
+        resetSystemButton.setEnabled(true);
+        String dir = System.getProperty("user.dir");
+        dir=dir.replace("\\", "/");
+            try {
+                connection.messageSender.sendMessageToExpertSystem("set_current_directory('"+dir+"')");
+                connection.messageSender.sendMessageToExpertSystem("load('"+rulesFilename+"','"+solutionsFilename+"')");
+
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+    }//GEN-LAST:event_loadRulesButtonActionPerformed
+
+    public void loadingSuccessful(){
+        setFilenameWrongLabelText("");
+        // move to main menu screen
+        systemState = SystemStateEnum.MAIN_MENU;
+        switchScreen();
+    }
+    
+    public void switchScreen(){
+        BorderLayout borderLayout = (BorderLayout) this.getContentPane().getLayout();
+        Component centerComponent = borderLayout.getLayoutComponent(BorderLayout.CENTER);
+        if(centerComponent != null)
+            this.remove(centerComponent);
+        
+        switch(systemState){
+            case START:
+                getContentPane().add(startPanel, java.awt.BorderLayout.CENTER);
+                this.revalidate();
+                this.repaint();
+                break;
+            case MAIN_MENU:
+                getContentPane().add(outputAreaPanel, java.awt.BorderLayout.CENTER);
+                this.revalidate();
+                this.repaint();
+                break;
+        }
+    }
+    
     private void getProofForSolution(String selectedSolution) {
         try {
             selectedSolution = selectedSolution.endsWith("cu fc 100") ?
@@ -665,8 +773,6 @@ public class Window extends javax.swing.JFrame {
         }
     }
     
-    public static boolean SHOW_SOLUTIONS = false;
-    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane answersScrollPane;
@@ -676,8 +782,14 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JLabel certaintyFactorLabel;
     private javax.swing.JPanel commandPanel;
     private javax.swing.JButton consultButton;
+    private javax.swing.JLabel filenameWrongLabel;
     private javax.swing.JLabel greetingMessageLabel;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel loadInfoLabel;
     private javax.swing.JButton loadRulesButton;
     private javax.swing.JLabel noSolutionsLabel;
     public javax.swing.JPanel optionsPanel;
@@ -696,6 +808,8 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JTextField solutionsFilenameTextField;
     private javax.swing.JList<String> solutionsList;
     private javax.swing.JScrollPane solutionsScrollPane;
+    private javax.swing.JLabel startLabel;
+    private javax.swing.JPanel startPanel;
     // End of variables declaration//GEN-END:variables
 
 }
