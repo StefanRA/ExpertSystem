@@ -92,6 +92,10 @@ public class MessageReader extends Thread {
                             if(text.equals("rules_ok")){
                                 window.loadingSuccessful();
                             }
+                            if(text.length() > "facts".length() && text.substring(0,5).equals("facts") && text.charAt(5)=='('){
+                                String factsText = text.substring(6);
+                                window.appendFactsText(factsText);
+                            }
                         }
 
                     });

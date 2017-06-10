@@ -4,5 +4,6 @@ public enum SystemStateEnum {
     START,
     MAIN_MENU,
     CONSULTING,
-    SHOWING_SOLUTIONS
+    SHOWING_SOLUTIONS,
+    SHOWING_FACTS
 }

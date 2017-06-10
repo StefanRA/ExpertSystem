@@ -58,8 +58,8 @@ prompter(ro, display_facts, 'Faptele prezente in baza de cunostinte:').
 prompter(en, display_facts_header, '(Attribute, Value) - Certainty factor').
 prompter(ro, display_facts_header, '(Atribut, Valoare) - Factor de certitudine').
 
-prompter(en, display_fact, '(~p, ~p) - Certainty factor = ~p').
-prompter(ro, display_fact, '(~p, ~p) - Factor de certitudine = ~p').
+prompter(en, display_fact, '(~p, ~p) - ~p').
+prompter(ro, display_fact, '(~p, ~p) - ~p').
 
 prompter(en, display_goal_result_select, 'Do you wish to display the details for the results? ( yes / no )').
 prompter(ro, display_goal_result_select, 'Doriti o afisare detaliata a rezultatelor? ( da / nu )').
@@ -133,6 +133,15 @@ displayFactsFromKnowledgeBase :-
 	prompter(Lang, display_facts_header, FactsHeaderPrompt),
 	write(FactsHeaderPrompt), nl, nl,
 	displayFacts, nl.
+
+displayFactsFromKnowledgeBase(Stream) :-
+	used_language(Lang),
+	prompter(Lang, display_facts, FactsPrompt),
+	format(Stream, 'facts(~p\n', [FactsPrompt]),
+	prompter(Lang, display_facts_header, FactsHeaderPrompt),
+	format(Stream, 'facts(~p\n', [FactsHeaderPrompt]),
+	flush_output(Stream),
+	displayFacts(Stream).
 %---------------------------------------------------------------------------------------------------
 
 %---------------------------------------------------------------------------------------------------
@@ -146,9 +155,21 @@ displayFacts :-
 	FC1 is integer(FC),
 	used_language(Lang),
 	prompter(Lang, display_fact, FactPrompt),
-	format(FactPrompt, [Atr, Val, FC1]), 	nl,
+	format(FactPrompt, [Atr, Val, FC1]), nl,
 	fail.
 displayFacts.
+
+displayFacts(Stream) :-
+	fapt(av(Atr, Val), FC, _),
+	FC1 is integer(FC),
+	used_language(Lang),
+	prompter(Lang, display_fact, FactPrompt),
+	write(Stream, 'facts('),
+	format(Stream, FactPrompt, [Atr, Val, FC1]),
+	nl(Stream),
+	flush_output(Stream),
+	fail.
+displayFacts(_).
 %---------------------------------------------------------------------------------------------------
 
 % lista_float_int(+ListaFloat, -ListaIn)
@@ -1794,6 +1815,13 @@ processMessageFromGUI(Stream, how(X), CommandCount) :-
 	write(Stream,X), nl(Stream),
 	flush_output(Stream),
 	cum(Stream, X),
+	CommandCount1 is CommandCount + 1,
+	readInputFromGUI(Stream, CommandCount1).
+
+processMessageFromGUI(Stream, command(show_facts), CommandCount) :-
+	write(Stream, 'show_facts'), nl(Stream),
+	flush_output(Stream),
+	displayFactsFromKnowledgeBase(Stream),
 	CommandCount1 is CommandCount + 1,
 	readInputFromGUI(Stream, CommandCount1).
 
