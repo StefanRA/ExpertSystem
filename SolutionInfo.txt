@@ -8,6 +8,34 @@
 {2}
 {eurographics}
 {'ELC is the premier vendor-neutral technical conference for companies and developers using Linux in embedded products. Now in its 12th year, the conference gathers user-space developers, product vendors, kernel and systems developers to collaborate.'}
-{domeniu: 'Operating Systems'}
+{domeniu: 'Computer graphics'}
 {imagine: 'Images/eurographics'}
 {data: 23/10/2017}
+-------------------
+{3}
+{embedded_linux_conference}
+{'ELC is the premier vendor-neutral technical conference for companies and developers using Linux in embedded products. Now in its 12th year, the conference gathers user-space developers, product vendors, kernel and systems developers to collaborate.'}
+{domeniu: 'Operating Systems'}
+{imagine: 'Images/embedded_linux_conference'}
+{data: 23/10/2017}
+-------------------
+{4}
+{oscon}
+{'Since 1999, OSCON has brought together talented people from diverse backgrounds who are doing amazing things with open source. We share new techniques and approaches, proven best practices, and practical skills. No matter what your technical experience level, if you want to learn from useful stories and hard-won experience, and discover intriguing projects and innovations, there’s no better place than OSCON. Open source is now found everywhere—from the bottom of the programming stack to the very top—so we’re focusing on these topics as a means to consider and solve critical, real-world problems.'}
+{domeniu: 'Open source technologies'}
+{imagine: 'Images/oscon'}
+{data: 17/10/2017}
+-------------------
+{5}
+{ecoop}
+{'The European Conference on Object-Oriented Programming is the European forum for bringing together researchers, practitioners, and students to share their ideas and experiences in all topics related to programming languages, software development, object-oriented technologies, systems and applications. It is a well-integrated collage of events, featuring carefully refereed technical papers, topic-focused workshops, a doctoral symposium, a summer school and outstanding invited speakers.'}
+{domeniu: 'Programming Paradigms'}
+{imagine: 'Images/ecoop'}
+{data: 18/06/2017}
+-------------------
+{6}
+{raai}
+{'The main goal of the conference is to bring together active researchers in various fields of Artificial Intelligence, presenting state of the art research topics and projects (published or ongoing work) as well as reports concerning the up to date technologies related to their fields of study. In addition to its dissemination purpose, the conference aims to stimulate the creation of active research networks in the fields of its participants.'}
+{domeniu: 'Artificial Intelligence'}
+{imagine: 'Images/raai'}
+{data: 19/06/2017}

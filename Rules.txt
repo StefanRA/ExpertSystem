@@ -15,9 +15,17 @@ if(
 	buget_disponibil -> (mare)
 )
 then
-	(locatia -> (in_strainatate) : fc -> 75).
-
+	(locatia -> (in_strainatate) : fc -> 80).
+	
 rg->3
+if(
+	dispus_sa_calatoreasca -> (1) &&
+	buget_disponibil -> (mediu)
+)
+then
+	(locatia -> (in_strainatate) : fc -> 70).
+
+rg->4
 if(
 	buget_disponibil -> (mare) &&
 	networking -> (1)
@@ -25,16 +33,173 @@ if(
 then
  (dimensiune_conferinta -> (mare) : fc -> 80).
 
-rg->4
+rg->5
 if(
-	perioada -> (aprilie) &&
+	locatia -> (in_strainatate) &&
+	interes_matematica_aplicata -> (1) &&
+	ramura_matematica -> (geometrie) &&
+	domeniu_de_interes -> (grafica_pe_calculator) &&
+	nivel_experienta -> (mare) &&
+	networking -> (1)
+)
+then
+	(nume_conferinta -> (eurographics) : fc -> 90).
+	
+rg->6
+if(
 	locatia -> (in_strainatate) &&
 	domeniu_de_interes -> (grafica_pe_calculator) &&
 	nivel_experienta -> (mare) &&
 	networking -> (1)
 )
 then
-	(nume_conferinta -> (eurographics) : fc -> 80).
+	(nume_conferinta -> (eurographics) : fc -> 70).
+
+rg->7
+if(
+	buget_disponibil -> (mediu) &&
+	networking -> (1)
+)
+then
+ (dimensiune_conferinta -> (mare) : fc -> 60).
+
+rg->8
+if(
+	buget_disponibil -> (mare) &&
+	sistem_de_operare_preferat -> (linux) &&
+	locatia -> (in_strainatate)
+)
+then
+	(nume_conferinta -> (embedded_linux_conference) : fc -> 80).
+
+rg->9
+if(
+	buget_disponibil -> (mediu) &&
+	sistem_de_operare_preferat -> (linux) &&
+	locatia -> (in_strainatate)
+)
+then
+	(nume_conferinta -> (embedded_linux_conference) : fc -> 70).
+	
+rg->10
+if(
+	interes_open_source -> (1) &&
+	buget_disponibil -> (mare) &&
+	locatia -> (in_strainatate)
+)
+then
+	(nume_conferinta -> (oscon) : fc -> 80).
+
+rg->11
+if(
+	interes_open_source -> (1) &&
+	sistem_de_operare_preferat -> (linux) &&
+	buget_disponibil -> (mare) &&
+	locatia -> (in_strainatate)
+)
+then
+	(nume_conferinta -> (oscon) : fc -> 85).
+
+rg->12
+if(
+	nivel_pregatire -> (mare) &&
+	stil_conferinta -> (conferinta)
+)
+then
+	(categorie_conferinta -> (a) : fc -> 85).
+
+rg->13
+if(
+	nivel_pregatire -> (medie)
+)
+then
+	(categorie_conferinta -> (b) : fc -> 80).
+
+rg->14
+if(
+	nivel_pregatire -> (mica)
+)
+then
+	(categorie_conferinta -> (c) : fc -> 75).
+
+rg->15
+if(
+	categorie_conferinta -> (a) &&
+	locatia -> (in_strainatate) &&
+	interes_matematica_aplicata -> (1) &&
+	ramura_matematica -> (geometrie) &&
+	domeniu_de_interes -> (grafica_pe_calculator) &&
+	networking -> (1)
+)
+then
+	(nume_conferinta -> (eurographics) : fc -> 90).
+	
+rg->16
+if(
+	categorie_conferinta -> (a) &&
+	locatia -> (in_strainatate) &&
+	domeniu_de_interes -> (grafica_pe_calculator) &&
+	networking -> (1)
+)
+then
+	(nume_conferinta -> (eurographics) : fc -> 85).
+
+rg->17
+if(
+	este_student -> (1) &&
+	nivel_studii -> (masterat)
+)
+then
+	(nivel_pregatire -> (mare) : fc -> 90).
+	
+rg->18
+if(
+	este_student -> (1) &&
+	nivel_studii -> (licenta)
+)
+then
+	(nivel_pregatire -> (mediu) : fc -> 80).
+
+rg->19
+if(
+	este_student -> (0) &&
+	nivel_studii -> (licenta)
+)
+then
+	(nivel_pregatire -> (mediu) : fc -> 80).
+
+rg->20
+if(
+	categorie_conferinta -> (a) &&
+	locatia -> (in_strainatate) &&
+	networking -> (1)
+)
+then
+	(nume_conferinta -> (ecoop) : fc -> 85).
+
+rg->21
+if(
+	categorie_conferinta -> (a) &&
+	locatia -> (in_strainatate)
+)
+then
+	(nume_conferinta -> (ecoop) : fc -> 80).
+
+rg->22
+if(
+	nivel_pregatire -> (mare) &&
+	doreste_sa_prezinte -> (1)
+)
+then
+	(categorie_conferinta -> (a_plus) : fc -> 90).
+
+rg->23
+if(
+	categorie_conferinta -> (a_plus) &&
+	domeniu_de_interes -> (inteligenta_artificiala)
+)
+then
+	(nume_conferinta -> (raai) : fc -> 80).
 
 q -> networking
 variante(
@@ -56,7 +221,7 @@ variante(
 	mediu (&)
 	mare
 )
-text -> ('Care bugetul de care dispuneti?').
+text -> ('Care este bugetul de care dispuneti?').
 
 q -> limbaj_preferat
 variante(
@@ -73,22 +238,6 @@ variante(
 )
 text -> ('Care este domeniul dumneavoastra de interes?').
 
-q -> perioada
-variante(
-	ianuarie (&)
-	februarie (&)
-	aprilie (&)
-	mai (&)
-	iunie (&)
-	iulie (&)
-	august (&)
-	septembrie (&)
-	octombrie (&)
-	noiembrie (&)
-	decembrie
-)
-text -> ('In ce luna doriti sa participati la conferinta?').
-
 q -> nivel_experienta
 variante(
 	mica (&)
@@ -96,3 +245,70 @@ variante(
 	mare
 )
 text -> ('Care este nivelul dumneavoastra de experienta in domeniul de care sunteti interesat?').
+
+q -> interes_matematica_aplicata
+variante(
+	da (&)
+	nu
+)
+text -> ('Sunteti interesat de modalitati de aplicarea a conceptelor matematice in stiinta calculatoarelor?').
+
+q -> ramura_matematica
+variante(
+	algebra (&)
+	analiza (&)
+	geometrie
+)
+text -> ('De care ramura a matematicii sunteti mai interesat?').
+
+q -> sistem_de_operare_preferat
+variante(
+	linux (&)
+	windows
+)
+text -> ('Care este sistemul de operare pe care il preferati?').
+
+q -> interes_open_source
+variante(
+	da (&)
+	nu
+)
+text -> ('Sunteti interesat de tehnologii open source?').
+
+q -> ocupatie
+variante(
+	student (&)
+	profesor (&)
+	dezvoltator_software
+)
+text -> ('Care este ocupatia dumneavoastra?').
+
+q -> este_student
+variante(
+	da (&)
+	nu
+)
+text -> ('Sunteti student?').
+
+q -> nivel_studii
+variante(
+	licenta (&)
+	masterat (&)
+	doctorat
+)
+text -> ('Care este nivelul studiilor pe care le-ati urmat?').
+
+q -> stil_conferinta
+variante(
+	conferinta (&)
+	seminar (&)
+	workshop
+)
+text -> ('Cum ati vrea sa fie conferinta?').
+
+q -> doreste_sa_prezinte
+variante(
+	da (&)
+	nu
+)
+text -> ('Doriti sa va prezentati o lucrare in cadrul conferintei?').
