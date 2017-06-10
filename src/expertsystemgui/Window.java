@@ -162,14 +162,14 @@ public class Window extends javax.swing.JFrame {
         certaintyFactorPanel = new javax.swing.JPanel();
         certaintyFactorLabel = new javax.swing.JLabel();
         certaintyFactorComboBox = new javax.swing.JComboBox<>();
-        qaPanel = new javax.swing.JPanel();
+        answersInfoTextPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         answersPanel = new javax.swing.JPanel();
         questionsRadioButtonPanel = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         answersScrollPane = new javax.swing.JScrollPane();
         answersTextArea = new javax.swing.JTextArea();
-        answersInfoTextPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        qaPanel = new javax.swing.JPanel();
         commandPanel = new javax.swing.JPanel();
         consultButton = new javax.swing.JButton();
         resetSystemButton = new javax.swing.JButton();
@@ -327,33 +327,14 @@ public class Window extends javax.swing.JFrame {
         certaintyFactorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "100", "95", "90", "85", "80", "75", "70", "65", "60", "55", "50", "45", "40", "35", "30", "25", "20", "10", "5", "0" }));
         certaintyFactorPanel.add(certaintyFactorComboBox);
 
-        javax.swing.GroupLayout questionsPanelLayout = new javax.swing.GroupLayout(questionsPanel);
-        questionsPanel.setLayout(questionsPanelLayout);
-        questionsPanelLayout.setHorizontalGroup(
-            questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(certaintyFactorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(questionTextPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(optionsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        questionsPanelLayout.setVerticalGroup(
-            questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsPanelLayout.createSequentialGroup()
-                .addGap(69, 69, 69)
-                .addComponent(questionTextPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(optionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(certaintyFactorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(54, Short.MAX_VALUE))
-        );
+        jLabel1.setText("Aici veți putea vedea atributele pentru care ați răspuns, cu întrebarea și răspunsul corespunzător fiecărui atribut");
+        answersInfoTextPanel.add(jLabel1);
 
         answersPanel.setPreferredSize(new java.awt.Dimension(291, 210));
 
         questionsRadioButtonPanel.setLayout(new javax.swing.BoxLayout(questionsRadioButtonPanel, javax.swing.BoxLayout.Y_AXIS));
+
+        jPanel8.setPreferredSize(new java.awt.Dimension(400, 216));
 
         answersScrollPane.setBorder(null);
 
@@ -373,7 +354,9 @@ public class Window extends javax.swing.JFrame {
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(answersScrollPane)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addComponent(answersScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 13, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout answersPanelLayout = new javax.swing.GroupLayout(answersPanel);
@@ -381,46 +364,64 @@ public class Window extends javax.swing.JFrame {
         answersPanelLayout.setHorizontalGroup(
             answersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, answersPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(questionsRadioButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(113, Short.MAX_VALUE)
+                .addComponent(questionsRadioButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
+                .addContainerGap(90, Short.MAX_VALUE))
         );
         answersPanelLayout.setVerticalGroup(
             answersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(answersPanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(questionsRadioButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addGroup(answersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(questionsRadioButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(10, 10, 10))
         );
 
-        jLabel1.setText("Aici veți putea vedea atributele pentru care ați răspuns, cu întrebarea și răspunsul corespunzător fiecărui atribut");
-        answersInfoTextPanel.add(jLabel1);
+        javax.swing.GroupLayout questionsPanelLayout = new javax.swing.GroupLayout(questionsPanel);
+        questionsPanel.setLayout(questionsPanelLayout);
+        questionsPanelLayout.setHorizontalGroup(
+            questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(questionsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(certaintyFactorPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
+                    .addComponent(questionTextPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(optionsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(answersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
+                    .addGroup(questionsPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(answersInfoTextPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 653, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        questionsPanelLayout.setVerticalGroup(
+            questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsPanelLayout.createSequentialGroup()
+                .addGap(69, 69, 69)
+                .addComponent(questionTextPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(optionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(certaintyFactorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(23, 23, 23)
+                .addComponent(answersInfoTextPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(answersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout qaPanelLayout = new javax.swing.GroupLayout(qaPanel);
         qaPanel.setLayout(qaPanelLayout);
         qaPanelLayout.setHorizontalGroup(
             qaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(qaPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(qaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(answersInfoTextPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE)
-                    .addComponent(answersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE))
-                .addContainerGap())
+            .addGap(0, 800, Short.MAX_VALUE)
         );
         qaPanelLayout.setVerticalGroup(
             qaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(qaPanelLayout.createSequentialGroup()
-                .addComponent(answersInfoTextPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
-                .addComponent(answersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addGap(0, 264, Short.MAX_VALUE)
         );
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(800, 600));
-        setPreferredSize(new java.awt.Dimension(900, 650));
 
         commandPanel.setPreferredSize(new java.awt.Dimension(800, 35));
 
@@ -443,8 +444,6 @@ public class Window extends javax.swing.JFrame {
             }
         });
         commandPanel.add(resetSystemButton);
-
-        getContentPane().add(commandPanel, java.awt.BorderLayout.NORTH);
 
         solutionsScrollPane.setPreferredSize(new java.awt.Dimension(258, 100));
 
@@ -492,8 +491,6 @@ public class Window extends javax.swing.JFrame {
                 .addContainerGap(82, Short.MAX_VALUE))
         );
 
-        getContentPane().add(solutionsPanel, java.awt.BorderLayout.CENTER);
-
         solutionsDescriptionPanel.setPreferredSize(new java.awt.Dimension(800, 220));
 
         javax.swing.GroupLayout solutionsDescriptionPanelLayout = new javax.swing.GroupLayout(solutionsDescriptionPanel);
@@ -507,7 +504,9 @@ public class Window extends javax.swing.JFrame {
             .addGap(0, 220, Short.MAX_VALUE)
         );
 
-        getContentPane().add(solutionsDescriptionPanel, java.awt.BorderLayout.SOUTH);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(800, 600));
+        setPreferredSize(new java.awt.Dimension(900, 650));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -597,11 +596,8 @@ public class Window extends javax.swing.JFrame {
         BorderLayout borderLayout = (BorderLayout) this.getContentPane().getLayout();
         Component centerComponent = borderLayout.getLayoutComponent(BorderLayout.CENTER);
         Component northComponent = borderLayout.getLayoutComponent(BorderLayout.NORTH);
-        Component southComponent = borderLayout.getLayoutComponent(BorderLayout.SOUTH);
         if(centerComponent != null)
             this.remove(centerComponent);
-        if(southComponent != null)
-            this.remove(southComponent);
         
         switch(systemState){
             case START:
@@ -620,7 +616,6 @@ public class Window extends javax.swing.JFrame {
             case CONSULTING:
                 consultButton.setEnabled(false);
                 getContentPane().add(questionsPanel, BorderLayout.CENTER);
-                getContentPane().add(qaPanel, BorderLayout.SOUTH);
                 this.revalidate();
                 this.repaint();
                 break;
