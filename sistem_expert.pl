@@ -613,7 +613,7 @@ cum(L) :-
 cum(not Scop) :-
 	fapt(Scop, FC, Reguli),
 	lista_float_int(Reguli, Reguli1),
-	FC < -20,
+	FC < -40,
 	transformare(not Scop, PG),
 	append(PG, [a,fost,derivat,cu, ajutorul, 'regulilor: '|Reguli1], LL),
 	scrie_lista(LL), nl,
@@ -622,7 +622,7 @@ cum(not Scop) :-
 cum(Scop) :-
 	fapt(Scop, FC, Reguli),
 	lista_float_int(Reguli, Reguli1),
-	FC > 20,
+	FC > 40,
 	transformare(Scop, PG),
 	append(PG, [a, fost, derivat, cu, ajutorul, 'regulilor: ' | Reguli1], LL),
 	scrie_lista(LL), nl,
@@ -636,14 +636,14 @@ transformare(Scop,L), cum(Stream, Scop).
 cum(Stream, not Scop) :- 
 fapt(Scop,FC,Reguli),
 lista_float_int(Reguli,Reguli1),
-FC < -20,transformare(not Scop,PG),
+FC < -40,transformare(not Scop,PG),
 append(PG,[a,fost,derivat,cu, ajutorul, 'regulilor: '|Reguli1],LL),
 write(Stream, 'dem('), scrie_lista(Stream, LL),afis_reguli(Stream,Reguli),fail.
 
 cum(Stream, Scop) :-
 	fapt(Scop,FC,Reguli),
 	lista_float_int(Reguli,Reguli1),
-	FC > 20,transformare(Scop,PG),
+	FC > 40,transformare(Scop,PG),
 	append(PG,[a,fost,derivat,cu, ajutorul, 'regulilor: '|Reguli1],LL),
 	write(Stream, 'dem('), scrie_lista(Stream, LL),afis_reguli(Stream, Reguli),
 	fail.
