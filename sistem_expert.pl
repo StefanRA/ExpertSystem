@@ -1208,9 +1208,12 @@ parseSolutionDate(datime(Year, Month, Day, 0, 0, 0)) -->
 loadRules :-
 	repeat,
 	citeste_propozitie(L),
+	\+isComment(L),
 	proceseaza(L),
 	L == [end_of_file],
 	nl.
+
+isComment(['comentariu'|_]).
 
 proceseaza([end_of_file]) :-
 	!.
