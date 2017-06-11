@@ -44,5 +44,5 @@
 {ux_bucharest}
 {'UX Bucharest is not just an international UX and CX conference. It is an inspirational adventure. A training field for all those unknown heroes aspiring to design, develop manage products and services that users love.'}
 {domeniu: 'Application Design'}
-{imagine: 'Images/ux_bucharest}'}
+{imagine: 'Images/ux_bucharest'}
 {data: 19/06/2017}
