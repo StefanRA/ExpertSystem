@@ -1,12 +1,7 @@
 package expertsystemgui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.LayoutManager;
-import java.awt.Toolkit;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
@@ -19,12 +14,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
-import javax.swing.border.Border;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import org.joda.time.DateTime;
@@ -40,6 +35,9 @@ public class Window extends javax.swing.JFrame {
     private LinkedHashMap<String, List<String>> QandA = new LinkedHashMap<>();
     private List<Solution> solutions = new ArrayList<>();
     private SystemStateEnum systemState;
+    public Calendar calendar;
+    public int calendarRows;
+    private Boolean systemConsulted = false;
     
     public Window(String title) {
         super(title);
@@ -152,20 +150,21 @@ public class Window extends javax.swing.JFrame {
         loadRulesButton = new javax.swing.JButton();
         backToMenuButton = new javax.swing.JButton();
         questionsPanel = new javax.swing.JPanel();
-        optionsPanel = new javax.swing.JPanel();
-        questionTextPanel = new javax.swing.JPanel();
-        questionLabel = new javax.swing.JLabel();
-        certaintyFactorPanel = new javax.swing.JPanel();
-        certaintyFactorLabel = new javax.swing.JLabel();
-        certaintyFactorComboBox = new javax.swing.JComboBox<>();
-        answersInfoTextPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         answersPanel = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         answersScrollPane = new javax.swing.JScrollPane();
         answersTextArea = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
         questionsRadioButtonPanel = new javax.swing.JPanel();
+        answersInfoTextPanel = new javax.swing.JPanel();
+        answersInfoTextLabel = new javax.swing.JLabel();
+        questionPanel = new javax.swing.JPanel();
+        questionTextPanel = new javax.swing.JPanel();
+        questionLabel = new javax.swing.JLabel();
+        optionsPanel = new javax.swing.JPanel();
+        certaintyFactorPanel = new javax.swing.JPanel();
+        certaintyFactorLabel = new javax.swing.JLabel();
+        certaintyFactorComboBox = new javax.swing.JComboBox<>();
         solutionsPanel = new javax.swing.JPanel();
         solutionsScrollPane = new javax.swing.JScrollPane();
         solutionsList = new javax.swing.JList<>();
@@ -177,16 +176,22 @@ public class Window extends javax.swing.JFrame {
         outputAreaPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         outputTextArea = new javax.swing.JTextArea();
-        commandPanel = new javax.swing.JPanel();
-        backToStartPanelButton = new javax.swing.JButton();
-        consultButton = new javax.swing.JButton();
-        resetSystemButton = new javax.swing.JButton();
-        showFactsButton = new javax.swing.JButton();
         factsPanel = new javax.swing.JPanel();
         factsScrollPane = new javax.swing.JScrollPane();
         factsTextArea = new javax.swing.JTextArea();
         factsInfoPanel = new javax.swing.JPanel();
         factsInfoLabel = new javax.swing.JLabel();
+        calendarPanel = new javax.swing.JPanel();
+        calendarScrollPane = new javax.swing.JScrollPane();
+        calendarTable = new javax.swing.JTable();
+        commandPanel = new javax.swing.JPanel();
+        consultButton = new javax.swing.JButton();
+        resetSystemButton = new javax.swing.JButton();
+        backToStartPanelButton = new javax.swing.JButton();
+        showFactsButton = new javax.swing.JButton();
+        showAnswersButton = new javax.swing.JButton();
+        showSolutionsButton = new javax.swing.JButton();
+        showCalendarButton = new javax.swing.JButton();
 
         startLabel.setText("Start label");
 
@@ -291,29 +296,7 @@ public class Window extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout optionsPanelLayout = new javax.swing.GroupLayout(optionsPanel);
-        optionsPanel.setLayout(optionsPanelLayout);
-        optionsPanelLayout.setHorizontalGroup(
-            optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        optionsPanelLayout.setVerticalGroup(
-            optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-
-        questionLabel.setText("Question");
-        questionTextPanel.add(questionLabel);
-
-        certaintyFactorLabel.setText("Factor de certitudine");
-        certaintyFactorPanel.add(certaintyFactorLabel);
-
-        certaintyFactorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "100", "95", "90", "85", "80", "75", "70", "65", "60", "55", "50", "45", "40", "35", "30", "25", "20", "10", "5", "0" }));
-        certaintyFactorPanel.add(certaintyFactorComboBox);
-
-        jLabel1.setText("Aici veți putea vedea atributele pentru care ați răspuns, cu întrebarea și răspunsul corespunzător fiecărui atribut");
-        answersInfoTextPanel.add(jLabel1);
-
+        answersPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         answersPanel.setPreferredSize(new java.awt.Dimension(291, 210));
 
         jPanel8.setPreferredSize(new java.awt.Dimension(400, 216));
@@ -332,13 +315,13 @@ public class Window extends javax.swing.JFrame {
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(answersScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
+            .addComponent(answersScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addComponent(answersScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 13, Short.MAX_VALUE))
+                .addGap(0, 26, Short.MAX_VALUE))
         );
 
         jScrollPane2.setBorder(null);
@@ -346,28 +329,80 @@ public class Window extends javax.swing.JFrame {
         questionsRadioButtonPanel.setLayout(new javax.swing.BoxLayout(questionsRadioButtonPanel, javax.swing.BoxLayout.Y_AXIS));
         jScrollPane2.setViewportView(questionsRadioButtonPanel);
 
+        answersInfoTextLabel.setText("Aici veți putea vedea atributele pentru care ați răspuns, cu întrebarea și răspunsul corespunzător fiecărui atribut");
+        answersInfoTextPanel.add(answersInfoTextLabel);
+
         javax.swing.GroupLayout answersPanelLayout = new javax.swing.GroupLayout(answersPanel);
         answersPanel.setLayout(answersPanelLayout);
         answersPanelLayout.setHorizontalGroup(
             answersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, answersPanelLayout.createSequentialGroup()
-                .addContainerGap(92, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(40, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
-                .addContainerGap(112, Short.MAX_VALUE))
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
+                .addContainerGap(42, Short.MAX_VALUE))
+            .addGroup(answersPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(answersInfoTextPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         answersPanelLayout.setVerticalGroup(
             answersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(answersPanelLayout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(answersInfoTextPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
                 .addGroup(answersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(answersPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane2)
-                        .addContainerGap())
-                    .addGroup(answersPanelLayout.createSequentialGroup()
-                        .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(10, 10, 10))))
+                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 16, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2))
+                .addContainerGap())
+        );
+
+        questionPanel.setVisible(false);
+
+        questionLabel.setText("Question");
+        questionTextPanel.add(questionLabel);
+
+        javax.swing.GroupLayout optionsPanelLayout = new javax.swing.GroupLayout(optionsPanel);
+        optionsPanel.setLayout(optionsPanelLayout);
+        optionsPanelLayout.setHorizontalGroup(
+            optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        optionsPanelLayout.setVerticalGroup(
+            optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        certaintyFactorLabel.setText("Factor de certitudine");
+        certaintyFactorPanel.add(certaintyFactorLabel);
+
+        certaintyFactorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "100", "95", "90", "85", "80", "75", "70", "65", "60", "55", "50", "45", "40", "35", "30", "25", "20", "10", "5", "0" }));
+        certaintyFactorPanel.add(certaintyFactorComboBox);
+
+        javax.swing.GroupLayout questionPanelLayout = new javax.swing.GroupLayout(questionPanel);
+        questionPanel.setLayout(questionPanelLayout);
+        questionPanelLayout.setHorizontalGroup(
+            questionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(questionPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(questionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(optionsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(questionTextPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(certaintyFactorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        questionPanelLayout.setVerticalGroup(
+            questionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(questionPanelLayout.createSequentialGroup()
+                .addComponent(questionTextPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(optionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addComponent(certaintyFactorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout questionsPanelLayout = new javax.swing.GroupLayout(questionsPanel);
@@ -377,31 +412,21 @@ public class Window extends javax.swing.JFrame {
             .addGroup(questionsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(certaintyFactorPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
-                    .addComponent(questionTextPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(optionsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(answersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
-                    .addGroup(questionsPanelLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(answersInfoTextPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 653, Short.MAX_VALUE)))
+                    .addComponent(questionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(answersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE))
                 .addContainerGap())
         );
         questionsPanelLayout.setVerticalGroup(
             questionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsPanelLayout.createSequentialGroup()
                 .addGap(69, 69, 69)
-                .addComponent(questionTextPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(optionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(questionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(certaintyFactorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23)
-                .addComponent(answersInfoTextPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(answersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
+                .addComponent(answersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
+        solutionsScrollPane.setVisible(false);
         solutionsScrollPane.setPreferredSize(new java.awt.Dimension(350, 100));
 
         solutionsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -414,6 +439,7 @@ public class Window extends javax.swing.JFrame {
         });
         solutionsScrollPane.setViewportView(solutionsList);
 
+        proofScrollPane.setVisible(false);
         proofScrollPane.setPreferredSize(new java.awt.Dimension(350, 22));
         proofScrollPane.setViewportView(proofTextPane);
 
@@ -470,62 +496,18 @@ public class Window extends javax.swing.JFrame {
         outputAreaPanel.setLayout(outputAreaPanelLayout);
         outputAreaPanelLayout.setHorizontalGroup(
             outputAreaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, outputAreaPanelLayout.createSequentialGroup()
-                .addGap(245, 245, 245)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
-                .addGap(246, 246, 246))
+            .addGroup(outputAreaPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
+                .addContainerGap())
         );
         outputAreaPanelLayout.setVerticalGroup(
             outputAreaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(outputAreaPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+                .addContainerGap())
         );
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(800, 600));
-        setPreferredSize(new java.awt.Dimension(900, 700));
-
-        commandPanel.setPreferredSize(new java.awt.Dimension(800, 35));
-
-        backToStartPanelButton.setText("Încarcă");
-        backToStartPanelButton.setPreferredSize(new java.awt.Dimension(80, 25));
-        backToStartPanelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                backToStartPanelButtonActionPerformed(evt);
-            }
-        });
-        commandPanel.add(backToStartPanelButton);
-
-        consultButton.setText("Consultă ");
-        consultButton.setPreferredSize(new java.awt.Dimension(90, 25));
-        consultButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                consultButtonActionPerformed(evt);
-            }
-        });
-        commandPanel.add(consultButton);
-
-        resetSystemButton.setText("Reset");
-        resetSystemButton.setPreferredSize(new java.awt.Dimension(80, 25));
-        resetSystemButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resetSystemButtonActionPerformed(evt);
-            }
-        });
-        commandPanel.add(resetSystemButton);
-
-        showFactsButton.setText("Afișare fapte");
-        showFactsButton.setPreferredSize(new java.awt.Dimension(120, 25));
-        showFactsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showFactsButtonActionPerformed(evt);
-            }
-        });
-        commandPanel.add(showFactsButton);
-
-        getContentPane().add(commandPanel, java.awt.BorderLayout.NORTH);
 
         factsTextArea.setColumns(20);
         factsTextArea.setRows(5);
@@ -558,7 +540,107 @@ public class Window extends javax.swing.JFrame {
                 .addContainerGap(37, Short.MAX_VALUE))
         );
 
-        getContentPane().add(factsPanel, java.awt.BorderLayout.CENTER);
+        calendarTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        calendarTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        calendarTable.setFillsViewportHeight(true);
+        calendarScrollPane.setViewportView(calendarTable);
+
+        javax.swing.GroupLayout calendarPanelLayout = new javax.swing.GroupLayout(calendarPanel);
+        calendarPanel.setLayout(calendarPanelLayout);
+        calendarPanelLayout.setHorizontalGroup(
+            calendarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, calendarPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(calendarScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        calendarPanelLayout.setVerticalGroup(
+            calendarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(calendarPanelLayout.createSequentialGroup()
+                .addComponent(calendarScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(800, 600));
+        setPreferredSize(new java.awt.Dimension(900, 700));
+
+        commandPanel.setPreferredSize(new java.awt.Dimension(800, 35));
+
+        consultButton.setText("Consultă ");
+        consultButton.setPreferredSize(new java.awt.Dimension(120, 25));
+        consultButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                consultButtonActionPerformed(evt);
+            }
+        });
+        commandPanel.add(consultButton);
+
+        resetSystemButton.setText("Reinițiază");
+        resetSystemButton.setPreferredSize(new java.awt.Dimension(120, 25));
+        resetSystemButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetSystemButtonActionPerformed(evt);
+            }
+        });
+        commandPanel.add(resetSystemButton);
+
+        backToStartPanelButton.setText("Reset");
+        backToStartPanelButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        backToStartPanelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backToStartPanelButtonActionPerformed(evt);
+            }
+        });
+        commandPanel.add(backToStartPanelButton);
+
+        showFactsButton.setText("Afișare fapte");
+        showFactsButton.setPreferredSize(new java.awt.Dimension(120, 25));
+        showFactsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showFactsButtonActionPerformed(evt);
+            }
+        });
+        commandPanel.add(showFactsButton);
+
+        showAnswersButton.setText("Răspunsuri");
+        showAnswersButton.setPreferredSize(new java.awt.Dimension(100, 25));
+        showAnswersButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showAnswersButtonActionPerformed(evt);
+            }
+        });
+        commandPanel.add(showAnswersButton);
+
+        showSolutionsButton.setText("Afișare soluții");
+        showSolutionsButton.setPreferredSize(new java.awt.Dimension(120, 25));
+        showSolutionsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showSolutionsButtonActionPerformed(evt);
+            }
+        });
+        commandPanel.add(showSolutionsButton);
+
+        showCalendarButton.setText("Calendar");
+        showCalendarButton.setPreferredSize(new java.awt.Dimension(90, 25));
+        showCalendarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showCalendarButtonActionPerformed(evt);
+            }
+        });
+        commandPanel.add(showCalendarButton);
+
+        getContentPane().add(commandPanel, java.awt.BorderLayout.NORTH);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -571,6 +653,15 @@ public class Window extends javax.swing.JFrame {
         } catch (InterruptedException ex) {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        consultButton.setEnabled(false);
+        showFactsButton.setVisible(false);
+        showAnswersButton.setVisible(false);
+        showSolutionsButton.setVisible(false);
+        showCalendarButton.setVisible(false);
+        answersInfoTextLabel.setText("Aici veți putea vedea atributele pentru care ați răspuns, cu întrebarea și răspunsul corespunzător fiecărui atribut");
+        optionsPanel.setVisible(true);
+        questionPanel.setVisible(true);
         
         switchScreen(SystemStateEnum.CONSULTING);
     }//GEN-LAST:event_consultButtonActionPerformed
@@ -595,13 +686,19 @@ public class Window extends javax.swing.JFrame {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        systemConsulted = false;
         consultButton.setEnabled(true);
-        showFactsButton.setVisible(true);
         questionsRadioButtonPanel.removeAll();
         proofTextPane.setText("");
         answersTextArea.setVisible(false);
         questionLabel.setText("");
         optionsPanel.removeAll();
+        solutionsScrollPane.setVisible(false);
+        proofScrollPane.setVisible(false);
+        showSolutionsButton.setVisible(true);
+        showAnswersButton.setVisible(true);
+        showFactsButton.setVisible(true);
+        showCalendarButton.setVisible(true);
         
         DefaultListModel listModel = (DefaultListModel) solutionsList.getModel();
         listModel.removeAllElements();
@@ -656,9 +753,69 @@ public class Window extends javax.swing.JFrame {
     private void backToStartPanelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backToStartPanelButtonActionPerformed
         // TODO add your handling code here:
         resetSystem();
+        calendar = null;
         switchScreen(SystemStateEnum.START);
     }//GEN-LAST:event_backToStartPanelButtonActionPerformed
 
+    private void showAnswersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showAnswersButtonActionPerformed
+        // TODO add your handling code here:
+        if(!systemConsulted)
+            answersInfoTextLabel.setText("Trebuie să consultați sistemul, mai întâi, pentru a putea vedea răspunsurile");
+        switchScreen(SystemStateEnum.SHOWING_ANSWERS);
+    }//GEN-LAST:event_showAnswersButtonActionPerformed
+
+    private void showSolutionsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showSolutionsButtonActionPerformed
+        // TODO add your handling code here:
+        if(!systemConsulted)
+            solutionsInfoLabel.setText("Trebuie să consultați sistemul, mai întâi, pentru a putea vedea soluțiile");
+        switchScreen(SystemStateEnum.SHOWING_SOLUTIONS);
+    }//GEN-LAST:event_showSolutionsButtonActionPerformed
+
+    private void showCalendarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showCalendarButtonActionPerformed
+        // TODO add your handling code here:
+        switchScreen(SystemStateEnum.SHOWING_CALENDAR);
+                
+        if(calendar != null)
+            return;
+            
+        try {
+            connection.messageSender.sendMessageToExpertSystem("command(show_calendar)");
+        
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }//GEN-LAST:event_showCalendarButtonActionPerformed
+
+    public void setCalendar(String text){
+        int rows = calendarRows;
+        int columns = 13;
+        
+        text = text.substring(1, text.length()-1);
+        text = text.replaceAll("\\[","").replaceAll("\\]","").replaceAll("\'","");
+        text = "Domeniu" + text;
+        String elements[] = text.split(",");
+        
+        String columnNames[] = new String[columns];
+        System.arraycopy(elements, 0, columnNames, 0, columns);
+        
+        Object[][] data = new Object[rows-1][columns];
+        for(int i=0; i < rows-1; i++)
+            for(int j=0; j < columns; j++)
+                data[i][j] = elements[(i+1)*columns + j];
+        
+        calendar = new Calendar(rows, columns, columnNames, data);
+        SetCalendarTableModel();
+    }
+    
+    private void SetCalendarTableModel(){
+        TableModel tableModel = new DefaultTableModel(calendar.data, calendar.columnNames);
+        calendarTable.setModel(tableModel);
+        calendarTable.getColumnModel().getColumn(0).setPreferredWidth(300);
+        calendarTable.revalidate();
+        calendarTable.repaint();
+    }
+    
     public void loadingSuccessful(){
         setFilenameWrongLabelText("");
         // move to main menu screen
@@ -687,8 +844,6 @@ public class Window extends javax.swing.JFrame {
                 this.repaint();
                 break;
             case CONSULTING:
-                consultButton.setEnabled(false);
-                showFactsButton.setVisible(false);
                 getContentPane().add(questionsPanel, BorderLayout.CENTER);
                 this.revalidate();
                 this.repaint();
@@ -701,6 +856,16 @@ public class Window extends javax.swing.JFrame {
             case SHOWING_FACTS:
                 factsTextArea.setText("");
                 getContentPane().add(factsPanel, BorderLayout.CENTER);
+                this.revalidate();
+                this.repaint();
+                break;
+            case SHOWING_ANSWERS:
+                getContentPane().add(questionsPanel, BorderLayout.CENTER);
+                this.revalidate();
+                this.repaint();
+                break;
+            case SHOWING_CALENDAR:
+                getContentPane().add(calendarPanel, BorderLayout.CENTER);
                 this.revalidate();
                 this.repaint();
                 break;
@@ -896,7 +1061,13 @@ public class Window extends javax.swing.JFrame {
            proofScrollPane.setVisible(false);
         }
 
+        systemConsulted = true;
+        showSolutionsButton.setVisible(true);
+        showAnswersButton.setVisible(true);
         showFactsButton.setVisible(true);
+        showCalendarButton.setVisible(true);
+        questionPanel.setVisible(false);
+        
         switchScreen(SystemStateEnum.SHOWING_SOLUTIONS);
     }
     
@@ -916,6 +1087,7 @@ public class Window extends javax.swing.JFrame {
         Document doc = proofTextPane.getDocument();
         try {
             doc.insertString(doc.getLength(), text, null);
+            proofTextPane.setCaretPosition(0);
         } 
         catch (BadLocationException ex) {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
@@ -926,16 +1098,20 @@ public class Window extends javax.swing.JFrame {
         text += "\n";
         text = text.startsWith("(Atribut") ? text+"\n" : text;
         factsTextArea.append(text);
+        factsTextArea.setCaretPosition(0);
     }
     
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel answersInfoTextLabel;
     private javax.swing.JPanel answersInfoTextPanel;
     private javax.swing.JPanel answersPanel;
     private javax.swing.JScrollPane answersScrollPane;
     private javax.swing.JTextArea answersTextArea;
     private javax.swing.JButton backToMenuButton;
     private javax.swing.JButton backToStartPanelButton;
+    private javax.swing.JPanel calendarPanel;
+    private javax.swing.JScrollPane calendarScrollPane;
+    private javax.swing.JTable calendarTable;
     private javax.swing.JComboBox<String> certaintyFactorComboBox;
     private javax.swing.JLabel certaintyFactorLabel;
     private javax.swing.JPanel certaintyFactorPanel;
@@ -948,7 +1124,6 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JTextArea factsTextArea;
     private javax.swing.JLabel filenameWrongLabel;
     private javax.swing.JLabel greetingMessageLabel;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -964,6 +1139,7 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JScrollPane proofScrollPane;
     private javax.swing.JTextPane proofTextPane;
     public javax.swing.JLabel questionLabel;
+    private javax.swing.JPanel questionPanel;
     private javax.swing.JPanel questionTextPanel;
     private javax.swing.JPanel questionsPanel;
     private javax.swing.ButtonGroup questionsRadioButtonGroup;
@@ -971,7 +1147,10 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JButton resetSystemButton;
     private javax.swing.JLabel rulesFilenameLabel;
     private javax.swing.JTextField rulesFilenameTextField;
+    private javax.swing.JButton showAnswersButton;
+    private javax.swing.JButton showCalendarButton;
     private javax.swing.JButton showFactsButton;
+    private javax.swing.JButton showSolutionsButton;
     private javax.swing.JPanel solutionsDescriptionPanel;
     private javax.swing.JLabel solutionsFilenameLabel;
     private javax.swing.JTextField solutionsFilenameTextField;

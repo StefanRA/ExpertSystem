@@ -5,5 +5,7 @@ public enum SystemStateEnum {
     MAIN_MENU,
     CONSULTING,
     SHOWING_SOLUTIONS,
-    SHOWING_FACTS
+    SHOWING_FACTS,
+    SHOWING_ANSWERS,
+    SHOWING_CALENDAR
 }

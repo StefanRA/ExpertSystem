@@ -73,28 +73,38 @@ public class MessageReader extends Thread {
                                 window.setSolution(solution);
                             }
                             //if message is part of a solution proof
-                            if(textLength>2 && text.substring(0,3).equals("dem")&& text.charAt(3)=='(')
+                            if(textLength>4 && text.substring(0,3).equals("dem")&& text.charAt(3)=='(')
                             {
                                 String proofText = text.substring(4);
                                 window.setProofText(proofText+"\n");
                             }
                             //if rules file cannot be found
-                            if(textLength > "rules_file_does_not_exist".length() && text.substring(0,"rules_file_does_not_exist".length()).equals("rules_file_does_not_exist")){
+                            if(text.startsWith("rules_file_does_not_exist")){
                                 
                                 String[] s = text.split(":");
                                 window.setFilenameWrongLabelText(s[1]);
                             }
                             //if solution info file cannot be found
-                            if(textLength > "solution_info_file_does_not_exist".length() && text.substring(0,"solution_info_file_does_not_exist".length()).equals("solution_info_file_does_not_exist")){
+                            if(text.startsWith("solution_info_file_does_not_exist")){
                                 String[] s = text.split(":");
                                 window.setFilenameWrongLabelText(s[1]);
                             }//if rules and solution info file are both ok
                             if(text.equals("rules_ok")){
                                 window.loadingSuccessful();
-                            }
-                            if(text.length() > "facts".length() && text.substring(0,5).equals("facts") && text.charAt(5)=='('){
+                            }// if message represents facts stored in the knowledge base
+                            if(text.startsWith("facts") && text.charAt(5)=='('){
                                 String factsText = text.substring(6);
                                 window.appendFactsText(factsText);
+                            }
+                            if(text.startsWith("calendar")&& text.charAt("calendar".length())=='('){
+                                String calText = text.substring("calendar".length() + 1);
+                                if(calText.startsWith("rows")){
+                                    String s[] = calText.split("=");
+                                    window.calendarRows = Integer.parseInt(s[1]);
+                                }
+                                else{
+                                    window.setCalendar(calText);
+                                }
                             }
                         }
 

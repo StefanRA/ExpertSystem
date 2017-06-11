@@ -1825,6 +1825,18 @@ processMessageFromGUI(Stream, command(show_facts), CommandCount) :-
 	CommandCount1 is CommandCount + 1,
 	readInputFromGUI(Stream, CommandCount1).
 
+processMessageFromGUI(Stream, command(show_calendar), CommandCount) :-
+	write(Stream, 'show_calendar'), nl(Stream),
+	flush_output(Stream),
+	calendar(Calendar),
+	length(Calendar,Rows),
+	format(Stream, 'calendar(rows=~p\n', [Rows]),
+	flush_output(Stream),
+	format(Stream, 'calendar(~p\n', [Calendar]),
+	flush_output(Stream),
+	CommandCount1 is CommandCount + 1,
+	readInputFromGUI(Stream, CommandCount1).
+
 processMessageFromGUI(Stream, X, CommandCount) :- 
 	write(Stream,'I do not understand: '),write(Stream,X),nl(Stream),
 	flush_output(Stream),
