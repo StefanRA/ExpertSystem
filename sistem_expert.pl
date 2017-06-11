@@ -801,7 +801,8 @@ interogheaza(Stream,Atr,Mesaj,Optiuni,Istorie) :-
     atom_concat(Mesaj2,Optiuni2,MesajFinal),
 	write(Stream,i(MesajFinal)),nl(Stream),flush_output(Stream),
 	citeste_opt(Stream,VLista,Optiuni,Istorie),
-	assert_fapt(Atr,VLista).
+	det_val_fc(VLista, Val, FC),
+	assert_fapt(Atr,[Val,fc,FC]).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -1208,9 +1209,12 @@ parseSolutionDate(datime(Year, Month, Day, 0, 0, 0)) -->
 loadRules :-
 	repeat,
 	citeste_propozitie(L),
+	\+isComment(L),
 	proceseaza(L),
 	L == [end_of_file],
 	nl.
+
+isComment(['comentariu'|_]).
 
 proceseaza([end_of_file]) :-
 	!.
