@@ -515,7 +515,8 @@ afiseaza_scop(detail, _) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 afiseaza_scop(Stream, Atr) :-
 	nl,fapt(av(Atr,Val),FC,_),
-	FC >= 20,format(Stream,"s(~p este ~p cu fc ~p)",[Atr,Val, FC]),
+	solution_info(_, Val, Description, Domain, Image, Date),
+	FC >= 20,format(Stream,"s(~p#~p#~p#~p#~p#~p#~p)",[Atr, Val, FC, Description, Domain, Image, Date]),
 	nl(Stream),flush_output(Stream),fail.
 
 afiseaza_scop(Stream, _) :-

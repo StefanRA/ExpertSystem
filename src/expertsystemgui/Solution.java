@@ -5,6 +5,9 @@
  */
 package expertsystemgui;
 
+import java.awt.image.BufferedImage;
+import org.joda.time.LocalDate;
+
 /**
  *
  * @author Claudiu
@@ -14,16 +17,30 @@ public class Solution implements Comparable<Solution>{
     private String goal;
     private String value;
     private int certaintyFactor;
+    private String description;
+    private String domain;
+    private BufferedImage image;
+    private LocalDate date;
 
     public Solution(){
     }
-    
-    public Solution(String goal, String value, int certaintyFactor) {
+
+    public Solution(String goal,
+                    String value,
+                    int certaintyFactor, 
+                    String description, 
+                    String domain, 
+                    BufferedImage image, 
+                    LocalDate date) {
         this.goal = goal;
         this.value = value;
         this.certaintyFactor = certaintyFactor;
+        this.description = description;
+        this.image = image;
+        this.domain = domain;
+        this.date = date;
     }
-
+    
     public String getGoal() {
         return goal;
     }
@@ -47,24 +64,42 @@ public class Solution implements Comparable<Solution>{
     public void setCertaintyFactor(int certaintyFactor) {
         this.certaintyFactor = certaintyFactor;
     }
+    
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
+    public BufferedImage getImage() {
+        return image;
+    }
+
+    public void setImage(BufferedImage image) {
+        this.image = image;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
 
     @Override
     public String toString() {
         return goal + " este " + value + " cu fc " + certaintyFactor;
-    }
-
-    
-    /**
-     * Transforms a string into a Solution object.
-     * @param s should have the following format "goal este value cu fc certaintyFactor"
-     * @return Solution object with the given attributes
-     */
-    public static Solution toSolution(String s){
-        String[] words = s.split(" ");
-        if(words.length < 6 || !words[1].equals("este"))
-            return null;
-        
-        return new Solution(words[0], words[2], Integer.parseInt(words[5]));
     }
 
     @Override
