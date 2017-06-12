@@ -194,7 +194,7 @@ resetKnowledgeBase :-
 	retractall(scop(_)),
 	retractall(interogabil(_, _, _)),
 	retractall(regula(_, _, _)),
-	retractall(solution_info(_, _, _, _, _, _, _)).
+	retractall(solution_info(_, _, _, _, _, _, _, _)).
 %---------------------------------------------------------------------------------------------------
 
 un_pas(Rasp,OptiuniUrm,MesajUrm) :-
@@ -454,7 +454,7 @@ in the specified file. */
 %---------------------------------------------------------------------------------------------------
 logSolutions(Stream, Goal) :-
 	fapt(av(Goal, Val), FC, _),
-	FC >= 20,
+	FC > 40,
 	logSolution(Stream, av(Goal, Val), FC),
 	fail.
 logSolutions(_, _).
@@ -485,7 +485,7 @@ determina(_,_).
 afiseaza_scop(summary, Atr) :-
 	nl,
 	fapt(av(Atr, Val), FC, _),
-	FC >= 20,
+	FC > 40,
 	scrie_scop(av(Atr, Val), FC),
 	nl,
 	fail.
@@ -495,9 +495,9 @@ afiseaza_scop(summary, _) :-
 afiseaza_scop(detail, Atr) :-
 	nl,
 	fapt(av(Atr, Val), FC, _),
-	FC >= 20,
+	FC > 40,
 	scrie_scop(av(Atr, Val), FC),
-	solution_info(_, Val, Description, _, _, datime(Year, Month, Day, _, _, _),_),
+	solution_info(_, Val, _, Description, _, _, datime(Year, Month, Day, _, _, _),_),
 	nl, nl, write(Description), nl, nl,
 	datime(datime(CurrentYear, CurrentMonth, CurrentDay, _, _, _)),
 	Year =:= CurrentYear,
@@ -515,8 +515,8 @@ afiseaza_scop(detail, _) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 afiseaza_scop(Stream, Atr) :-
 	nl,fapt(av(Atr,Val),FC,_),
-	solution_info(_, Val, Description, Domain, Image, Date, Location),
-	FC >= 20,format(Stream,"s(~p#~p#~p#~p#~p#~p#~p#~p)",[Atr, Val, FC, Description, Domain, Image, Date, Location]),
+	solution_info(_, Val, Name, Description, Domain, Image, Date, Location),
+	FC > 40,format(Stream,"s(~p#~p#~p#~p#~p#~p#~p#~p#~p)",[Atr, Val, FC, Name, Description, Domain, Image, Date, Location]),
 	nl(Stream),flush_output(Stream),fail.
 
 afiseaza_scop(Stream, _) :-
@@ -990,8 +990,8 @@ loadKnowledgeBase(RulesFileName, SolutionInfoFileName) :-
 getDomainList(Domains) :-
 	setof(
 		Domain,
-		Id^ Name^ Description^ Domain^ Image^ Year^ Month^ Day^ Hour^ Minute^ Second^ Location^
-			solution_info(Id, Name, Description, Domain, Image, datime(Year, Month, Day, Hour, Minute, Second), Location),
+		Number^ Id^ Name^ Description^ Domain^ Image^ Year^ Month^ Day^ Hour^ Minute^ Second^ Location^
+			solution_info(Number, Id, Name, Description, Domain, Image, datime(Year, Month, Day, Hour, Minute, Second), Location),
 		Domains
 		).
 %---------------------------------------------------------------------------------------------------
@@ -1034,8 +1034,8 @@ computeCalendarEntries([], []) :-
 getDomainMonths(Domain, DomainMonths) :-
 	findall(
 		Month,
-		Id^ Name^ Description^ Image^ Year^ Month^ Day^ Hour^ Minute^ Second^ Location^
-		solution_info(Id, Name, Description, Domain, Image, datime(Year, Month, Day, Hour, Minute, Second), Location),
+		Number^ Id^ Name^ Description^ Image^ Year^ Month^ Day^ Hour^ Minute^ Second^ Location^
+		solution_info(Number, Id, Name, Description, Domain, Image, datime(Year, Month, Day, Hour, Minute, Second), Location),
 		Months
 		),
 	clumped(Months, Months1),
@@ -1145,7 +1145,8 @@ processSolutionInformation(TokenList) :-
 %---------------------------------------------------------------------------------------------------
 % parseSolutionInformation(-SolutionInfo, +TokenList, [])
 %---------------------------------------------------------------------------------------------------
-parseSolutionInformation(solution_info(Id, Name, Description, Domain, Image, Date, Location)) -->
+parseSolutionInformation(solution_info(Number, Id, Name, Description, Domain, Image, Date, Location)) -->
+	parseSolutionNumber(Number),
 	parseSolutionId(Id),
 	parseSolutionName(Name),
 	parseSolutionDescription(Description),
@@ -1154,6 +1155,14 @@ parseSolutionInformation(solution_info(Id, Name, Description, Domain, Image, Dat
 	parseSolutionDate(Date),
 	parseSolutionLocation(Location).
 %---------------------------------------------------------------------------------------------------
+
+/* This DCG rule extracts the number of the solution from given list of tokens. */
+ %---------------------------------------------------------------------------------------------------
+ % parseSolutionNumber(-SolutionNumber, +TokenList, [])
+ %---------------------------------------------------------------------------------------------------
+ parseSolutionNumber(Number) -->
+  	['{', Number, '}'].
+ %---------------------------------------------------------------------------------------------------
 
 /* This DCG rule extracts the id of the solution from given list of tokens. */
  %---------------------------------------------------------------------------------------------------

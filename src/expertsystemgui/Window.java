@@ -188,10 +188,10 @@ public class Window extends javax.swing.JFrame {
         solutionsInfoPanel = new javax.swing.JPanel();
         solutionsInfoLabel = new javax.swing.JLabel();
         solutionDescriptionPanel = new javax.swing.JPanel();
-        solutionDescriptionScrollPane = new javax.swing.JScrollPane();
-        solutionDescriptionTextArea = new javax.swing.JTextArea();
         solutionImagePanel = new javax.swing.JPanel();
         solutionImageLabel = new javax.swing.JLabel();
+        solutionDescriptionScrollPane = new javax.swing.JScrollPane();
+        solutionDescriptionTextPane = new javax.swing.JTextPane();
         commandPanel = new javax.swing.JPanel();
         consultButton = new javax.swing.JButton();
         resetSystemButton = new javax.swing.JButton();
@@ -535,6 +535,8 @@ public class Window extends javax.swing.JFrame {
 
         proofScrollPane.setVisible(false);
         proofScrollPane.setPreferredSize(new java.awt.Dimension(350, 22));
+
+        proofTextPane.setEditable(false);
         proofScrollPane.setViewportView(proofTextPane);
 
         solutionsInfoLabel.setText("solution info");
@@ -542,32 +544,29 @@ public class Window extends javax.swing.JFrame {
 
         solutionDescriptionPanel.setVisible(false);
 
-        solutionDescriptionScrollPane.setBackground(new java.awt.Color(238, 238, 238));
-        solutionDescriptionScrollPane.setBorder(null);
-
-        solutionDescriptionTextArea.setEditable(false);
-        solutionDescriptionTextArea.setBackground(new java.awt.Color(238, 238, 238));
-        solutionDescriptionTextArea.setColumns(20);
-        solutionDescriptionTextArea.setFont(new java.awt.Font("Calibri", 0, 13)); // NOI18N
-        solutionDescriptionTextArea.setLineWrap(true);
-        solutionDescriptionTextArea.setRows(5);
-        solutionDescriptionTextArea.setWrapStyleWord(true);
-        solutionDescriptionTextArea.setBorder(null);
-        solutionDescriptionTextArea.setMinimumSize(new java.awt.Dimension(4, 4));
-        solutionDescriptionScrollPane.setViewportView(solutionDescriptionTextArea);
-
         solutionImageLabel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         javax.swing.GroupLayout solutionImagePanelLayout = new javax.swing.GroupLayout(solutionImagePanel);
         solutionImagePanel.setLayout(solutionImagePanelLayout);
         solutionImagePanelLayout.setHorizontalGroup(
             solutionImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(solutionImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(solutionImagePanelLayout.createSequentialGroup()
+                .addComponent(solutionImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         solutionImagePanelLayout.setVerticalGroup(
             solutionImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(solutionImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
+
+        solutionDescriptionScrollPane.setBackground(new java.awt.Color(238, 238, 238));
+        solutionDescriptionScrollPane.setBorder(null);
+
+        solutionDescriptionTextPane.setEditable(false);
+        solutionDescriptionTextPane.setBackground(new java.awt.Color(238, 238, 238));
+        solutionDescriptionTextPane.setContentType("text/html"); // NOI18N
+        solutionDescriptionTextPane.setFont(new java.awt.Font("Calibri", 0, 13)); // NOI18N
+        solutionDescriptionScrollPane.setViewportView(solutionDescriptionTextPane);
 
         javax.swing.GroupLayout solutionDescriptionPanelLayout = new javax.swing.GroupLayout(solutionDescriptionPanel);
         solutionDescriptionPanel.setLayout(solutionDescriptionPanelLayout);
@@ -577,8 +576,7 @@ public class Window extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(solutionDescriptionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(solutionImagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(solutionImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         solutionDescriptionPanelLayout.setVerticalGroup(
             solutionDescriptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -587,8 +585,9 @@ public class Window extends javax.swing.JFrame {
                 .addGroup(solutionDescriptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(solutionDescriptionPanelLayout.createSequentialGroup()
                         .addComponent(solutionImagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(48, Short.MAX_VALUE))
-                    .addComponent(solutionDescriptionScrollPane, javax.swing.GroupLayout.Alignment.TRAILING)))
+                        .addGap(0, 37, Short.MAX_VALUE))
+                    .addComponent(solutionDescriptionScrollPane))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout solutionsPanelLayout = new javax.swing.GroupLayout(solutionsPanel);
@@ -769,7 +768,7 @@ public class Window extends javax.swing.JFrame {
             int index = solutionsList.getSelectedIndex();
             if (index == -1)
                 return;
-            
+                        
             String selectedSolutionString = solutionsList.getSelectedValue();
             Solution selectedSolution = null;
             for(Solution solution : solutions)
@@ -943,7 +942,7 @@ public class Window extends javax.swing.JFrame {
             String message = selectedSolution.getGoal() + ",este," + selectedSolution.getValue();
             message = "how([" + message + "])";
             
-            proofTextPane.setText("");
+            proofTextPane.setText("Demonstratie:\n");
             connection.messageSender.sendMessageToExpertSystem(message);
             proofScrollPane.setVisible(true);
         }
@@ -953,23 +952,21 @@ public class Window extends javax.swing.JFrame {
     }
     
     private void addDescription(Solution selectedSolution){
-        String name = selectedSolution.getValue();
-        String formattedName = String.join(" ", name.split("_"));
-        formattedName = formattedName.substring(0,1).toUpperCase() + formattedName.substring(1);
-                
         StringBuilder text = new StringBuilder();
-        text.append("Name: ").append(formattedName).append("\n");
-        text.append("Date: ").append(selectedSolution.getDate().toString());
+        text.append("<html><font size=\"3.5\" face=\"calibri\"");
+        text.append("<b>").append("Name: ").append("</b>").append(selectedSolution.getName()).append("<br>");
+        text.append("<b>").append("Date: ").append("</b>").append(selectedSolution.getDate().toString());
         if(selectedSolution.getDate().getDayOfYear()< DateTime.now().getDayOfYear()){
-            text.append(" (you can participate next year!)\n");
+            text.append(" (you can participate next year!)<br>");
         }
         else{
-            text.append("\n");
+            text.append("<br>");
         }
-        text.append("Location: ").append(selectedSolution.getLocation()).append("\n\n");
+        text.append("<b>").append("Location: ").append("</b>").append(selectedSolution.getLocation()).append("<br><br>");
         text.append(selectedSolution.getDescription());
-        solutionDescriptionTextArea.setText(text.toString());
-        solutionDescriptionTextArea.setCaretPosition(0);
+        text.append("</font></html>");
+        solutionDescriptionTextPane.setText(text.toString());
+        solutionDescriptionTextPane.setCaretPosition(0);
     }
     
     private void addImageToPanel(Solution selectedSolution){
@@ -1145,10 +1142,11 @@ public class Window extends javax.swing.JFrame {
         String goal = words[0];
         String value = words[1];
         int certaintyFactor = Integer.parseInt(words[2]);
-        String description = words[3].substring(1, words[3].length()-1);
-        String domain = words[4].substring(1, words[4].length()-1);
+        String name = words[3].substring(1, words[3].length()-1);
+        String description = words[4].substring(1, words[4].length()-1);
+        String domain = words[5].substring(1, words[5].length()-1);
         
-        String imagePath = words[5].substring(1, words[5].length()-1);
+        String imagePath = words[6].substring(1, words[6].length()-1);
         BufferedImage image = null;
         try {
             image = ImageIO.read(new File(imagePath + ".png"));
@@ -1156,15 +1154,15 @@ public class Window extends javax.swing.JFrame {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        String[] date = words[6].substring("datime".length()+1, words[6].length()-1).split(",");
+        String[] date = words[7].substring("datime".length()+1, words[7].length()-1).split(",");
         int year = (int)Double.parseDouble(date[0]);
         int month = (int)Double.parseDouble(date[1]);
         int day = (int)Double.parseDouble(date[2]);
         LocalDate localDate = new LocalDate(year, month, day);
         
-        String location = words[7].substring(1, words[7].length()-1);
+        String location = words[8].substring(1, words[8].length()-1);
         
-        return new Solution(goal, value, certaintyFactor, description, domain, image, localDate, location);
+        return new Solution(goal, value, certaintyFactor, name, description, domain, image, localDate, location);
     }
     
     private void showSolutions(){
@@ -1275,7 +1273,7 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JButton showSolutionsButton;
     private javax.swing.JPanel solutionDescriptionPanel;
     private javax.swing.JScrollPane solutionDescriptionScrollPane;
-    private javax.swing.JTextArea solutionDescriptionTextArea;
+    private javax.swing.JTextPane solutionDescriptionTextPane;
     private javax.swing.JLabel solutionImageLabel;
     private javax.swing.JPanel solutionImagePanel;
     private javax.swing.JLabel solutionsFilenameLabel;

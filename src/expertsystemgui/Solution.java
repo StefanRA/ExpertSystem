@@ -17,6 +17,7 @@ public class Solution implements Comparable<Solution>{
     private String goal;
     private String value;
     private int certaintyFactor;
+    private String name;
     private String description;
     private String domain;
     private BufferedImage image;
@@ -29,6 +30,7 @@ public class Solution implements Comparable<Solution>{
     public Solution(String goal,
                     String value,
                     int certaintyFactor, 
+                    String name,
                     String description, 
                     String domain, 
                     BufferedImage image, 
@@ -37,6 +39,7 @@ public class Solution implements Comparable<Solution>{
         this.goal = goal;
         this.value = value;
         this.certaintyFactor = certaintyFactor;
+        this.name = name;
         this.description = description;
         this.image = image;
         this.domain = domain;
@@ -67,6 +70,15 @@ public class Solution implements Comparable<Solution>{
     public void setCertaintyFactor(int certaintyFactor) {
         this.certaintyFactor = certaintyFactor;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
     
     public String getDescription() {
         return description;
