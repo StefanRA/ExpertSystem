@@ -6,256 +6,414 @@ Comentariu: 'Regulile utilizate de sistemul expert'.
 
 Comentariu: 'Reguli pentru deducerea valorii atributului nivel_pregatire_in_domeniu'.
 
-rg->1
-if(
-	lucreaza_in_cercetare -> (1)
-)
-then
-	(nivel_pregatire_in_domeniu -> (foarte_mare) : fc -> 95).
+	rg->1
+	if(
+		lucreaza_in_cercetare -> (1)
+	)
+	then
+		(nivel_pregatire_in_domeniu -> (foarte_mare) : fc -> 95).
 
-rg->2
-if(
-	lucreaza_in_cercetare -> (0) &&
-	inscris_la_studii_universitare -> (1) &&
-	program_de_studii_in_domeniu -> (0)
-)
-then
-	(nivel_pregatire_in_domeniu -> (foarte_mic) : fc -> 90).
+	rg->2
+	if(
+		lucreaza_in_cercetare -> (0) &&
+		inscris_la_studii_universitare -> (1) &&
+		program_de_studii_in_domeniu -> (0)
+	)
+	then
+		(nivel_pregatire_in_domeniu -> (foarte_mic) : fc -> 90).
 
-rg->3
-if(
-	lucreaza_in_cercetare -> (0) &&
-	inscris_la_studii_universitare -> (1) &&
-	program_de_studii_in_domeniu -> (1) &&
-	program_de_studii_urmat -> (licenta)
-)
-then
-	(nivel_pregatire_in_domeniu -> (mic) : fc -> 80).
+	rg->3
+	if(
+		lucreaza_in_cercetare -> (0) &&
+		inscris_la_studii_universitare -> (1) &&
+		program_de_studii_in_domeniu -> (1) &&
+		program_de_studii_urmat -> (licenta)
+	)
+	then
+		(nivel_pregatire_in_domeniu -> (mic) : fc -> 80).
 
-rg->4
-if(
-	lucreaza_in_cercetare -> (0) &&
-	inscris_la_studii_universitare -> (1) &&
-	program_de_studii_in_domeniu -> (1) &&
-	program_de_studii_urmat -> (masterat)
-)
-then
-	(nivel_pregatire_in_domeniu -> (mediu) : fc -> 90).
-	
-rg->5
-if(
-	lucreaza_in_cercetare -> (0) &&
-	inscris_la_studii_universitare -> (1) &&
-	program_de_studii_in_domeniu -> (1) &&
-	program_de_studii_urmat -> (doctorat)
-)
-then
-	(nivel_pregatire_in_domeniu -> (mare) : fc -> 90).
+	rg->4
+	if(
+		lucreaza_in_cercetare -> (0) &&
+		inscris_la_studii_universitare -> (1) &&
+		program_de_studii_in_domeniu -> (1) &&
+		program_de_studii_urmat -> (masterat)
+	)
+	then
+		(nivel_pregatire_in_domeniu -> (mediu) : fc -> 90).
+		
+	rg->5
+	if(
+		lucreaza_in_cercetare -> (0) &&
+		inscris_la_studii_universitare -> (1) &&
+		program_de_studii_in_domeniu -> (1) &&
+		program_de_studii_urmat -> (doctorat)
+	)
+	then
+		(nivel_pregatire_in_domeniu -> (mare) : fc -> 90).
 
-rg->6
-if(
-	lucreaza_in_cercetare -> (0) &&
-	inscris_la_studii_universitare -> (0) &&
-	program_de_studii_finalizat -> (liceu)
-)
-then
-	(nivel_pregatire_in_domeniu -> (foarte_mic) : fc -> 90).
+	rg->6
+	if(
+		lucreaza_in_cercetare -> (0) &&
+		inscris_la_studii_universitare -> (0) &&
+		program_de_studii_finalizat -> (liceu)
+	)
+	then
+		(nivel_pregatire_in_domeniu -> (foarte_mic) : fc -> 90).
 
-rg->7
-if(
-	lucreaza_in_cercetare -> (0) &&
-	inscris_la_studii_universitare -> (0) &&
-	program_de_studii_finalizat -> (licenta) &&
-	program_de_studii_in_domeniu -> (0)
-)
-then
-	(nivel_pregatire_in_domeniu -> (foarte_mic) : fc -> 85).
+	rg->7
+	if(
+		lucreaza_in_cercetare -> (0) &&
+		inscris_la_studii_universitare -> (0) &&
+		program_de_studii_finalizat -> (licenta) &&
+		program_de_studii_in_domeniu -> (0)
+	)
+	then
+		(nivel_pregatire_in_domeniu -> (foarte_mic) : fc -> 85).
 
-rg->8
-if(
-	lucreaza_in_cercetare -> (0) &&
-	inscris_la_studii_universitare -> (0) &&
-	program_de_studii_finalizat -> (masterat) &&
-	program_de_studii_in_domeniu -> (0)
-)
-then
-	(nivel_pregatire_in_domeniu -> (foarte_mic) : fc -> 80).
-	
-rg->9
-if(
-	lucreaza_in_cercetare -> (0) &&
-	inscris_la_studii_universitare -> (0) &&
-	program_de_studii_finalizat -> (doctorat) &&
-	program_de_studii_in_domeniu -> (0)
-)
-then
-	(nivel_pregatire_in_domeniu -> (mic) : fc -> 80).
+	rg->8
+	if(
+		lucreaza_in_cercetare -> (0) &&
+		inscris_la_studii_universitare -> (0) &&
+		program_de_studii_finalizat -> (masterat) &&
+		program_de_studii_in_domeniu -> (0)
+	)
+	then
+		(nivel_pregatire_in_domeniu -> (foarte_mic) : fc -> 80).
+		
+	rg->9
+	if(
+		lucreaza_in_cercetare -> (0) &&
+		inscris_la_studii_universitare -> (0) &&
+		program_de_studii_finalizat -> (doctorat) &&
+		program_de_studii_in_domeniu -> (0)
+	)
+	then
+		(nivel_pregatire_in_domeniu -> (mic) : fc -> 80).
 
-rg->10
-if(
-	lucreaza_in_cercetare -> (0) &&
-	inscris_la_studii_universitare -> (0) &&
-	program_de_studii_finalizat -> (licenta) &&
-	program_de_studii_in_domeniu -> (1)
-)
-then
-	(nivel_pregatire_in_domeniu -> (mediu) : fc -> 90).
+	rg->10
+	if(
+		lucreaza_in_cercetare -> (0) &&
+		inscris_la_studii_universitare -> (0) &&
+		program_de_studii_finalizat -> (licenta) &&
+		program_de_studii_in_domeniu -> (1)
+	)
+	then
+		(nivel_pregatire_in_domeniu -> (mediu) : fc -> 90).
 
-rg->11
-if(
-	lucreaza_in_cercetare -> (0) &&
-	inscris_la_studii_universitare -> (0) &&
-	program_de_studii_finalizat -> (masterat) &&
-	program_de_studii_in_domeniu -> (1)
-)
-then
-	(nivel_pregatire_in_domeniu -> (mare) : fc -> 90).
-	
-rg->12
-if(
-	lucreaza_in_cercetare -> (0) &&
-	inscris_la_studii_universitare -> (0) &&
-	program_de_studii_finalizat -> (doctorat) &&
-	program_de_studii_in_domeniu -> (1)
-)
-then
-	(nivel_pregatire_in_domeniu -> (foarte_mare) : fc -> 90).
+	rg->11
+	if(
+		lucreaza_in_cercetare -> (0) &&
+		inscris_la_studii_universitare -> (0) &&
+		program_de_studii_finalizat -> (masterat) &&
+		program_de_studii_in_domeniu -> (1)
+	)
+	then
+		(nivel_pregatire_in_domeniu -> (mare) : fc -> 90).
+		
+	rg->12
+	if(
+		lucreaza_in_cercetare -> (0) &&
+		inscris_la_studii_universitare -> (0) &&
+		program_de_studii_finalizat -> (doctorat) &&
+		program_de_studii_in_domeniu -> (1)
+	)
+	then
+		(nivel_pregatire_in_domeniu -> (foarte_mare) : fc -> 90).
 
 Comentariu: 'Reguli pentru deducerea valorii atributului categorie_conferinta'.
 
-rg->13
-if(
-	nivel_pregatire_in_domeniu -> (foarte_mare) &&
-	doreste_sa_asculte_prezentari -> (1) &&
-	doreste_sa_prezinte -> (1)
-)
-then
-	(categorie_conferinta -> (conferinta_academica) : fc -> 95).
+	rg->13
+	if(
+		doreste_sa_asculte_prezentari -> (1) &&
+		doreste_sa_prezinte -> (1)
+	)
+	then
+		(mediul_potrivit -> (academic) : fc -> 95).
+	
+	rg->14
+	if(
+		doreste_sa_asculte_prezentari -> (1) &&
+		doreste_sa_prezinte -> (0)
+	)
+	then
+		(mediul_potrivit -> (academic) : fc -> 90).
+	
+	rg->15
+	if(
+		doreste_sa_asculte_prezentari -> (0) &&
+		doreste_sa_prezinte -> (1)
+	)
+	then
+		(mediul_potrivit -> (academic) : fc -> 90).
+	
+	rg->16
+	if(
+		doreste_sa_asculte_prezentari -> (0) &&
+		doreste_sa_prezinte -> (0) &&
+		interes_prelegeri_specialisti_industrie -> (1)
+	)
+	then
+		(mediul_potrivit -> (industrie) : fc -> 95).
 
-rg->14
-if(
-	nivel_pregatire_in_domeniu -> (foarte_mare) &&
-	doreste_sa_asculte_prezentari -> (1) &&
-	doreste_sa_prezinte -> (0)
-)
-then
-	(categorie_conferinta -> (conferinta_academica) : fc -> 90).
+Comentariu: 'Reguli pentru deducerea valorii atributului categorie_conferinta'.
 
-rg->15
-if(
-	nivel_pregatire_in_domeniu -> (foarte_mare) &&
-	doreste_sa_asculte_prezentari -> (0) &&
-	doreste_sa_prezinte -> (1)
-)
-then
-	(categorie_conferinta -> (conferinta_academica) : fc -> 90).
+	rg->17
+	if(
+		nivel_pregatire_in_domeniu -> (foarte_mare) &&
+		mediul_potrivit -> (academic)
+	)
+	then
+		(categorie_conferinta -> (conferinta_academica) : fc -> 95).
 	
-rg->16
-if(
-	nivel_pregatire_in_domeniu -> (mare) &&
-	doreste_sa_asculte_prezentari -> (0) &&
-	doreste_sa_prezinte -> (1)
-)
-then
-	(categorie_conferinta -> (conferinta_academica) : fc -> 90).
+	rg->18
+	if(
+		nivel_pregatire_in_domeniu -> (foarte_mare) &&
+		mediul_potrivit -> (industrie)
+	)
+	then
+		(categorie_conferinta -> (conferinta_industrie) : fc -> 95).
+		
+	rg->19
+	if(
+		nivel_pregatire_in_domeniu -> (mare) &&
+		mediul_potrivit -> (academic)
+	)
+	then
+		(categorie_conferinta -> (conferinta_academica) : fc -> 90).
 	
-rg->17
-if(
-	nivel_pregatire_in_domeniu -> (mare) &&
-	doreste_sa_asculte_prezentari -> (1) &&
-	doreste_sa_prezinte -> (0)
-)
-then
-	(categorie_conferinta -> (conferinta_academica) : fc -> 85).
+	rg->20
+	if(
+		nivel_pregatire_in_domeniu -> (mare) &&
+		mediul_potrivit -> (industrie)
+	)
+	then
+		(categorie_conferinta -> (conferinta_industrie) : fc -> 90).
+	
+	rg->21
+	if(
+		nivel_pregatire_in_domeniu -> (mic) &&
+		doreste_sa_invete -> (1) &&
+		interesat_de_networking -> (1)
+	)
+	then
+		(categorie_conferinta -> (conferinta_industrie) : fc -> 85).
+		
+	rg->22
+	if(
+		nivel_pregatire_in_domeniu -> (mic) &&
+		interesat_de_networking -> (1) &&
+		caracter_practic -> (1)
+	)
+	then
+		(categorie_conferinta -> (workshop_incepatori) : fc -> 80).
+		
+	rg->23
+	if(
+		nivel_pregatire_in_domeniu -> (foarte_mic) &&
+		doreste_sa_invete -> (1) &&
+		caracter_practic -> (1)
+	)
+	then
+		(categorie_conferinta -> (workshop_incepatori) : fc -> 70).
+		
+	rg->24
+	if(
+		nivel_pregatire_in_domeniu -> (mediu) &&
+		doreste_sa_invete -> (1) &&
+		caracter_practic -> (1)
+	)
+	then
+		(categorie_conferinta -> (workshop_avansati) : fc -> 70).
 
-rg->18
-if(
-	nivel_pregatire_in_domeniu -> (mare) &&
-	doreste_sa_asculte_prezentari -> (0) &&
-	doreste_sa_prezinte -> (1)
-)
-then
-	(categorie_conferinta -> (conferinta_academica) : fc -> 80).
+Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca numele conferintei este ICCV'.
+
+	rg->25
+	if(
+		categorie_conferinta -> (conferinta_academica) &&
+		domeniu_de_interes -> (inteligenta_artificiala) &&
+		tematica -> (specifica) &&
+		poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+	)
+	then
+		(nume_conferinta -> (iccv) : fc -> 80).
 	
-rg->19
-if(
-	nivel_pregatire_in_domeniu -> (mic) &&
-	doreste_sa_invete -> (1) &&
-	interesat_de_networking -> (1)
-)
-then
-	(categorie_conferinta -> (conferinta_academica) : fc -> 85).
+	rg->26
+	if(
+		categorie_conferinta -> (workshop_avansati) &&
+		domeniu_de_interes -> (inteligenta_artificiala) &&
+		poate_participa_la_conferinta_medie_in_strainatate -> (1)
+	)
+	then
+		(nume_conferinta -> (iccv) : fc -> 80).
+
+Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca poate participa la o conferinta cu un anumit pret'.
+
+	rg -> 27
+	if(
+		determina_buget -> (1) &&
+		dispus_sa_calatoreasca -> (1) &&
+		buget_disponibil -> (mare)
+	)
+	then
+		(poate_participa_la_conferinta_scumpa_in_strainatate -> (1) : fc -> 90).
+		
+	rg -> 28
+	if(
+		determina_buget -> (1) &&
+		dispus_sa_calatoreasca -> (1) &&
+		buget_disponibil -> (mare)
+	)
+	then
+		(poate_participa_la_conferinta_medie_in_strainatate -> (1) : fc -> 90).
 	
-rg->20
-if(
-	nivel_pregatire_in_domeniu -> (mic) &&
-	interesat_de_networking -> (1)
-)
-then
-	(categorie_conferinta -> (workshop_incepatori) : fc -> 80).
+	rg -> 29
+	if(
+		determina_buget -> (1) &&
+		dispus_sa_calatoreasca -> (1) &&
+		buget_disponibil -> (mediu)
+	)
+	then
+		(poate_participa_la_conferinta_medie_in_strainatate -> (1) : fc -> 90).
 	
-rg->21
-if(
-	nivel_pregatire_in_domeniu -> (foarte_mic) &&
-	doreste_sa_invete -> (1)
-)
-then
-	(categorie_conferinta -> (workshop_incepatori) : fc -> 70).
+	rg -> 30
+	if(
+		determina_buget -> (1) &&
+		dispus_sa_calatoreasca -> (1) &&
+		buget_disponibil -> (mare)
+	)
+	then
+		(poate_participa_la_conferinta_ieftina_in_strainatate -> (1) : fc -> 90).
 	
-rg->22
-if(
-	nivel_pregatire_in_domeniu -> (mediu) &&
-	doreste_sa_invete -> (1)
-)
-then
-	(categorie_conferinta -> (workshop_avansati) : fc -> 70).
+	rg -> 31
+	if(
+		determina_buget -> (1) &&
+		dispus_sa_calatoreasca -> (1) &&
+		buget_disponibil -> (mediu)
+	)
+	then
+		(poate_participa_la_conferinta_ieftina_in_strainatate -> (1) : fc -> 90).
+	
+	rg -> 32
+	if(
+		determina_buget -> (1) &&
+		buget_disponibil -> (mare)
+	)
+	then
+		(poate_participa_la_conferinta_scumpa_in_tara -> (1) : fc -> 90).
+	
+	rg -> 33
+	if(
+		determina_buget -> (1) &&
+		buget_disponibil -> (mare)
+	)
+	then
+		(poate_participa_la_conferinta_medie_in_tara -> (1) : fc -> 90).
+	
+	rg -> 34
+	if(
+		determina_buget -> (1) &&
+		buget_disponibil -> (mediu)
+	)
+	then
+		(poate_participa_la_conferinta_medie_in_tara -> (1) : fc -> 90).
+	
+	rg -> 35
+	if(
+		determina_buget -> (1) &&
+		buget_disponibil -> (mare)
+	)
+	then
+		(poate_participa_la_conferinta_ieftina_in_tara -> (1) : fc -> 90).
+	
+	rg -> 36
+	if(
+		determina_buget -> (1) &&
+		buget_disponibil -> (mediu)
+	)
+	then
+		(poate_participa_la_conferinta_ieftina_in_tara -> (1) : fc -> 90).
+	
+	rg -> 37
+	if(
+		determina_buget -> (1) &&
+		buget_disponibil -> (mic)
+	)
+	then
+		(poate_participa_la_conferinta_ieftina_in_tara -> (1) : fc -> 90).
+	
+	rg -> 38
+	if(
+		determina_buget -> (0)
+	)
+	then
+		(poate_participa_la_conferinta_scumpa_in_strainatate -> (1) : fc -> 100).
+	
+	rg -> 39
+	if(
+		determina_buget -> (0)
+	)
+	then
+		(poate_participa_la_conferinta_medie_in_strainatate -> (1) : fc -> 90).
+	
+	rg -> 40
+	if(
+		determina_buget -> (0)
+	)
+	then
+		(poate_participa_la_conferinta_ieftina_in_strainatate -> (1) : fc -> 90).
+	
+	rg -> 41
+	if(
+		determina_buget -> (0)
+	)
+	then
+		(poate_participa_la_conferinta_scumpa_in_tara -> (1) : fc -> 90).
+	
+	rg -> 42
+	if(
+		determina_buget -> (0)
+	)
+	then
+		(poate_participa_la_conferinta_medie_in_tara -> (1) : fc -> 90).
+	
+	rg -> 43
+	if(
+		determina_buget -> (0)
+	)
+	then
+		(poate_participa_la_conferinta_ieftina_in_tara -> (1) : fc -> 90).
 
 Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca numele conferintei este UX Bucharest'.
 
-rg->23
+	rg->44
+	if(
+		categorie_conferinta -> (conferinta_industrie) &&
+		interesat_de_design -> (1) &&
+		poate_participa_la_conferinta_medie_in_tara -> (1)
+	)
+	then
+		(nume_conferinta -> (ux_bucharest) : fc -> 80).
+
+	rg->45
+	if(
+		categorie_conferinta -> (workshop_avansati) &&
+		interesat_de_design -> (1) &&
+		poate_participa_la_conferinta_medie_in_tara -> (1)
+	)
+	then
+		(nume_conferinta -> (ux_bucharest) : fc -> 80).
+
+rg->46
 if(
 	categorie_conferinta -> (conferinta_industrie) &&
-	interesat_de_design -> (1) &&
-	buget_disponibil -> (mediu)
-)
-then
-	(nume_conferinta -> (ux_bucharest) : fc -> 80).
-
-rg->24
-if(
-	categorie_conferinta -> (workshop_avansati) &&
-	interesat_de_design -> (1) &&
-	buget_disponibil -> (mediu)
-)
-then
-	(nume_conferinta -> (ux_bucharest) : fc -> 80).
-
-rg->25
-if(
-	locatia -> (in_strainatate) &&
 	limbaj_preferat -> (python) &&
-	dimensiune_conferinta -> (mare)
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
 )
 then
 	(nume_conferinta -> (euro_python) : fc -> 90).
 
-rg->26
-if(
-	dispus_sa_calatoreasca -> (1) &&
-	buget_disponibil -> (mare)
-)
-then
-	(locatia -> (in_strainatate) : fc -> 80).
-	
-rg->27
-if(
-	dispus_sa_calatoreasca -> (1) &&
-	buget_disponibil -> (mediu)
-)
-then
-	(locatia -> (in_strainatate) : fc -> 70).
-
-rg->28
+rg->47
 if(
 	buget_disponibil -> (mare) &&
 	interesat_de_networking -> (1)
@@ -263,29 +421,29 @@ if(
 then
  (dimensiune_conferinta -> (mare) : fc -> 80).
 
-rg->29
+rg->48
 if(
-	locatia -> (in_strainatate) &&
+	categorie_conferinta -> (conferinta_industrie) &&
 	interes_matematica_aplicata -> (1) &&
 	ramura_matematica -> (geometrie) &&
 	domeniu_de_interes -> (grafica_pe_calculator) &&
 	nivel_experienta -> (mare) &&
-	interesat_de_networking -> (1)
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
 )
 then
 	(nume_conferinta -> (eurographics) : fc -> 90).
 	
-rg->30
+rg->49
 if(
-	locatia -> (in_strainatate) &&
+	categorie_conferinta -> (conferinta_industrie) &&
 	domeniu_de_interes -> (grafica_pe_calculator) &&
 	nivel_experienta -> (mare) &&
-	interesat_de_networking -> (1)
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
 )
 then
 	(nume_conferinta -> (eurographics) : fc -> 70).
 
-rg->31
+rg->50
 if(
 	buget_disponibil -> (mediu) &&
 	interesat_de_networking -> (1)
@@ -293,48 +451,46 @@ if(
 then
  (dimensiune_conferinta -> (mare) : fc -> 60).
 
-rg->32
+rg->51
 if(
-	buget_disponibil -> (mare) &&
+	categorie_conferinta -> (conferinta_industrie) &&
 	sistem_de_operare_preferat -> (linux) &&
-	locatia -> (in_strainatate)
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
 )
 then
 	(nume_conferinta -> (embedded_linux_conference) : fc -> 80).
 
-rg->33
+rg->52
 if(
-	buget_disponibil -> (mediu) &&
+	categorie_conferinta -> (conferinta_industrie) &&
 	sistem_de_operare_preferat -> (linux) &&
-	locatia -> (in_strainatate)
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
 )
 then
 	(nume_conferinta -> (embedded_linux_conference) : fc -> 70).
 	
-rg->34
+rg->53
 if(
+	categorie_conferinta -> (conferinta_industrie) &&
 	interes_open_source -> (1) &&
-	buget_disponibil -> (mare) &&
-	locatia -> (in_strainatate)
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
 )
 then
 	(nume_conferinta -> (oscon) : fc -> 80).
 
-rg->35
+rg->54
 if(
+	categorie_conferinta -> (conferinta_industrie) &&
 	interes_open_source -> (1) &&
 	sistem_de_operare_preferat -> (linux) &&
-	buget_disponibil -> (mare) &&
-	locatia -> (in_strainatate)
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
 )
 then
 	(nume_conferinta -> (oscon) : fc -> 85).
 
-
-
-rg->36
+rg->55
 if(
-	categorie_conferinta -> (a) &&
+	categorie_conferinta -> (conferinta_industrie) &&
 	locatia -> (in_strainatate) &&
 	interes_matematica_aplicata -> (1) &&
 	ramura_matematica -> (geometrie) &&
@@ -344,9 +500,9 @@ if(
 then
 	(nume_conferinta -> (eurographics) : fc -> 90).
 	
-rg->37
+rg->56
 if(
-	categorie_conferinta -> (a) &&
+	categorie_conferinta -> (conferinta_industrie) &&
 	locatia -> (in_strainatate) &&
 	domeniu_de_interes -> (grafica_pe_calculator) &&
 	interesat_de_networking -> (1)
@@ -354,30 +510,31 @@ if(
 then
 	(nume_conferinta -> (eurographics) : fc -> 85).
 
-rg->38
+rg->57
 if(
-	categorie_conferinta -> (a) &&
+	categorie_conferinta -> (conferinta_industrie) &&
 	locatia -> (in_strainatate) &&
 	interesat_de_networking -> (1)
 )
 then
 	(nume_conferinta -> (ecoop) : fc -> 85).
 
-rg->39
+rg->58
 if(
-	categorie_conferinta -> (a) &&
+	categorie_conferinta -> (conferinta_industrie) &&
 	locatia -> (in_strainatate)
 )
 then
 	(nume_conferinta -> (ecoop) : fc -> 80).
 
-rg->40
+rg->59
 if(
 	categorie_conferinta -> (conferinta_academica) &&
-	domeniu_de_interes -> (inteligenta_artificiala)
+	domeniu_de_interes -> (inteligenta_artificiala) &&
+	tematica -> (generala)
 )
 then
-	(nume_conferinta -> (raai) : fc -> 80).
+	(nume_conferinta -> (raai) : fc -> 85).
 	
 Comentariu: 'Intrebarile utilizate de sistemul expert'.
 
@@ -471,14 +628,6 @@ variante(
 )
 text -> ('Care este nivelul studiilor pe care le-ati urmat?').
 
-q -> stil_conferinta
-variante(
-	conferinta (&)
-	seminar (&)
-	workshop
-)
-text -> ('Cum ati vrea sa fie conferinta?').
-
 q -> lucrare_stiintifica
 variante(
 	da (&)
@@ -558,3 +707,31 @@ variante(
 	nu
 )
 text -> ('Sunteti interesat sa aflati mai multe despre metodologiile de design al aplicatiei si user experience?').
+
+q -> caracter_practic
+variante(
+	da (&)
+	nu
+)
+text -> ('Doriti ca intrunirea sa aiba un aspect practic?').
+
+q -> interes_prelegeri_specialisti_industrie
+variante(
+	da (&)
+	nu
+)
+text -> ('Doriti sa ascultati prezentari tinute de specialisti din industria software?').
+
+q -> tematica
+variante(
+	generala (&)
+	specifica
+)
+text -> ('Ce tematica doriti sa aiba conferinta?').
+
+q -> determina_buget
+variante(
+	da (&)
+	nu
+)
+text -> ('Doriti sa determin daca va permiteti sa participati la eveniment?').
