@@ -28,7 +28,7 @@
 {4}
 {oscon}
 {'Open Source Convention'}
-{'Since 1999, OSCON has brought together talented people from diverse backgrounds who are doing amazing things with open source. We share new techniques and approaches, proven best practices, and practical skills. No matter what your technical experience level, if you want to learn from useful stories and hard-won experience, and discover intriguing projects and innovations, there's no better place than OSCON. Open source is now found everywhere-from the bottom of the programming stack to the very top-so we're focusing on these topics as a means to consider and solve critical, real-world problems.'}
+{'Since 1999, OSCON has brought together talented people from diverse backgrounds who are doing amazing things with open source. We share new techniques and approaches, proven best practices, and practical skills. No matter what your technical experience level, if you want to learn from useful stories and hard-won experience, and discover intriguing projects and innovations, there is no better place than OSCON. Open source is now found everywhere-from the bottom of the programming stack to the very top-so we are focusing on these topics as a means to consider and solve critical, real-world problems.'}
 {domeniu: 'Open source technologies'}
 {imagine: 'Images/oscon'}
 {data: 17/10/2017}
