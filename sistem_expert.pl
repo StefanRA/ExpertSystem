@@ -194,7 +194,7 @@ resetKnowledgeBase :-
 	retractall(scop(_)),
 	retractall(interogabil(_, _, _)),
 	retractall(regula(_, _, _)),
-	retractall(solution_info(_, _, _, _, _, _)).
+	retractall(solution_info(_, _, _, _, _, _, _)).
 %---------------------------------------------------------------------------------------------------
 
 un_pas(Rasp,OptiuniUrm,MesajUrm) :-
@@ -497,7 +497,7 @@ afiseaza_scop(detail, Atr) :-
 	fapt(av(Atr, Val), FC, _),
 	FC >= 20,
 	scrie_scop(av(Atr, Val), FC),
-	solution_info(_, Val, Description, _, _, datime(Year, Month, Day, _, _, _)),
+	solution_info(_, Val, Description, _, _, datime(Year, Month, Day, _, _, _),_),
 	nl, nl, write(Description), nl, nl,
 	datime(datime(CurrentYear, CurrentMonth, CurrentDay, _, _, _)),
 	Year =:= CurrentYear,
@@ -515,8 +515,8 @@ afiseaza_scop(detail, _) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 afiseaza_scop(Stream, Atr) :-
 	nl,fapt(av(Atr,Val),FC,_),
-	solution_info(_, Val, Description, Domain, Image, Date),
-	FC >= 20,format(Stream,"s(~p#~p#~p#~p#~p#~p#~p)",[Atr, Val, FC, Description, Domain, Image, Date]),
+	solution_info(_, Val, Description, Domain, Image, Date, Location),
+	FC >= 20,format(Stream,"s(~p#~p#~p#~p#~p#~p#~p#~p)",[Atr, Val, FC, Description, Domain, Image, Date, Location]),
 	nl(Stream),flush_output(Stream),fail.
 
 afiseaza_scop(Stream, _) :-
@@ -990,8 +990,8 @@ loadKnowledgeBase(RulesFileName, SolutionInfoFileName) :-
 getDomainList(Domains) :-
 	setof(
 		Domain,
-		Id^ Name^ Description^ Domain^ Image^ Year^ Month^ Day^ Hour^ Minute^ Second^
-			solution_info(Id, Name, Description, Domain, Image, datime(Year, Month, Day, Hour, Minute, Second)),
+		Id^ Name^ Description^ Domain^ Image^ Year^ Month^ Day^ Hour^ Minute^ Second^ Location^
+			solution_info(Id, Name, Description, Domain, Image, datime(Year, Month, Day, Hour, Minute, Second), Location),
 		Domains
 		).
 %---------------------------------------------------------------------------------------------------
@@ -1034,8 +1034,8 @@ computeCalendarEntries([], []) :-
 getDomainMonths(Domain, DomainMonths) :-
 	findall(
 		Month,
-		Id^ Name^ Description^ Image^ Year^ Month^ Day^ Hour^ Minute^ Second^
-		solution_info(Id, Name, Description, Domain, Image, datime(Year, Month, Day, Hour, Minute, Second)),
+		Id^ Name^ Description^ Image^ Year^ Month^ Day^ Hour^ Minute^ Second^ Location^
+		solution_info(Id, Name, Description, Domain, Image, datime(Year, Month, Day, Hour, Minute, Second), Location),
 		Months
 		),
 	clumped(Months, Months1),
@@ -1145,13 +1145,14 @@ processSolutionInformation(TokenList) :-
 %---------------------------------------------------------------------------------------------------
 % parseSolutionInformation(-SolutionInfo, +TokenList, [])
 %---------------------------------------------------------------------------------------------------
-parseSolutionInformation(solution_info(Id, Name, Description, Domain, Image, Date)) -->
+parseSolutionInformation(solution_info(Id, Name, Description, Domain, Image, Date, Location)) -->
 	parseSolutionId(Id),
 	parseSolutionName(Name),
 	parseSolutionDescription(Description),
 	parseSolutionDomain(Domain),
 	parseSolutionImage(Image),
-	parseSolutionDate(Date).
+	parseSolutionDate(Date),
+	parseSolutionLocation(Location).
 %---------------------------------------------------------------------------------------------------
 
 /* This DCG rule extracts the id of the solution from given list of tokens. */
@@ -1204,6 +1205,15 @@ parseSolutionDomain(Domain) -->
 %---------------------------------------------------------------------------------------------------
 parseSolutionDate(datime(Year, Month, Day, 0, 0, 0)) -->
 	['{', data, ':', Day, '/', Month, '/', Year, '}'].
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+/* This DCG rule extracts the location of the solution from the given list of tokens.  */
+%---------------------------------------------------------------------------------------------------
+% parseSolutionLocation(-SolutionLocation, +TokenList, [])
+%---------------------------------------------------------------------------------------------------
+parseSolutionLocation(Location) -->
+	['{', locatie, ':', Location, '}'].
 %---------------------------------------------------------------------------------------------------
 
 loadRules :-

@@ -40,6 +40,7 @@ public class ExpertSystemGUI {
                 try {
                     window.connection.opresteProlog();                        
                     window.connection.messageSender.done = true;
+                    window.updateLastAccessFile();
                 } catch (InterruptedException ex) {
                     Logger.getLogger(ExpertSystemGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }

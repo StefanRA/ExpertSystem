@@ -21,7 +21,8 @@ public class Solution implements Comparable<Solution>{
     private String domain;
     private BufferedImage image;
     private LocalDate date;
-
+    private String location;
+    
     public Solution(){
     }
 
@@ -31,7 +32,8 @@ public class Solution implements Comparable<Solution>{
                     String description, 
                     String domain, 
                     BufferedImage image, 
-                    LocalDate date) {
+                    LocalDate date,
+                    String location) {
         this.goal = goal;
         this.value = value;
         this.certaintyFactor = certaintyFactor;
@@ -39,6 +41,7 @@ public class Solution implements Comparable<Solution>{
         this.image = image;
         this.domain = domain;
         this.date = date;
+        this.location = location;
     }
     
     public String getGoal() {
@@ -97,6 +100,14 @@ public class Solution implements Comparable<Solution>{
         this.date = date;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+    
     @Override
     public String toString() {
         return goal + " este " + value + " cu fc " + certaintyFactor;

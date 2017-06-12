@@ -4,13 +4,15 @@
 {domeniu: 'Programming Languages'}
 {imagine: 'Images/euro_python'}
 {data: 09/07/2017}
+{locatie: 'Rimini, Italy'}
 -------------------
 {2}
 {eurographics}
-{'ELC is the premier vendor-neutral technical conference for companies and developers using Linux in embedded products. Now in its 12th year, the conference gathers user-space developers, product vendors, kernel and systems developers to collaborate.'}
+{'Eurographics is the only truly Europe-wide professional Computer Graphics association. The association supports its members in advancing the state of the art in Computer Graphics and related fields such as Multimedia, Scientific Visualization and Human Computer Interfaces. Eurographics organises many different activities and services for its members, who include researchers, developers, educators and those who work in the computer graphics industry, both as users and providers of computer graphics hardware, software, and applications.'}
 {domeniu: 'Computer graphics'}
 {imagine: 'Images/eurographics'}
-{data: 23/10/2017}
+{data: 16/04/2017}
+{locatie: 'Lyon, France'}
 -------------------
 {3}
 {embedded_linux_conference}
@@ -18,6 +20,7 @@
 {domeniu: 'Operating Systems'}
 {imagine: 'Images/embedded_linux_conference'}
 {data: 23/10/2017}
+{locatie: 'Prague, Czech Republic'}
 -------------------
 {4}
 {oscon}
@@ -25,6 +28,7 @@
 {domeniu: 'Open source technologies'}
 {imagine: 'Images/oscon'}
 {data: 17/10/2017}
+{locatie: 'London, England'}
 -------------------
 {5}
 {ecoop}
@@ -32,6 +36,7 @@
 {domeniu: 'Programming Paradigms'}
 {imagine: 'Images/ecoop'}
 {data: 18/06/2017}
+{locatie: 'Barcelona, Spain'}
 -------------------
 {6}
 {raai}
@@ -39,6 +44,7 @@
 {domeniu: 'Artificial Intelligence'}
 {imagine: 'Images/raai'}
 {data: 19/06/2017}
+{locatie: 'Bucharest, Romania'}
 -------------------
 {7}
 {ux_bucharest}
@@ -46,3 +52,4 @@
 {domeniu: 'Application Design'}
 {imagine: 'Images/ux_bucharest'}
 {data: 19/06/2017}
+{locatie: 'Bucharest, Romania'}

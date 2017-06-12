@@ -99,7 +99,7 @@ public class Window extends javax.swing.JFrame {
         }
     }
     
-    private void updateLastAccessFile(){
+    public void updateLastAccessFile(){
         try (PrintWriter writer = new PrintWriter("lastAccess.txt", "UTF-8")) {
             DateTime now = DateTime.now();
             writer.println(now.toString());
@@ -180,14 +180,6 @@ public class Window extends javax.swing.JFrame {
         calendarPanel = new javax.swing.JPanel();
         calendarScrollPane = new javax.swing.JScrollPane();
         calendarTable = new javax.swing.JTable();
-        commandPanel = new javax.swing.JPanel();
-        consultButton = new javax.swing.JButton();
-        resetSystemButton = new javax.swing.JButton();
-        backToStartPanelButton = new javax.swing.JButton();
-        showFactsButton = new javax.swing.JButton();
-        showAnswersButton = new javax.swing.JButton();
-        showSolutionsButton = new javax.swing.JButton();
-        showCalendarButton = new javax.swing.JButton();
         solutionsPanel = new javax.swing.JPanel();
         solutionsScrollPane = new javax.swing.JScrollPane();
         solutionsList = new javax.swing.JList<>();
@@ -200,6 +192,14 @@ public class Window extends javax.swing.JFrame {
         solutionDescriptionTextArea = new javax.swing.JTextArea();
         solutionImagePanel = new javax.swing.JPanel();
         solutionImageLabel = new javax.swing.JLabel();
+        commandPanel = new javax.swing.JPanel();
+        consultButton = new javax.swing.JButton();
+        resetSystemButton = new javax.swing.JButton();
+        backToStartPanelButton = new javax.swing.JButton();
+        showFactsButton = new javax.swing.JButton();
+        showAnswersButton = new javax.swing.JButton();
+        showSolutionsButton = new javax.swing.JButton();
+        showCalendarButton = new javax.swing.JButton();
 
         startLabel.setText("Start label");
 
@@ -520,6 +520,110 @@ public class Window extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        solutionsScrollPane.setVisible(false);
+        solutionsScrollPane.setPreferredSize(new java.awt.Dimension(350, 100));
+
+        solutionsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        solutionsList.setSelectedIndex(0);
+        solutionsList.setVisibleRowCount(-1);
+        solutionsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                solutionsListValueChanged(evt);
+            }
+        });
+        solutionsScrollPane.setViewportView(solutionsList);
+
+        proofScrollPane.setVisible(false);
+        proofScrollPane.setPreferredSize(new java.awt.Dimension(350, 22));
+        proofScrollPane.setViewportView(proofTextPane);
+
+        solutionsInfoLabel.setText("solution info");
+        solutionsInfoPanel.add(solutionsInfoLabel);
+
+        solutionDescriptionPanel.setVisible(false);
+
+        solutionDescriptionScrollPane.setBackground(new java.awt.Color(238, 238, 238));
+        solutionDescriptionScrollPane.setBorder(null);
+
+        solutionDescriptionTextArea.setEditable(false);
+        solutionDescriptionTextArea.setBackground(new java.awt.Color(238, 238, 238));
+        solutionDescriptionTextArea.setColumns(20);
+        solutionDescriptionTextArea.setFont(new java.awt.Font("Calibri", 0, 13)); // NOI18N
+        solutionDescriptionTextArea.setLineWrap(true);
+        solutionDescriptionTextArea.setRows(5);
+        solutionDescriptionTextArea.setWrapStyleWord(true);
+        solutionDescriptionTextArea.setBorder(null);
+        solutionDescriptionTextArea.setMinimumSize(new java.awt.Dimension(4, 4));
+        solutionDescriptionScrollPane.setViewportView(solutionDescriptionTextArea);
+
+        solutionImageLabel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout solutionImagePanelLayout = new javax.swing.GroupLayout(solutionImagePanel);
+        solutionImagePanel.setLayout(solutionImagePanelLayout);
+        solutionImagePanelLayout.setHorizontalGroup(
+            solutionImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(solutionImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        solutionImagePanelLayout.setVerticalGroup(
+            solutionImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(solutionImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        javax.swing.GroupLayout solutionDescriptionPanelLayout = new javax.swing.GroupLayout(solutionDescriptionPanel);
+        solutionDescriptionPanel.setLayout(solutionDescriptionPanelLayout);
+        solutionDescriptionPanelLayout.setHorizontalGroup(
+            solutionDescriptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(solutionDescriptionPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(solutionDescriptionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(solutionImagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        solutionDescriptionPanelLayout.setVerticalGroup(
+            solutionDescriptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(solutionDescriptionPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(solutionDescriptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(solutionDescriptionPanelLayout.createSequentialGroup()
+                        .addComponent(solutionImagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(48, Short.MAX_VALUE))
+                    .addComponent(solutionDescriptionScrollPane, javax.swing.GroupLayout.Alignment.TRAILING)))
+        );
+
+        javax.swing.GroupLayout solutionsPanelLayout = new javax.swing.GroupLayout(solutionsPanel);
+        solutionsPanel.setLayout(solutionsPanelLayout);
+        solutionsPanelLayout.setHorizontalGroup(
+            solutionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(solutionsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(solutionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(solutionsInfoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(solutionsPanelLayout.createSequentialGroup()
+                        .addGap(70, 70, 70)
+                        .addComponent(solutionsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(proofScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                        .addGap(40, 40, 40))))
+            .addGroup(solutionsPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(solutionDescriptionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        solutionsPanelLayout.setVerticalGroup(
+            solutionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, solutionsPanelLayout.createSequentialGroup()
+                .addGap(43, 43, 43)
+                .addComponent(solutionsInfoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(solutionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(solutionsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(proofScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(solutionDescriptionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(800, 600));
         setPreferredSize(new java.awt.Dimension(900, 700));
@@ -544,8 +648,8 @@ public class Window extends javax.swing.JFrame {
         });
         commandPanel.add(resetSystemButton);
 
-        backToStartPanelButton.setText("Reset");
-        backToStartPanelButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        backToStartPanelButton.setText("Încarcă");
+        backToStartPanelButton.setPreferredSize(new java.awt.Dimension(100, 25));
         backToStartPanelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backToStartPanelButtonActionPerformed(evt);
@@ -590,111 +694,6 @@ public class Window extends javax.swing.JFrame {
         commandPanel.add(showCalendarButton);
 
         getContentPane().add(commandPanel, java.awt.BorderLayout.NORTH);
-
-        solutionsScrollPane.setVisible(false);
-        solutionsScrollPane.setPreferredSize(new java.awt.Dimension(350, 100));
-
-        solutionsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        solutionsList.setSelectedIndex(0);
-        solutionsList.setVisibleRowCount(-1);
-        solutionsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                solutionsListValueChanged(evt);
-            }
-        });
-        solutionsScrollPane.setViewportView(solutionsList);
-
-        proofScrollPane.setVisible(false);
-        proofScrollPane.setPreferredSize(new java.awt.Dimension(350, 22));
-        proofScrollPane.setViewportView(proofTextPane);
-
-        solutionsInfoLabel.setText("solution info");
-        solutionsInfoPanel.add(solutionsInfoLabel);
-
-        solutionDescriptionPanel.setVisible(false);
-
-        solutionDescriptionScrollPane.setBackground(new java.awt.Color(238, 238, 238));
-        solutionDescriptionScrollPane.setBorder(null);
-
-        solutionDescriptionTextArea.setBackground(new java.awt.Color(238, 238, 238));
-        solutionDescriptionTextArea.setColumns(20);
-        solutionDescriptionTextArea.setFont(new java.awt.Font("Calibri", 0, 13)); // NOI18N
-        solutionDescriptionTextArea.setLineWrap(true);
-        solutionDescriptionTextArea.setRows(5);
-        solutionDescriptionTextArea.setWrapStyleWord(true);
-        solutionDescriptionTextArea.setBorder(null);
-        solutionDescriptionTextArea.setMinimumSize(new java.awt.Dimension(4, 4));
-        solutionDescriptionScrollPane.setViewportView(solutionDescriptionTextArea);
-
-        javax.swing.GroupLayout solutionImagePanelLayout = new javax.swing.GroupLayout(solutionImagePanel);
-        solutionImagePanel.setLayout(solutionImagePanelLayout);
-        solutionImagePanelLayout.setHorizontalGroup(
-            solutionImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(solutionImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
-        );
-        solutionImagePanelLayout.setVerticalGroup(
-            solutionImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(solutionImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-
-        javax.swing.GroupLayout solutionDescriptionPanelLayout = new javax.swing.GroupLayout(solutionDescriptionPanel);
-        solutionDescriptionPanel.setLayout(solutionDescriptionPanelLayout);
-        solutionDescriptionPanelLayout.setHorizontalGroup(
-            solutionDescriptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(solutionDescriptionPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(solutionDescriptionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(solutionImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        solutionDescriptionPanelLayout.setVerticalGroup(
-            solutionDescriptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(solutionDescriptionPanelLayout.createSequentialGroup()
-                .addGroup(solutionDescriptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(solutionDescriptionPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(solutionImagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(solutionDescriptionPanelLayout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addComponent(solutionDescriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)))
-                .addGap(29, 29, 29))
-        );
-
-        javax.swing.GroupLayout solutionsPanelLayout = new javax.swing.GroupLayout(solutionsPanel);
-        solutionsPanel.setLayout(solutionsPanelLayout);
-        solutionsPanelLayout.setHorizontalGroup(
-            solutionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(solutionsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(solutionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(solutionsInfoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(solutionsPanelLayout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addComponent(solutionsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(proofScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
-                        .addGap(40, 40, 40))))
-            .addGroup(solutionsPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(solutionDescriptionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        solutionsPanelLayout.setVerticalGroup(
-            solutionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, solutionsPanelLayout.createSequentialGroup()
-                .addGap(43, 43, 43)
-                .addComponent(solutionsInfoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(solutionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(solutionsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(proofScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(solutionDescriptionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        getContentPane().add(solutionsPanel, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -754,6 +753,7 @@ public class Window extends javax.swing.JFrame {
         showAnswersButton.setVisible(true);
         showFactsButton.setVisible(true);
         showCalendarButton.setVisible(true);
+        questionPanel.setVisible(false);
         
         DefaultListModel listModel = (DefaultListModel) solutionsList.getModel();
         listModel.removeAllElements();
@@ -959,9 +959,17 @@ public class Window extends javax.swing.JFrame {
                 
         StringBuilder text = new StringBuilder();
         text.append("Name: ").append(formattedName).append("\n");
-        text.append("Date: ").append(selectedSolution.getDate().toString()).append("\n\n");
+        text.append("Date: ").append(selectedSolution.getDate().toString());
+        if(selectedSolution.getDate().getDayOfYear()< DateTime.now().getDayOfYear()){
+            text.append(" (you can participate next year!)\n");
+        }
+        else{
+            text.append("\n");
+        }
+        text.append("Location: ").append(selectedSolution.getLocation()).append("\n\n");
         text.append(selectedSolution.getDescription());
         solutionDescriptionTextArea.setText(text.toString());
+        solutionDescriptionTextArea.setCaretPosition(0);
     }
     
     private void addImageToPanel(Solution selectedSolution){
@@ -1154,7 +1162,9 @@ public class Window extends javax.swing.JFrame {
         int day = (int)Double.parseDouble(date[2]);
         LocalDate localDate = new LocalDate(year, month, day);
         
-        return new Solution(goal, value, certaintyFactor, description, domain, image, localDate);
+        String location = words[7].substring(1, words[7].length()-1);
+        
+        return new Solution(goal, value, certaintyFactor, description, domain, image, localDate, location);
     }
     
     private void showSolutions(){
