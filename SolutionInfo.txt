@@ -69,3 +69,21 @@
 {imagine: 'Images/iccv'}
 {data: 22/10/2017}
 {locatie: 'Venice, Italy'}
+-------------------
+{9}
+{intellisys}
+{'Intelligent Systems Conference'}
+{'Intelligent Systems Conference (IntelliSys) 2017 will focus on areas of intelligent systems and artificial intelligence (AI) and how it applies to the real world. IntelliSys is one of the best respected Artificial Intelligence (AI) Conference. IntelliSys provides a leading international forum that brings together researchers and practitioners from diverse fields with the purpose of exploring the fundamental roles, interactions as well as practical impacts of Artificial Intelligence (AI). It is part of the conference series started in 2013.'}
+{domeniu: 'Artificial Intelligence'}
+{imagine: 'Images/intellisys'}
+{data: 07/09/2017}
+{locatie: 'London, United Kingdom'}
+-------------------
+{10}
+{odsc}
+{'Open Data Science Conference'}
+{'ODSC Europe 2017 is the largest applied data science conference on the planet. Our speakers include some of the core contributors to many open source tools, libraries, and languages. Attend ODSC Europe 2017 and learn the latest AI & data science topics, tools, and languages from some of the best and brightest minds in the field.'}
+{domeniu: 'Artificial Intelligence'}
+{imagine: 'Images/odsc'}
+{data: 12/10/2017}
+{locatie: 'London, United Kingdom'}
