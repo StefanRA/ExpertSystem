@@ -19,7 +19,6 @@ import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -312,6 +311,7 @@ public class Window extends javax.swing.JFrame {
         answersScrollPane.setBorder(null);
 
         answersTextArea.setVisible(false);
+        answersTextArea.setEditable(false);
         answersTextArea.setColumns(20);
         answersTextArea.setLineWrap(true);
         answersTextArea.setRows(5);
@@ -389,7 +389,7 @@ public class Window extends javax.swing.JFrame {
         certaintyFactorLabel.setText("Factor de certitudine");
         certaintyFactorPanel.add(certaintyFactorLabel);
 
-        certaintyFactorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "100", "95", "90", "85", "80", "75", "70", "65", "60", "55", "50", "45", "40", "35", "30", "25", "20", "10", "5", "0" }));
+        certaintyFactorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "100", "95", "90", "85", "80", "75", "70", "65", "60", "55", "50", "45", "40", "35", "30", "25", "20", "15", "10", "5", "0" }));
         certaintyFactorPanel.add(certaintyFactorComboBox);
 
         javax.swing.GroupLayout questionPanelLayout = new javax.swing.GroupLayout(questionPanel);
