@@ -198,58 +198,190 @@ Comentariu: 'Reguli pentru deducerea valorii atributului categorie_conferinta'.
 	)
 	then
 		(categorie_conferinta -> (conferinta_industrie) : fc -> 85).
-		
+	
 	rg->22
 	if(
+		nivel_pregatire_in_domeniu -> (mediu) &&
+		doreste_sa_invete -> (1) &&
+		interesat_de_networking -> (1)
+	)
+	then
+		(categorie_conferinta -> (conferinta_industrie) : fc -> 85).
+		
+	rg->23
+	if(
 		nivel_pregatire_in_domeniu -> (mic) &&
-		interesat_de_networking -> (1) &&
+		doreste_sa_invete -> (1) &&
 		caracter_practic -> (1)
 	)
 	then
-		(categorie_conferinta -> (workshop_incepatori) : fc -> 80).
+		(categorie_conferinta -> (workshop_incepatori) : fc -> 75).
 		
-	rg->23
+	rg->24
 	if(
 		nivel_pregatire_in_domeniu -> (foarte_mic) &&
 		doreste_sa_invete -> (1) &&
 		caracter_practic -> (1)
 	)
 	then
-		(categorie_conferinta -> (workshop_incepatori) : fc -> 70).
+		(categorie_conferinta -> (workshop_incepatori) : fc -> 80).
 		
-	rg->24
+	rg->25
 	if(
 		nivel_pregatire_in_domeniu -> (mediu) &&
 		doreste_sa_invete -> (1) &&
 		caracter_practic -> (1)
 	)
 	then
-		(categorie_conferinta -> (workshop_avansati) : fc -> 70).
+		(categorie_conferinta -> (workshop_avansati) : fc -> 80).
+	
+	rg->26
+	if(
+		nivel_pregatire_in_domeniu -> (mare) &&
+		doreste_sa_asculte_prezentari -> (0) &&
+		doreste_sa_prezinte -> (0) &&
+		doreste_sa_invete -> (1) &&
+		caracter_practic -> (1)
+	)
+	then
+		(categorie_conferinta -> (workshop_avansati) : fc -> 90).
+
+	rg->27
+	if(
+		nivel_pregatire_in_domeniu -> (foarte_mare) &&
+		doreste_sa_asculte_prezentari -> (0) &&
+		doreste_sa_prezinte -> (0) &&
+		doreste_sa_invete -> (1) &&
+		caracter_practic -> (1)
+	)
+	then
+		(categorie_conferinta -> (workshop_avansati) : fc -> 90).
 
 Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca numele conferintei este ICCV'.
 
-	rg->25
+	rg->28
 	if(
 		categorie_conferinta -> (conferinta_academica) &&
 		domeniu_de_interes -> (inteligenta_artificiala) &&
 		tematica -> (specifica) &&
+		subdomeniu_de_interes_inteligenta_artificiala -> (vedere_artificiala) &&
 		poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
 	)
 	then
-		(nume_conferinta -> (iccv) : fc -> 80).
+		(nume_conferinta -> (iccv) : fc -> 90).
 	
-	rg->26
+	rg->29
 	if(
 		categorie_conferinta -> (workshop_avansati) &&
 		domeniu_de_interes -> (inteligenta_artificiala) &&
+		tematica -> (specifica) &&
+		subdomeniu_de_interes_inteligenta_artificiala -> (vedere_artificiala) &&
 		poate_participa_la_conferinta_medie_in_strainatate -> (1)
 	)
 	then
-		(nume_conferinta -> (iccv) : fc -> 80).
+		(nume_conferinta -> (iccv) : fc -> 90).
+
+Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce domeniul de interes al utilizatorului'.
+
+	rg -> 30
+	if(
+		interes_inteligenta_artificiala -> (1)
+	)
+	then
+		(domeniu_de_interes -> (inteligenta_artificiala) : fc -> 90).
+	
+	rg -> 31
+	if(
+		interes_inteligenta_artificiala -> (0) &&
+		interes_grafica_pe_calculator -> (1)
+	)
+	then
+		(domeniu_de_interes -> (grafica_pe_calculator) : fc -> 90).
+	
+	rg -> 32
+	if(
+		interes_inteligenta_artificiala -> (0) &&
+		interes_grafica_pe_calculator -> (0) &&
+		interes_limbaje_de_programare -> (1)
+	)
+	then
+		(domeniu_de_interes -> (limbaje_de_programare) : fc -> 90).
+	
+	rg -> 33
+	if(
+		interes_inteligenta_artificiala -> (0) &&
+		interes_grafica_pe_calculator -> (0) &&
+		interes_limbaje_de_programare -> (0) &&
+		interes_sisteme_de_operare -> (1)
+	)
+	then
+		(domeniu_de_interes -> (sisteme_de_operare) : fc -> 90).
+	
+	rg -> 34
+	if(
+		interes_inteligenta_artificiala -> (0) &&
+		interes_grafica_pe_calculator -> (0) &&
+		interes_limbaje_de_programare -> (0) &&
+		interes_sisteme_de_operare -> (0) &&
+		interes_retele_calculatoare -> (1)
+	)
+	then
+		(domeniu_de_interes -> (retele_de_calculatoare) : fc -> 90).
+
+Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce subdomeniul de interes pentru inteligenta artificiala'.
+
+	rg -> 35
+	if(
+		interes_vedere_artificiala -> (1)
+	)
+	then
+		(subdomeniu_de_interes_inteligenta_artificiala -> (vedere_artificiala) : fc -> 95).
+	
+	rg -> 36
+	if(
+		interes_vedere_artificiala -> (0) &&
+		interes_sisteme_inteligente -> (1)
+	)
+	then
+		(subdomeniu_de_interes_inteligenta_artificiala -> (sisteme_inteligente) : fc -> 95).
+	
+	rg -> 37
+	if(
+		interes_vedere_artificiala -> (0) &&
+		interes_sisteme_inteligente -> (0) &&
+		interes_machine_learning -> (1)
+	)
+	then
+		(subdomeniu_de_interes_inteligenta_artificiala -> (machine_learning) : fc -> 95).
+	
+	rg -> 38
+	if(
+		interes_vedere_artificiala -> (0) &&
+		interes_sisteme_inteligente -> (0) &&
+		interes_data_science -> (1)
+	)
+	then
+		(subdomeniu_de_interes_inteligenta_artificiala -> (data_science) : fc -> 95).
+
+Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce subdomeniul de interes pentru grafica pe calculator'.
+
+	rg -> 39
+	if(
+		interes_realitate_virtuala -> (1)
+	)
+	then
+		(subdomeniu_de_interes_grafica_pe_calculator -> (realitate_virtuala) : fc -> 95).
+	
+	rg -> 40
+	if(
+		interes_jocuri_calculator -> (1)
+	)
+	then
+		(subdomeniu_de_interes_grafica_pe_calculator -> (jocuri_pe_calculator) : fc -> 95).
 
 Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca poate participa la o conferinta cu un anumit pret'.
 
-	rg -> 27
+	rg -> 41
 	if(
 		determina_buget -> (1) &&
 		dispus_sa_calatoreasca -> (1) &&
@@ -258,7 +390,7 @@ Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca poate pa
 	then
 		(poate_participa_la_conferinta_scumpa_in_strainatate -> (1) : fc -> 90).
 		
-	rg -> 28
+	rg -> 42
 	if(
 		determina_buget -> (1) &&
 		dispus_sa_calatoreasca -> (1) &&
@@ -267,7 +399,7 @@ Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca poate pa
 	then
 		(poate_participa_la_conferinta_medie_in_strainatate -> (1) : fc -> 90).
 	
-	rg -> 29
+	rg -> 43
 	if(
 		determina_buget -> (1) &&
 		dispus_sa_calatoreasca -> (1) &&
@@ -276,7 +408,7 @@ Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca poate pa
 	then
 		(poate_participa_la_conferinta_medie_in_strainatate -> (1) : fc -> 90).
 	
-	rg -> 30
+	rg -> 44
 	if(
 		determina_buget -> (1) &&
 		dispus_sa_calatoreasca -> (1) &&
@@ -285,7 +417,7 @@ Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca poate pa
 	then
 		(poate_participa_la_conferinta_ieftina_in_strainatate -> (1) : fc -> 90).
 	
-	rg -> 31
+	rg -> 45
 	if(
 		determina_buget -> (1) &&
 		dispus_sa_calatoreasca -> (1) &&
@@ -294,7 +426,7 @@ Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca poate pa
 	then
 		(poate_participa_la_conferinta_ieftina_in_strainatate -> (1) : fc -> 90).
 	
-	rg -> 32
+	rg -> 46
 	if(
 		determina_buget -> (1) &&
 		buget_disponibil -> (mare)
@@ -302,7 +434,7 @@ Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca poate pa
 	then
 		(poate_participa_la_conferinta_scumpa_in_tara -> (1) : fc -> 90).
 	
-	rg -> 33
+	rg -> 47
 	if(
 		determina_buget -> (1) &&
 		buget_disponibil -> (mare)
@@ -310,7 +442,7 @@ Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca poate pa
 	then
 		(poate_participa_la_conferinta_medie_in_tara -> (1) : fc -> 90).
 	
-	rg -> 34
+	rg -> 48
 	if(
 		determina_buget -> (1) &&
 		buget_disponibil -> (mediu)
@@ -318,7 +450,7 @@ Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca poate pa
 	then
 		(poate_participa_la_conferinta_medie_in_tara -> (1) : fc -> 90).
 	
-	rg -> 35
+	rg -> 49
 	if(
 		determina_buget -> (1) &&
 		buget_disponibil -> (mare)
@@ -326,7 +458,7 @@ Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca poate pa
 	then
 		(poate_participa_la_conferinta_ieftina_in_tara -> (1) : fc -> 90).
 	
-	rg -> 36
+	rg -> 50
 	if(
 		determina_buget -> (1) &&
 		buget_disponibil -> (mediu)
@@ -334,7 +466,7 @@ Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca poate pa
 	then
 		(poate_participa_la_conferinta_ieftina_in_tara -> (1) : fc -> 90).
 	
-	rg -> 37
+	rg -> 51
 	if(
 		determina_buget -> (1) &&
 		buget_disponibil -> (mic)
@@ -342,42 +474,42 @@ Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca poate pa
 	then
 		(poate_participa_la_conferinta_ieftina_in_tara -> (1) : fc -> 90).
 	
-	rg -> 38
+	rg -> 52
 	if(
 		determina_buget -> (0)
 	)
 	then
 		(poate_participa_la_conferinta_scumpa_in_strainatate -> (1) : fc -> 100).
 	
-	rg -> 39
+	rg -> 53
 	if(
 		determina_buget -> (0)
 	)
 	then
 		(poate_participa_la_conferinta_medie_in_strainatate -> (1) : fc -> 90).
 	
-	rg -> 40
+	rg -> 54
 	if(
 		determina_buget -> (0)
 	)
 	then
 		(poate_participa_la_conferinta_ieftina_in_strainatate -> (1) : fc -> 90).
 	
-	rg -> 41
+	rg -> 55
 	if(
 		determina_buget -> (0)
 	)
 	then
 		(poate_participa_la_conferinta_scumpa_in_tara -> (1) : fc -> 90).
 	
-	rg -> 42
+	rg -> 56
 	if(
 		determina_buget -> (0)
 	)
 	then
 		(poate_participa_la_conferinta_medie_in_tara -> (1) : fc -> 90).
 	
-	rg -> 43
+	rg -> 57
 	if(
 		determina_buget -> (0)
 	)
@@ -386,25 +518,25 @@ Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca poate pa
 
 Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca numele conferintei este UX Bucharest'.
 
-	rg->44
+	rg->58
 	if(
 		categorie_conferinta -> (conferinta_industrie) &&
 		interesat_de_design -> (1) &&
 		poate_participa_la_conferinta_medie_in_tara -> (1)
 	)
 	then
-		(nume_conferinta -> (ux_bucharest) : fc -> 80).
+		(nume_conferinta -> (ux_bucharest) : fc -> 90).
 
-	rg->45
+	rg->59
 	if(
 		categorie_conferinta -> (workshop_avansati) &&
 		interesat_de_design -> (1) &&
 		poate_participa_la_conferinta_medie_in_tara -> (1)
 	)
 	then
-		(nume_conferinta -> (ux_bucharest) : fc -> 80).
+		(nume_conferinta -> (ux_bucharest) : fc -> 90).
 
-rg->46
+rg->60
 if(
 	categorie_conferinta -> (conferinta_industrie) &&
 	limbaj_preferat -> (python) &&
@@ -413,27 +545,19 @@ if(
 then
 	(nume_conferinta -> (euro_python) : fc -> 90).
 
-rg->47
-if(
-	buget_disponibil -> (mare) &&
-	interesat_de_networking -> (1)
-)
-then
- (dimensiune_conferinta -> (mare) : fc -> 80).
-
-rg->48
+rg->61
 if(
 	categorie_conferinta -> (conferinta_industrie) &&
+	domeniu_de_interes -> (grafica_pe_calculator) &&
 	interes_matematica_aplicata -> (1) &&
 	ramura_matematica -> (geometrie) &&
-	domeniu_de_interes -> (grafica_pe_calculator) &&
 	nivel_experienta -> (mare) &&
 	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
 )
 then
 	(nume_conferinta -> (eurographics) : fc -> 90).
 	
-rg->49
+rg->62
 if(
 	categorie_conferinta -> (conferinta_industrie) &&
 	domeniu_de_interes -> (grafica_pe_calculator) &&
@@ -443,98 +567,321 @@ if(
 then
 	(nume_conferinta -> (eurographics) : fc -> 70).
 
-rg->50
-if(
-	buget_disponibil -> (mediu) &&
-	interesat_de_networking -> (1)
-)
-then
- (dimensiune_conferinta -> (mare) : fc -> 60).
-
-rg->51
+rg->63
 if(
 	categorie_conferinta -> (conferinta_industrie) &&
+	domeniu_de_interes -> (sisteme_de_operare) &&
 	sistem_de_operare_preferat -> (linux) &&
 	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
 )
 then
 	(nume_conferinta -> (embedded_linux_conference) : fc -> 80).
 
-rg->52
+rg->64
 if(
 	categorie_conferinta -> (conferinta_industrie) &&
+	domeniu_de_interes -> (sisteme_de_operare) &&
 	sistem_de_operare_preferat -> (linux) &&
 	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
 )
 then
 	(nume_conferinta -> (embedded_linux_conference) : fc -> 70).
 	
-rg->53
+rg->65
 if(
 	categorie_conferinta -> (conferinta_industrie) &&
+	domeniu_de_interes -> (limbaje_de_programare) &&
 	interes_open_source -> (1) &&
-	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
-)
-then
-	(nume_conferinta -> (oscon) : fc -> 80).
-
-rg->54
-if(
-	categorie_conferinta -> (conferinta_industrie) &&
-	interes_open_source -> (1) &&
-	sistem_de_operare_preferat -> (linux) &&
 	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
 )
 then
 	(nume_conferinta -> (oscon) : fc -> 85).
 
-rg->55
+rg->66
 if(
 	categorie_conferinta -> (conferinta_industrie) &&
+	domeniu_de_interes -> (sisteme_de_operare) &&
+	interes_open_source -> (1) &&
+	sistem_de_operare_preferat -> (linux) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (oscon) : fc -> 80).
+
+rg->67
+if(
+	categorie_conferinta -> (conferinta_industrie) &&
+	domeniu_de_interes -> (grafica_pe_calculator) &&
 	locatia -> (in_strainatate) &&
 	interes_matematica_aplicata -> (1) &&
 	ramura_matematica -> (geometrie) &&
-	domeniu_de_interes -> (grafica_pe_calculator) &&
 	interesat_de_networking -> (1)
 )
 then
 	(nume_conferinta -> (eurographics) : fc -> 90).
 	
-rg->56
+rg->68
 if(
 	categorie_conferinta -> (conferinta_industrie) &&
-	locatia -> (in_strainatate) &&
 	domeniu_de_interes -> (grafica_pe_calculator) &&
+	locatia -> (in_strainatate) &&
+	
 	interesat_de_networking -> (1)
 )
 then
 	(nume_conferinta -> (eurographics) : fc -> 85).
 
-rg->57
+rg->69
 if(
 	categorie_conferinta -> (conferinta_industrie) &&
-	locatia -> (in_strainatate) &&
+	domeniu_de_interes -> (limbaje_de_programare) &&
 	interesat_de_networking -> (1)
 )
 then
 	(nume_conferinta -> (ecoop) : fc -> 85).
 
-rg->58
+rg->70
 if(
 	categorie_conferinta -> (conferinta_industrie) &&
-	locatia -> (in_strainatate)
+	domeniu_de_interes -> (limbaje_de_programare) &&
+	limbaj_preferat -> (java)
 )
 then
-	(nume_conferinta -> (ecoop) : fc -> 80).
+	(nume_conferinta -> (ecoop) : fc -> 85).
 
-rg->59
+rg->71
 if(
 	categorie_conferinta -> (conferinta_academica) &&
 	domeniu_de_interes -> (inteligenta_artificiala) &&
 	tematica -> (generala)
 )
 then
+	(nume_conferinta -> (raai) : fc -> 88).
+
+rg->72
+if(
+	categorie_conferinta -> (conferinta_academica) &&
+	domeniu_de_interes -> (inteligenta_artificiala) &&
+	tematica -> (specifica) &&
+	subdomeniu_de_interes_inteligenta_artificiala -> (vedere_artificiala)
+)
+then
 	(nume_conferinta -> (raai) : fc -> 85).
+
+rg->73
+if(
+	categorie_conferinta -> (conferinta_academica) &&
+	domeniu_de_interes -> (inteligenta_artificiala) &&
+	tematica -> (generala) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (intellisys) : fc -> 85).
+
+rg->74
+if(
+	categorie_conferinta -> (conferinta_academica) &&
+	domeniu_de_interes -> (inteligenta_artificiala) &&
+	tematica -> (specifica) &&
+	subdomeniu_de_interes_inteligenta_artificiala -> (vedere_artificiala) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (intellisys) : fc -> 85).
+
+rg->75
+if(
+	categorie_conferinta -> (conferinta_academica) &&
+	domeniu_de_interes -> (inteligenta_artificiala) &&
+	tematica -> (specifica) &&
+	subdomeniu_de_interes_inteligenta_artificiala -> (sisteme_inteligente) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (intellisys) : fc -> 85).
+
+rg->76
+if(
+	categorie_conferinta -> (conferinta_industrie) &&
+	domeniu_de_interes -> (inteligenta_artificiala) &&
+	tematica -> (specifica) &&
+	subdomeniu_de_interes_inteligenta_artificiala -> (data_science) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (odsc) : fc -> 85).
+
+rg->77
+if(
+	categorie_conferinta -> (workshop_avansati) &&
+	domeniu_de_interes -> (inteligenta_artificiala) &&
+	tematica -> (specifica) &&
+	subdomeniu_de_interes_inteligenta_artificiala -> (data_science) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (odsc) : fc -> 85).
+
+rg->78
+if(
+	categorie_conferinta -> (conferinta_academica) &&
+	domeniu_de_interes -> (inteligenta_artificiala) &&
+	tematica -> (specifica) &&
+	subdomeniu_de_interes_inteligenta_artificiala -> (sisteme_inteligente) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (ieee_ines) : fc -> 84).
+	
+rg->79
+if(
+	categorie_conferinta -> (workshop_incepatori) &&
+	domeniu_de_interes -> (limbaje_de_programare) &&
+	limbaj_preferat -> (java) &&
+	poate_participa_la_conferinta_medie_in_tara -> (1)
+)
+then
+	(nume_conferinta -> (java_day) : fc -> 90).
+
+rg->80
+if(
+	categorie_conferinta -> (conferinta_academica) &&
+	domeniu_de_interes -> (grafica_pe_calculator) &&
+	subdomeniu_de_interes_grafica_pe_calculator -> (realitate_virtuala) &&
+	poate_participa_la_conferinta_medie_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (eurasia_graphics) : fc -> 90).
+
+rg->81
+if(
+	categorie_conferinta -> (conferinta_academica) &&
+	domeniu_de_interes -> (grafica_pe_calculator) &&
+	subdomeniu_de_interes_grafica_pe_calculator -> (jocuri_pe_calculator) &&
+	poate_participa_la_conferinta_medie_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (eurasia_graphics) : fc -> 90).
+
+rg->82
+if(
+	categorie_conferinta -> (conferinta_academica) &&
+	domeniu_de_interes -> (retele_de_calculatoare) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (iot_conference) : fc -> 90).
+
+rg->83
+if(
+	categorie_conferinta -> (workshop_avansati) &&
+	domeniu_de_interes -> (retele_de_calculatoare) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (iot_conference) : fc -> 90).
+
+Comentariu: 'Intrebarile utilizate de sistemul expert'.
+
+rg->84
+if(
+	categorie_conferinta -> (conferinta_academica) &&
+	domeniu_de_interes -> (retele_de_calculatoare) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (ieee_lcn) : fc -> 90).
+
+rg->85
+if(
+	categorie_conferinta -> (workshop_avansati) &&
+	domeniu_de_interes -> (retele_de_calculatoare) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (ieee_lcn) : fc -> 90).
+
+rg->86
+if(
+	categorie_conferinta -> (conferinta_academica) &&
+	domeniu_de_interes -> (sisteme_de_operare) &&
+	tematica -> (generala) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (sosp) : fc -> 90).
+
+rg->87
+if(
+	categorie_conferinta -> (workshop_avansati) &&
+	domeniu_de_interes -> (sisteme_de_operare) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (sosp) : fc -> 90).
+
+rg->88
+if(
+	categorie_conferinta -> (conferinta_academica) &&
+	domeniu_de_interes -> (limbaje_de_programare) &&
+	tematica -> (generala) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (acm_popl) : fc -> 90).
+
+rg->89
+if(
+	categorie_conferinta -> (conferinta_academica) &&
+	domeniu_de_interes -> (grafica_pe_calculator) &&
+	tematica -> (specifica) &&
+	subdomeniu_de_interes_grafica_pe_calculator -> (jocuri_pe_calculator) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (acm_i3d) : fc -> 88).
+
+rg->90
+if(
+	categorie_conferinta -> (conferinta_academica) &&
+	domeniu_de_interes -> (inteligenta_artificiala) &&
+	tematica -> (specifica) &&
+	subdomeniu_de_interes_inteligenta_artificiala -> (machine_learning) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (uai) : fc -> 88).
+	
+rg->91
+if(
+	categorie_conferinta -> (workshop_avansati) &&
+	domeniu_de_interes -> (inteligenta_artificiala) &&
+	tematica -> (specifica) &&
+	subdomeniu_de_interes_inteligenta_artificiala -> (machine_learning) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (uai) : fc -> 88).
+
+rg->92
+if(
+	categorie_conferinta -> (conferinta_academica) &&
+	domeniu_de_interes -> (limbaje_de_programare) &&
+	limbaj_preferat -> (cpp) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (cppcon) : fc -> 92).
+
+rg->93
+if(
+	categorie_conferinta -> (conferinta_industrie) &&
+	domeniu_de_interes -> (limbaje_de_programare) &&
+	limbaj_preferat -> (cpp) &&
+	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
+)
+then
+	(nume_conferinta -> (cppcon) : fc -> 92).
 	
 Comentariu: 'Intrebarile utilizate de sistemul expert'.
 
@@ -557,16 +904,9 @@ q -> limbaj_preferat
 variante(
 	java (&)
 	python (&)
-	c
+	cpp
 )
 text -> ('Care este limbajul preferat?').
-
-q -> domeniu_de_interes
-variante(
-	inteligenta_artificiala (&)
-	grafica_pe_calculator
-)
-text -> ('Care este domeniul dumneavoastra de interes?').
 
 q -> nivel_experienta
 variante(
@@ -604,36 +944,6 @@ variante(
 	nu
 )
 text -> ('Sunteti interesat de tehnologii open source?').
-
-q -> ocupatie
-variante(
-	student (&)
-	profesor (&)
-	dezvoltator_software
-)
-text -> ('Care este ocupatia dumneavoastra?').
-
-q -> este_student
-variante(
-	da (&)
-	nu
-)
-text -> ('Sunteti student?').
-
-q -> nivel_studii
-variante(
-	licenta (&)
-	masterat (&)
-	doctorat
-)
-text -> ('Care este nivelul studiilor pe care le-ati urmat?').
-
-q -> lucrare_stiintifica
-variante(
-	da (&)
-	nu
-)
-text -> ('Lucrarea pe care doriti sa o prezentati are sau poate avea o importanta stiintifica pentru domeniu?').
 
 q -> inscris_la_studii_universitare
 variante(
@@ -685,7 +995,7 @@ variante(
 	da (&)
 	nu
 )
-text -> ('Lucrati in cercetare?').
+text -> ('Lucrati in mediul academic si/sau in cercetare?').
 
 q -> doreste_sa_invete
 variante(
@@ -735,3 +1045,87 @@ variante(
 	nu
 )
 text -> ('Doriti sa determin daca va permiteti sa participati la eveniment?').
+
+q -> interes_inteligenta_artificiala
+variante(
+	da (&)
+	nu
+)
+text -> ('Doriti sa aflati noutati din domeniul inteligentei artificiale?').
+
+q -> interes_grafica_pe_calculator
+variante(
+	da (&)
+	nu
+)
+text -> ('Doriti sa aflati noutati din domeniul graficii pe calculator?').
+
+q -> interes_limbaje_de_programare
+variante(
+	da (&)
+	nu
+)
+text -> ('Doriti sa aflati noutati din domeniul limbajelor de programare?').
+
+q -> interes_grafica_pe_calculator
+variante(
+	da (&)
+	nu
+)
+text -> ('Doriti sa aflati noutati din domeniul sistemelor de operare?').
+
+q -> interes_vedere_artificiala
+variante(
+	da (&)
+	nu
+)
+text -> ('Sunteti interesat de vederea artificiala?').
+
+q -> interes_sisteme_inteligente
+variante(
+	da (&)
+	nu
+)
+text -> ('Sunteti interesat de sisteme inteligente?').
+
+q -> interes_data_science
+variante(
+	da (&)
+	nu
+)
+text -> ('Sunteti interesat de stiinta datelor?').
+
+q -> interes_realitate_virtuala
+variante(
+	da (&)
+	nu
+)
+text -> ('Doriti sa aflati mai multe despre tehnologiile utilizate in realitatea virtuala?').
+
+q -> interes_jocuri_calculator
+variante(
+	da (&)
+	nu
+)
+text -> ('Doriti sa aflati mai multe despre tehnologiile utilizate in dezvoltarea jocurilor video?').
+
+q -> interes_retele_calculatoare
+variante(
+	da (&)
+	nu
+)
+text -> ('Doriti sa aflati mai multe despre domeniul retelelor de calculatoare?').
+
+q -> interes_sisteme_de_operare
+variante(
+	da (&)
+	nu
+)
+text -> ('Doriti sa aflati mai multe despre domeniul sistemelor de operare?').
+
+q -> interes_machine_learning
+variante(
+	da (&)
+	nu
+)
+text -> ('Doriti sa aflati mai multe despre machine learning?').

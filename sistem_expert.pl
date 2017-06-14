@@ -1033,13 +1033,13 @@ computeCalendarEntries([], []) :-
 %---------------------------------------------------------------------------------------------------
 getDomainMonths(Domain, DomainMonths) :-
 	findall(
-		Month,
+		Month-1,
 		Number^ Id^ Name^ Description^ Image^ Year^ Month^ Day^ Hour^ Minute^ Second^ Location^
 		solution_info(Number, Id, Name, Description, Domain, Image, datime(Year, Month, Day, Hour, Minute, Second), Location),
 		Months
 		),
-	clumped(Months, Months1),
-	sort(Months1, Months2),
+	keysort(Months, Months1),
+	keyclumped(Months1, Months2),
 	computeDomainMonths(DomainMonths, 1.0, Months2).
 %---------------------------------------------------------------------------------------------------
 
@@ -1054,7 +1054,8 @@ computeDomainMonths([], 13.0, _) :-
 	!.
 computeDomainMonths([MonthCount | Rest], CurrentMonth, Months) :-
 	(
-		Months = [CurrentMonth-MonthCount | RemainingMonths]
+		Months = [CurrentMonth-EventList | RemainingMonths],
+		length(EventList, MonthCount)
 		;
 		RemainingMonths = Months,
 		MonthCount = 0

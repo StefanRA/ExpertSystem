@@ -11,7 +11,7 @@
 {eurographics}
 {'Eurographics'}
 {'Eurographics is the only truly Europe-wide professional Computer Graphics association. The association supports its members in advancing the state of the art in Computer Graphics and related fields such as Multimedia, Scientific Visualization and Human Computer Interfaces. Eurographics organises many different activities and services for its members, who include researchers, developers, educators and those who work in the computer graphics industry, both as users and providers of computer graphics hardware, software, and applications.'}
-{domeniu: 'Computer graphics'}
+{domeniu: 'Computer Graphics'}
 {imagine: 'Images/eurographics'}
 {data: 16/04/2017}
 {locatie: 'Lyon, France'}
@@ -69,3 +69,111 @@
 {imagine: 'Images/iccv'}
 {data: 22/10/2017}
 {locatie: 'Venice, Italy'}
+-------------------
+{9}
+{intellisys}
+{'Intelligent Systems Conference'}
+{'Intelligent Systems Conference (IntelliSys) 2017 will focus on areas of intelligent systems and artificial intelligence (AI) and how it applies to the real world. IntelliSys is one of the best respected Artificial Intelligence (AI) Conference. IntelliSys provides a leading international forum that brings together researchers and practitioners from diverse fields with the purpose of exploring the fundamental roles, interactions as well as practical impacts of Artificial Intelligence (AI). It is part of the conference series started in 2013.'}
+{domeniu: 'Artificial Intelligence'}
+{imagine: 'Images/intellisys'}
+{data: 07/09/2017}
+{locatie: 'London, United Kingdom'}
+-------------------
+{10}
+{odsc}
+{'Open Data Science Conference'}
+{'ODSC Europe 2017 is the largest applied data science conference on the planet. Our speakers include some of the core contributors to many open source tools, libraries, and languages. Attend ODSC Europe 2017 and learn the latest AI & data science topics, tools, and languages from some of the best and brightest minds in the field.'}
+{domeniu: 'Artificial Intelligence'}
+{imagine: 'Images/odsc'}
+{data: 12/10/2017}
+{locatie: 'London, United Kingdom'}
+-------------------
+{11}
+{ieee_ines}
+{'IEEE International Conference on Intelligent Engineering Systems'}
+{'Authors are welcome to submit original and unpublished papers and attend the IEEE 21st International Conference on Intelligent Engineering Systems 2017 (INES 2017) to be held on October 20-23, 2017 in Larnaca, Cyprus.'}
+{domeniu: 'Artificial Intelligence'}
+{imagine: 'Images/ieee_ines'}
+{data: 20/10/2017}
+{locatie: 'Larnaca, Cyprus'}
+-------------------
+{12}
+{java_day}
+{'Java Day'}
+{'This one day masterclass is designed for java developers and because it looks at more advanced Java 8 material, the attendees should know at least the basics of Java 8 in order for them to get the best experience. Java 8 is the latest release for Java that contains new features, enhancements and bug fixes to improve efficiency to develop and run Java programs.'}
+{domeniu: 'Programming Languages'}
+{imagine: 'Images/java_day'}
+{data: 22/03/2017}
+{locatie: 'Bucharest, Romania'}
+-------------------
+{13}
+{eurasia_graphics}
+{'Eurasia Graphics'}
+{'Eurasia Graphics is a non-profit event on computer graphics and applications started in 2012. Eurasia Graphics aims to bring together researchers, practitioners, students, and the industry working in the field of Computer graphics, Animation and Gaming to share their findings, experiences, and insights in a friendly and collaborative setting.'}
+{domeniu: 'Computer Graphics'}
+{imagine: 'Images/eurasia_graphics'}
+{data: 04/11/2017}
+{locatie: 'Istanbul, Turkey'}
+-------------------
+{14}
+{iot_conference}
+{'International Conference on the Internet of Things'}
+{'The Internet of Things Conference is seeking original, high impact research papers on all topics related to the development of the Internet of Things. Papers will be reviewed and selected based on technical novelty, integrity of the analysis and social impacts and practical relevance.'}
+{domeniu: 'Computer Networks'}
+{imagine: 'Images/iot_conference'}
+{data: 22/10/2017}
+{locatie: 'Linz, Austria'}
+-------------------
+{15}
+{ieee_lcn}
+{'IEEE Conference on Local Computer Networks'}
+{'The IEEE LCN conference is the premier conference on theoretical and practical aspects of computer networking. LCN is highly interactive, enabling an effective interchange of results and ideas among researchers, users, and product developers. Major developments from high-speed networks to the global Internet to specialized sensor networks have been reported at past LCNs.'}
+{domeniu: 'Computer Networks'}
+{imagine: 'Images/ieee_lcn'}
+{data: 09/10/2017}
+{locatie: 'Singapore, Singapore'}
+-------------------
+{16}
+{sosp}
+{'ACM Symposium on Operating Systems Principles'}
+{'The biennial ACM Symposium on Operating Systems Principles is the world premier forum for researchers, developers, programmers, and teachers of computer systems technology. Academic and industrial participants present research and experience papers that cover the full range of theory and practice of computer systems software.'}
+{domeniu: 'Operating Systems'}
+{imagine: 'Images/sosp'}
+{data: 28/10/2017}
+{locatie: 'Shanghai, China'}
+-------------------
+{17}
+{acm_popl}
+{'ACM SIGPLAN Symposium on Principles of Programming Languages'}
+{'The 44th ACM SIGPLAN Symposium on Principles of Programming Languages (POPL 2017) is a forum for the discussion of all aspects of programming languages and programming systems. Both theoretical and experimental papers are welcome, on topics ranging from formal frameworks to experience reports.'}
+{domeniu: 'Programming Languages'}
+{imagine: 'Images/acm_popl'}
+{data: 15/01/2017}
+{locatie: 'Paris, France'}
+-------------------
+{18}
+{acm_i3d}
+{'ACM SIGGRAPH Symposium on Interactive 3D Graphics and Games'}
+{'2017 is I3Ds 31st year since the inaugural workshop in 1986, and the 21st conference (I3D occurred roughly biennially until 2005).'}
+{domeniu: 'Computer Graphics'}
+{imagine: 'Images/acm_i3d'}
+{data: 25/02/2017}
+{locatie: 'San Francisco, United States of America'}
+-------------------
+{19}
+{uai}
+{'Conference on Uncertainty in Artificial Intelligence'}
+{'The Conference on Uncertainty in Artificial Intelligence (UAI) is one of the premier international conferences on research related to knowledge representation, learning, and reasoning in the presence of uncertainty. UAI is supported by the Association for Uncertainty in Artificial Intelligence (AUAI).'}
+{domeniu: 'Artificial Intelligence'}
+{imagine: 'Images/uai'}
+{data: 11/08/2017}
+{locatie: 'Sydney, Australia'}
+-------------------
+{20}
+{cppcon}
+{'The C++ Conference'}
+{'CppCon is the annual, week-long face-to-face gathering for the entire C++ community. The conference is organized by the C++ community for the community. You will enjoy inspirational talks and a friendly atmosphere designed to help attendees learn from each other, meet interesting people, and generally have a stimulating experience. Taking place this year in the beautiful Seattle neighborhood of Bellevue and including multiple diverse tracks, the conference will appeal to anyone from C++ novices to experts.'}
+{domeniu: 'Programming Languages'}
+{imagine: 'Images/cppcon'}
+{data: 24/09/2017}
+{locatie: 'Washington, United States of America'}
