@@ -539,6 +539,7 @@ Comentariu: 'Regulile utilizate de sistemul expert pentru a deduce daca numele c
 rg->60
 if(
 	categorie_conferinta -> (conferinta_industrie) &&
+	domeniu_de_interes ->(limbaje_de_programare) &&
 	limbaj_preferat -> (python) &&
 	poate_participa_la_conferinta_scumpa_in_strainatate -> (1)
 )
@@ -751,7 +752,7 @@ if(
 	poate_participa_la_conferinta_medie_in_strainatate -> (1)
 )
 then
-	(nume_conferinta -> (eurasia_graphics) : fc -> 90).
+	(nume_conferinta -> (eurasia_graphics) : fc -> 83).
 
 rg->81
 if(
@@ -761,7 +762,7 @@ if(
 	poate_participa_la_conferinta_medie_in_strainatate -> (1)
 )
 then
-	(nume_conferinta -> (eurasia_graphics) : fc -> 90).
+	(nume_conferinta -> (eurasia_graphics) : fc -> 83).
 
 rg->82
 if(
@@ -974,14 +975,14 @@ variante(
 	da (&)
 	nu
 )
-text -> ('Programul de studii urmat este in domeniul stiintei calculatoarelor sau intr-un domeniu conex?').
+text -> ('Programul de studii urmat este in domeniul stiintei calculatoarelor/domeniu conex?').
 
 q -> doreste_sa_asculte_prezentari
 variante(
 	da (&)
 	nu
 )
-text -> ('Doriti sa ascultati prezentari ale studiilor si descoperirilor recente din domeniu?').
+text -> ('Doriti sa ascultati prezentari ale studiilor si descoperirilor recente ale cercetatorilor din domeniu?').
 
 q -> doreste_sa_prezinte
 variante(
@@ -1037,7 +1038,7 @@ variante(
 	generala (&)
 	specifica
 )
-text -> ('Ce tematica doriti sa aiba conferinta?').
+text -> ('De ce tip de tematica sunteti interesat?').
 
 q -> determina_buget
 variante(
@@ -1051,77 +1052,77 @@ variante(
 	da (&)
 	nu
 )
-text -> ('Doriti sa aflati noutati din domeniul inteligentei artificiale?').
+text -> ('Doriti ca evenimentul sa fie pe tema inteligentei artificiale?').
 
 q -> interes_grafica_pe_calculator
 variante(
 	da (&)
 	nu
 )
-text -> ('Doriti sa aflati noutati din domeniul graficii pe calculator?').
+text -> ('Doriti ca evenimentul sa fie pe tema graficii pe calculator?').
 
 q -> interes_limbaje_de_programare
 variante(
 	da (&)
 	nu
 )
-text -> ('Doriti sa aflati noutati din domeniul limbajelor de programare?').
+text -> ('Doriti ca evenimentul sa fie pe tema limbajelor de programare?').
 
 q -> interes_grafica_pe_calculator
 variante(
 	da (&)
 	nu
 )
-text -> ('Doriti sa aflati noutati din domeniul sistemelor de operare?').
+text -> ('Doriti ca evenimentul sa fie pe tema sistemelor de operare?').
 
 q -> interes_vedere_artificiala
 variante(
 	da (&)
 	nu
 )
-text -> ('Sunteti interesat de vederea artificiala?').
+text -> ('Doriti ca evenimentul sa abordeze tema vederii artificiale?').
 
 q -> interes_sisteme_inteligente
 variante(
 	da (&)
 	nu
 )
-text -> ('Sunteti interesat de sisteme inteligente?').
+text -> ('Doriti ca evenimentul sa abordeze tema sistemelor inteligente?').
 
 q -> interes_data_science
 variante(
 	da (&)
 	nu
 )
-text -> ('Sunteti interesat de stiinta datelor?').
+text -> ('Doriti ca evenimentul sa fie pe tema stiintei datelor?').
 
 q -> interes_realitate_virtuala
 variante(
 	da (&)
 	nu
 )
-text -> ('Doriti sa aflati mai multe despre tehnologiile utilizate in realitatea virtuala?').
+text -> ('Doriti ca evenimentul sa abordeze tema realitatii virtuale si a realitatii augumentate?').
 
 q -> interes_jocuri_calculator
 variante(
 	da (&)
 	nu
 )
-text -> ('Doriti sa aflati mai multe despre tehnologiile utilizate in dezvoltarea jocurilor video?').
+text -> ('Doriti ca evenimentul sa abordeze tehnologiile utilizate in dezvoltarea jocurilor video?').
 
 q -> interes_retele_calculatoare
 variante(
 	da (&)
 	nu
 )
-text -> ('Doriti sa aflati mai multe despre domeniul retelelor de calculatoare?').
+text -> ('Doriti ca evenimentul sa fie pe tema retelelor de calculatoare?').
 
 q -> interes_sisteme_de_operare
 variante(
 	da (&)
 	nu
 )
-text -> ('Doriti sa aflati mai multe despre domeniul sistemelor de operare?').
+text -> ('Doriti ca evenimentul sa fie pe tema sistemelor de operare?').
 
 q -> interes_machine_learning
 variante(
